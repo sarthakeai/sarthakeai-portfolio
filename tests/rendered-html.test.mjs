@@ -28,7 +28,10 @@ test("server-renders the complete Sarthak portfolio", async () => {
   assert.match(html, /id="services"/);
   assert.match(html, /id="youtube"/);
   assert.match(html, /id="contact"/);
-  assert.match(html, /class="footer-accordion"/);
+  assert.match(html, /social-icon-instagram/);
+  assert.match(html, /social-icon-x/);
+  assert.match(html, /social-icon-youtube/);
+  assert.doesNotMatch(html, /footer-accordion/);
   assert.match(html, /Available for select projects/);
   assert.match(html, /My role/);
   assert.match(html, /350\+/);

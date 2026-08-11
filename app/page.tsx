@@ -149,21 +149,13 @@ export default function Home() {
             </nav>
             <div className="footer-socials" aria-label="Social profiles">
               <span className="footer-label">Elsewhere</span>
-              {socials.map((social) => <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" aria-label={`${social.label}, opens in a new tab`}>{social.label} <span aria-hidden="true">↗</span></a>)}
-            </div>
-            <div className="footer-accordions">
-              <details className="footer-accordion">
-                <summary>Explore</summary>
-                <nav className="footer-accordion-panel" aria-label="Mobile footer navigation">
-                  {footerLinks.map((link) => <a key={link.href} href={link.href}>{link.label}</a>)}
-                </nav>
-              </details>
-              <details className="footer-accordion">
-                <summary>Elsewhere</summary>
-                <div className="footer-accordion-panel" aria-label="Mobile social profiles">
-                  {socials.map((social) => <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" aria-label={`${social.label}, opens in a new tab`}>{social.label} <span aria-hidden="true">↗</span></a>)}
-                </div>
-              </details>
+              <div className="footer-social-links">
+                {socials.map((social) => (
+                  <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" aria-label={`${social.label}, opens in a new tab`}>
+                    <span className={`social-icon social-icon-${social.platform}`} aria-hidden="true">{social.platform === "x" ? "𝕏" : null}</span>
+                  </a>
+                ))}
+              </div>
             </div>
           </div>
           <div className="footer-bottom">
