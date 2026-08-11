@@ -135,7 +135,6 @@ export const socials = [
 
 export const youtubeStats = [
   { value: "24K+", label: "subscribers" },
-  { value: "350+", label: "long-form videos" },
 ];
 
 export type YouTubeVideo = {
