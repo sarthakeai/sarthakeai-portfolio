@@ -19,6 +19,7 @@ test("server-renders the complete Sarthak portfolio", async () => {
   assert.match(html, /Sarthak/);
   assert.doesNotMatch(html, />Sarthak Sharma</);
   assert.match(html, /Hi, I.m Sarthak/);
+  assert.match(html, /class="hero-portrait hero-reveal"/);
   assert.match(html, /id="work"/);
   assert.match(html, /id="about"/);
   assert.match(html, /id="services"/);
@@ -41,6 +42,8 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
   ]);
   assert.doesNotMatch(page, /^"use client"/);
+  assert.match(page, /className="hero-portrait hero-reveal"/);
+  assert.doesNotMatch(page, /className="portrait"/);
   assert.match(header, /^"use client"/);
   assert.match(portfolio, /aria-pressed/);
   assert.match(portfolio, /aria-live="polite"/);

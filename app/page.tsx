@@ -22,8 +22,11 @@ export default function Home() {
       <div id="content">
         <section className="hero" id="top">
           <div className="hero-copy">
-            <h1 className="hero-reveal">Hi, I’m Sarthak.</h1>
-            <p className="hero-intro hero-reveal hero-delay-1">I’m a video editor and creator based in India. I edit YouTube videos, shorts, podcasts and social content for creators and brands around the world.</p>
+            <figure className="hero-portrait hero-reveal">
+              <Image src="/sarthak-sharma.webp" alt="Sarthak" width={1440} height={1440} sizes="(max-width: 800px) 5.75rem, 8rem" priority />
+            </figure>
+            <h1 className="hero-reveal hero-delay-1">Hi, I’m Sarthak.</h1>
+            <p className="hero-intro hero-reveal hero-delay-2">I’m a video editor and creator based in India. I edit YouTube videos, shorts, podcasts and social content for creators and brands around the world.</p>
             <div className="hero-actions hero-reveal hero-delay-2">
               <a className="button button-primary" href="#work">See selected work <span aria-hidden="true">↓</span></a>
               <a className="text-link" href="mailto:hello@sarthaksharma.work">Email me <span aria-hidden="true">↗</span></a>
@@ -45,12 +48,8 @@ export default function Home() {
 
         <section className="section about" id="about" data-reveal>
           <div className="about-grid">
-            <figure className="portrait">
-              <Image src="/sarthak-sharma.webp" alt="Sarthak" width={1440} height={1440} sizes="(max-width: 800px) 100vw, 38vw" />
-              <figcaption>Sarthak · India</figcaption>
-            </figure>
+            <p className="kicker">About</p>
             <div className="about-copy">
-              <p className="kicker">About</p>
               <h2>I know the edit from both sides of the timeline.</h2>
               <p>I’ve been editing professionally for around five years, mostly for creators working across YouTube, podcasts, tech, finance and social.</p>
               <p>I also run a technology YouTube channel of my own. That means I’m not only thinking about clean cuts—I’m thinking about the idea, the audience and whether the video actually holds up once it’s published.</p>
