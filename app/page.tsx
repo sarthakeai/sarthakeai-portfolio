@@ -30,7 +30,6 @@ export default function Home() {
             <span className="timeline-clip timeline-clip-a" />
             <span className="timeline-clip timeline-clip-b" />
             <span className="timeline-playhead"><i /></span>
-            <span className="timeline-corner" />
           </div>
           <div className="hero-copy">
             <figure className="hero-portrait hero-reveal">

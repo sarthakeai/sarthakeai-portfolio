@@ -110,10 +110,8 @@ html[data-theme="dark"] .theme-track i { transform: translateX(.96rem); box-shad
 .timeline-playhead::before { content: ""; position: absolute; top: 0; left: 0; border-left: .55rem solid transparent; border-right: .55rem solid transparent; border-top: .9rem solid var(--accent); }
 .timeline-playhead::after { content: ""; position: absolute; top: 1.5rem; bottom: 0; left: calc(50% - .5px); width: 1px; background: linear-gradient(to bottom, var(--accent) 0 2.8rem, var(--ink) 2.8rem 100%); }
 .timeline-playhead > i { position: absolute; top: 1.45rem; left: calc(50% - 1.5px); width: 3px; height: 2.9rem; background: var(--accent); box-shadow: 0 0 0 3px var(--bg); }
-.timeline-corner { position: absolute; right: 9%; bottom: 1.15rem; width: 3.75rem; height: 3.75rem; border-right: 1px solid currentColor; border-bottom: 1px solid currentColor; opacity: .7; animation: timeline-corner-in 700ms 520ms both var(--ease-out); }
 @keyframes timeline-clip-in { from { opacity: 0; transform: scaleX(.72); } to { opacity: 1; transform: scaleX(1); } }
 @keyframes timeline-playhead-in { from { opacity: 0; transform: translateX(-24vw); } to { opacity: 1; transform: none; } }
-@keyframes timeline-corner-in { from { opacity: 0; transform: translate(.8rem, .8rem); } to { opacity: .7; transform: none; } }
 .hero-portrait { width: clamp(6.5rem, 8vw, 8rem); aspect-ratio: 1; overflow: hidden; margin: 0 0 clamp(2.25rem, 4vw, 3.25rem); background: var(--surface); }
 .hero-portrait img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; filter: saturate(.9); transition: transform 800ms var(--ease-out), filter 280ms ease-out; }
 .kicker { font-family: var(--font-geist-mono), monospace; text-transform: uppercase; letter-spacing: .11em; font-size: .625rem; line-height: 1.5; }
@@ -282,7 +280,6 @@ footer a:active { transform: scale(.98); }
   .timeline-clip-a { top: 3.2rem; width: 64%; }
   .timeline-clip-b { top: 5.65rem; left: 64%; width: 36%; }
   .timeline-playhead { top: .15rem; left: 64%; }
-  .timeline-corner { display: none; }
   .hero-copy { padding-top: 6.5rem; }
   .hero-portrait { width: 5.75rem; margin-bottom: 2rem; }
   .hero h1 { font-size: clamp(2.7rem, 11vw, 4.5rem); }
@@ -333,7 +330,7 @@ footer a:active { transform: scale(.98); }
   html { scroll-behavior: auto; }
   body { transition: none; }
   .hero-reveal { animation: none; }
-  .timeline-clip, .timeline-playhead, .timeline-corner { animation: none; }
+  .timeline-clip, .timeline-playhead { animation: none; }
   .reveal-pending, .reveal-pending.is-visible { opacity: 1; transform: none; transition: opacity 140ms ease-out; }
   .nav, .menu span, .theme-track i, .project-art, .project-visual::before, .hero-portrait img, .service, .service i { transition-duration: 140ms; transition-timing-function: ease-out; }
   ::view-transition-old(root), ::view-transition-new(root) { animation-duration: 100ms; animation-timing-function: ease-out; }
