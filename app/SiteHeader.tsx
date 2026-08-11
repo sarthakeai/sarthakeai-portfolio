@@ -91,8 +91,11 @@ export function SiteHeader() {
   return (
     <header ref={headerRef} className={`site-header${scrolled ? " is-scrolled" : ""}${menuOpen ? " menu-open" : ""}`}>
       <a className="brand" href="#top" aria-label="Sarthak, home" onClick={closeMenu}>
-        <span className="brand-mark"><Image src="/eai-mark.png" alt="" width={256} height={256} priority /></span>
-        <span>Sarthak</span>
+        <span className="brand-name">Sarthak</span>
+        <span className="brand-signature" aria-hidden="true">
+          <Image className="brand-signature-default" src="/eai-mark.png" alt="" width={256} height={256} priority />
+          <Image className="brand-signature-inverse" src="/eai-white.png" alt="" width={320} height={320} priority />
+        </span>
       </a>
       <nav ref={navRef} id="primary-navigation" className="nav" aria-label="Primary navigation" aria-hidden={isMobile && !menuOpen} inert={isMobile && !menuOpen ? true : undefined}>
         {links.map((link) => <a key={link.href} href={link.href} onClick={closeMenu}>{link.label}</a>)}

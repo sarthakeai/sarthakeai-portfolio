@@ -137,7 +137,10 @@ export default function Home() {
         <div className="footer-inner">
           <div className="footer-top">
             <div className="footer-intro">
-              <a className="footer-brand" href="#top" aria-label="Sarthak, back to top"><Image src="/eai-white.png" alt="" width={320} height={320} /><span>Sarthak</span></a>
+              <a className="footer-brand" href="#top" aria-label="Sarthak, back to top">
+                <span className="brand-name">Sarthak</span>
+                <span className="brand-signature brand-signature-on-dark" aria-hidden="true"><Image className="brand-signature-inverse" src="/eai-white.png" alt="" width={320} height={320} /></span>
+              </a>
               <p>Video editor & creator based in India.</p>
             </div>
             <nav className="footer-nav" aria-label="Footer navigation">

@@ -18,6 +18,8 @@ test("server-renders the complete Sarthak portfolio", async () => {
   const html = await response.text();
   assert.match(html, /Sarthak/);
   assert.doesNotMatch(html, />Sarthak Sharma</);
+  assert.match(html, /class="brand-name"/);
+  assert.match(html, /class="brand-signature/);
   assert.match(html, /Hi, I.m Sarthak/);
   assert.match(html, /class="hero-portrait hero-reveal"/);
   assert.match(html, /role="slider"/);
