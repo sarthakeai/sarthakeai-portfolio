@@ -107,9 +107,9 @@ html[data-theme="dark"] .theme-track i { transform: translateX(.96rem); box-shad
 .timeline-clip-a { top: 4.3rem; left: 0; width: 58%; transform-origin: left; }
 .timeline-clip-b { top: 6.75rem; left: 58%; width: 42%; transform-origin: right; }
 .timeline-playhead { position: absolute; top: .7rem; bottom: 0; left: 58%; width: 1.1rem; margin-left: -.55rem; animation: timeline-playhead-in 1100ms 80ms both var(--ease-spring); }
-.timeline-playhead::before { content: ""; position: absolute; top: 0; left: 0; border-left: .55rem solid transparent; border-right: .55rem solid transparent; border-top: .9rem solid var(--accent); }
-.timeline-playhead::after { content: ""; position: absolute; top: 1.5rem; bottom: 0; left: calc(50% - .5px); width: 1px; background: linear-gradient(to bottom, var(--accent) 0 2.8rem, var(--ink) 2.8rem 100%); }
-.timeline-playhead > i { position: absolute; top: 1.45rem; left: calc(50% - 1.5px); width: 3px; height: 2.9rem; background: var(--accent); box-shadow: 0 0 0 3px var(--bg); }
+.timeline-playhead::before { content: ""; position: absolute; top: 0; left: 50%; width: 1rem; height: .85rem; background: var(--accent); clip-path: polygon(0 0, 100% 0, 50% 100%); transform: translateX(-50%); }
+.timeline-playhead::after { content: ""; position: absolute; top: 1.5rem; bottom: 0; left: 50%; width: 1px; background: var(--ink); transform: translateX(-50%); }
+.timeline-playhead > i { position: absolute; z-index: 1; top: 1.5rem; left: 50%; width: 2px; height: 2.9rem; background: var(--accent); transform: translateX(-50%); }
 @keyframes timeline-clip-in { from { opacity: 0; transform: scaleX(.72); } to { opacity: 1; transform: scaleX(1); } }
 @keyframes timeline-playhead-in { from { opacity: 0; transform: translateX(-24vw); } to { opacity: 1; transform: none; } }
 .hero-portrait { width: clamp(6.5rem, 8vw, 8rem); aspect-ratio: 1; overflow: hidden; margin: 0 0 clamp(2.25rem, 4vw, 3.25rem); background: var(--surface); }
