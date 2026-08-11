@@ -12,13 +12,13 @@ export async function generateMetadata(): Promise<Metadata> {
   const requestHeaders = await headers();
   const host = requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host") ?? "localhost:3000";
   const protocol = requestHeaders.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https");
-  const image = `${protocol}://${host}/og-light.png`;
-  const title = "Sarthak Sharma — Video Editor & Creator";
+  const image = `${protocol}://${host}/og-white.png`;
+  const title = "Sarthak — Video Editor & Creator";
   const description = "Freelance video editor and creator from India, working across YouTube, short-form, podcasts, tech and social content.";
   return {
     title, description,
     icons: { icon: "/eai-mark.png", shortcut: "/eai-mark.png", apple: "/eai-mark.png" },
-    openGraph: { title, description, type: "website", images: [{ url: image, width: 1200, height: 630, alt: "Sarthak Sharma — Video Editor & Creator" }] },
+    openGraph: { title, description, type: "website", images: [{ url: image, width: 1200, height: 630, alt: "Sarthak — Video Editor & Creator" }] },
     twitter: { card: "summary_large_image", title, description, images: [image] },
   };
 }

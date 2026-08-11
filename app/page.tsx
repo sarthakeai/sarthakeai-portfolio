@@ -45,8 +45,8 @@ export default function Home() {
         <section className="section about" id="about" data-reveal>
           <div className="about-grid">
             <figure className="portrait">
-              <Image src="/sarthak-sharma.webp" alt="Sarthak Sharma" width={1440} height={1440} sizes="(max-width: 800px) 100vw, 38vw" />
-              <figcaption>Sarthak Sharma · India</figcaption>
+              <Image src="/sarthak-sharma.webp" alt="Sarthak" width={1440} height={1440} sizes="(max-width: 800px) 100vw, 38vw" />
+              <figcaption>Sarthak · India</figcaption>
             </figure>
             <div className="about-copy">
               <p className="kicker">About</p>
@@ -106,16 +106,16 @@ export default function Home() {
           <p className="kicker">Get in touch</p>
           <h2>Have something<br />you want to make?</h2>
           <div className="contact-bottom">
-            <a href="mailto:hello@sarthaksharma.work">hello@sarthaksharma.work <span aria-hidden="true">↗</span></a>
+            <a href="mailto:hello@sarthaksharma.work">Email me <span aria-hidden="true">↗</span></a>
             <p>Tell me what you’re working on, what you need help with and where you are in the process.</p>
           </div>
         </section>
       </div>
 
       <footer>
-        <a className="footer-brand" href="#top" aria-label="Sarthak Sharma, back to top"><Image src="/eai-white.png" alt="" width={320} height={320} /><span>Sarthak Sharma</span></a>
+        <a className="footer-brand" href="#top" aria-label="Sarthak, back to top"><Image src="/eai-white.png" alt="" width={320} height={320} /><span>Sarthak</span></a>
         <div className="socials" aria-label="Social profiles">{socials.map((social) => social.href ? <a key={social.label} href={social.href}>{social.label} ↗</a> : <span key={social.label} aria-disabled="true">{social.label}</span>)}</div>
-        <p>© {new Date().getFullYear()} Sarthak Sharma</p>
+        <p>© {new Date().getFullYear()} Sarthak</p>
         <a href="#top">Back to top ↑</a>
       </footer>
     </main>

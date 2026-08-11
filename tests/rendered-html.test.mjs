@@ -11,12 +11,13 @@ async function render() {
   }, { waitUntil() {}, passThroughOnException() {} });
 }
 
-test("server-renders the complete Sarthak Sharma portfolio", async () => {
+test("server-renders the complete Sarthak portfolio", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
   const html = await response.text();
-  assert.match(html, /Sarthak Sharma/);
+  assert.match(html, /Sarthak/);
+  assert.doesNotMatch(html, />Sarthak Sharma</);
   assert.match(html, /I.m Sarthak/);
   assert.match(html, /id="work"/);
   assert.match(html, /id="about"/);
