@@ -65,6 +65,8 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(header, /^"use client"/);
   assert.match(header, /eai-vector-dark\.png/);
   assert.match(header, /eai-vector-light\.png/);
+  assert.match(header, /brand-logo-only/);
+  assert.doesNotMatch(header, /brand-name/);
   assert.match(page, /eai-vector-light\.png/);
   assert.match(portfolio, /aria-pressed/);
   assert.match(portfolio, /aria-live="polite"/);
