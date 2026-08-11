@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
 import { ThemeToggle } from "./ThemeToggle";
 
 const links = [
@@ -16,11 +16,15 @@ export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const headerRef = useRef<HTMLElement>(null);
+  const navRef = useRef<HTMLElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const media = window.matchMedia("(max-width: 50rem)");
-    const sync = () => setIsMobile(media.matches);
+    const sync = () => {
+      setIsMobile(media.matches);
+      if (!media.matches) setMenuOpen(false);
+    };
     sync();
     media.addEventListener("change", sync);
     return () => media.removeEventListener("change", sync);
@@ -42,23 +46,43 @@ export function SiteHeader() {
 
   useEffect(() => {
     if (!menuOpen || !isMobile) return;
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    const root = document.documentElement;
+    const body = document.body;
+    const previousRootOverflow = root.style.overflow;
+    const previousBodyOverflow = body.style.overflow;
+    const previousTouchAction = body.style.touchAction;
+    root.style.overflow = "hidden";
+    body.style.overflow = "hidden";
+    body.style.touchAction = "none";
+
+    const focusables = () => Array.from(headerRef.current?.querySelectorAll<HTMLElement>("a[href], button:not([disabled])") ?? []);
+    requestAnimationFrame(() => navRef.current?.querySelector<HTMLElement>("a[href]")?.focus());
+
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setMenuOpen(false);
         menuButtonRef.current?.focus();
+        return;
+      }
+      if (event.key !== "Tab") return;
+      const items = focusables();
+      const first = items[0];
+      const last = items.at(-1);
+      if (!first || !last) return;
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
       }
     };
-    const onPointerDown = (event: PointerEvent) => {
-      if (!headerRef.current?.contains(event.target as Node)) setMenuOpen(false);
-    };
     document.addEventListener("keydown", onKeyDown);
-    document.addEventListener("pointerdown", onPointerDown);
     return () => {
-      document.body.style.overflow = previousOverflow;
+      root.style.overflow = previousRootOverflow;
+      body.style.overflow = previousBodyOverflow;
+      body.style.touchAction = previousTouchAction;
       document.removeEventListener("keydown", onKeyDown);
-      document.removeEventListener("pointerdown", onPointerDown);
     };
   }, [isMobile, menuOpen]);
 
@@ -70,13 +94,13 @@ export function SiteHeader() {
         <span className="brand-mark"><Image src="/eai-mark.png" alt="" width={256} height={256} priority /></span>
         <span>Sarthak</span>
       </a>
-      <nav id="primary-navigation" className="nav" aria-label="Primary navigation" aria-hidden={isMobile && !menuOpen} inert={isMobile && !menuOpen ? true : undefined}>
+      <nav ref={navRef} id="primary-navigation" className="nav" aria-label="Primary navigation" aria-hidden={isMobile && !menuOpen} inert={isMobile && !menuOpen ? true : undefined}>
         {links.map((link) => <a key={link.href} href={link.href} onClick={closeMenu}>{link.label}</a>)}
         <a className="nav-cta" href="#contact" onClick={closeMenu}>Let’s talk <span aria-hidden="true">↗</span></a>
       </nav>
       <div className="header-actions">
         <ThemeToggle />
-        <button ref={menuButtonRef} className="menu" onClick={() => setMenuOpen((open) => !open)} aria-label={menuOpen ? "Close navigation" : "Open navigation"} aria-expanded={menuOpen} aria-controls="primary-navigation">
+        <button ref={menuButtonRef} className="menu" type="button" onClick={() => setMenuOpen((open) => !open)} aria-label={menuOpen ? "Close navigation" : "Open navigation"} aria-expanded={menuOpen} aria-controls="primary-navigation">
           <span /><span />
         </button>
       </div>

@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
-import { categories, projects } from "./portfolio-data";
+import { useEffect, useRef, useState } from "react";
+import { categories, projects, type Project } from "./portfolio-data";
 
 type ViewTransitionDocument = Document & {
   startViewTransition?: (update: () => void) => void;
@@ -10,6 +10,9 @@ type ViewTransitionDocument = Document & {
 
 export function PortfolioGrid() {
   const [active, setActive] = useState("All");
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const returnFocusRef = useRef<HTMLElement | null>(null);
   const visible = active === "All" ? projects : projects.filter((project) => project.category === active);
 
   const selectCategory = (category: string) => {
@@ -20,18 +23,39 @@ export function PortfolioGrid() {
     else update();
   };
 
+  const openVideo = (project: Project, trigger: HTMLElement) => {
+    returnFocusRef.current = trigger;
+    setSelectedProject(project);
+  };
+
+  const closeVideo = () => setSelectedProject(null);
+
+  useEffect(() => {
+    if (!selectedProject) return;
+    const root = document.documentElement;
+    const body = document.body;
+    const previousRootOverflow = root.style.overflow;
+    const previousBodyOverflow = body.style.overflow;
+    root.style.overflow = "hidden";
+    body.style.overflow = "hidden";
+    requestAnimationFrame(() => closeButtonRef.current?.focus());
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") closeVideo();
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      root.style.overflow = previousRootOverflow;
+      body.style.overflow = previousBodyOverflow;
+      document.removeEventListener("keydown", onKeyDown);
+      returnFocusRef.current?.focus();
+    };
+  }, [selectedProject]);
+
   return (
     <>
       <div className="filters" role="group" aria-label="Filter selected work">
         {categories.map((category) => (
-          <button
-            key={category}
-            type="button"
-            aria-pressed={active === category}
-            aria-controls="project-grid"
-            className={active === category ? "active" : ""}
-            onClick={() => selectCategory(category)}
-          >
+          <button key={category} type="button" aria-pressed={active === category} aria-controls="project-grid" className={active === category ? "active" : ""} onClick={() => selectCategory(category)}>
             {category}
           </button>
         ))}
@@ -41,22 +65,41 @@ export function PortfolioGrid() {
         {visible.map((project, index) => (
           <article className={`project ${project.ratio}`} key={project.id} style={{ viewTransitionName: `project-${project.id}` }}>
             <div className={`project-visual ${project.tone}`}>
-              {project.poster ? <Image src={project.poster} alt="" fill sizes="(max-width: 800px) 100vw, 55vw" /> : null}
-              <div className="project-placeholder" aria-label={`${project.category} project placeholder`}>
+              {project.thumbnail ? <Image src={project.thumbnail} alt="" fill sizes="(max-width: 800px) 100vw, 55vw" /> : null}
+              <div className="project-art" aria-label={`${project.title} visual`}>
                 <span className="project-number">{String(index + 1).padStart(2, "0")}</span>
                 <span className="project-category">{project.category}</span>
                 <strong>{project.artLabel}</strong>
-                <span className="project-status">Ready for your video</span>
+                <span className="project-meta">{project.contentType}</span>
               </div>
-              {project.videoUrl ? <a className="play" href={project.videoUrl} aria-label={`Watch ${project.title}`}>Play ↗</a> : null}
+              {project.videoUrl ? (
+                <button className="project-action" type="button" onClick={(event) => openVideo(project, event.currentTarget)} aria-label={`Play ${project.title}`}>Play <span aria-hidden="true">▶</span></button>
+              ) : project.externalUrl ? (
+                <a className="project-action" href={project.externalUrl} target="_blank" rel="noopener noreferrer" aria-label={`View ${project.title} in a new tab`}>View <span aria-hidden="true">↗</span></a>
+              ) : null}
             </div>
             <div className="project-info">
-              <h3>{project.title}</h3>
-              <p>{project.context}</p>
+              <div><h3>{project.title}</h3><p>{project.description}</p></div>
+              <div className="project-details"><span>{project.contentType}</span>{project.client ? <span>{project.client}</span> : null}</div>
             </div>
           </article>
         ))}
       </div>
+
+      {selectedProject?.videoUrl ? (
+        <div className="video-modal" role="dialog" aria-modal="true" aria-labelledby="video-modal-title" aria-describedby="video-modal-description" onPointerDown={(event) => { if (event.target === event.currentTarget) closeVideo(); }}>
+          <div className="video-modal-inner">
+            <div className="video-modal-head">
+              <div><h2 id="video-modal-title">{selectedProject.title}</h2><p id="video-modal-description">{selectedProject.description}</p></div>
+              <button ref={closeButtonRef} type="button" onClick={closeVideo} aria-label="Close video">Close</button>
+            </div>
+            <video src={selectedProject.videoUrl} poster={selectedProject.thumbnail} controls autoPlay playsInline preload="metadata" aria-label={selectedProject.title}>
+              <track kind="captions" src={selectedProject.captionsUrl} srcLang="en" label="English" default />
+            </video>
+            {selectedProject.externalUrl ? <a className="text-link" href={selectedProject.externalUrl} target="_blank" rel="noopener noreferrer">View original <span aria-hidden="true">↗</span></a> : null}
+          </div>
+        </div>
+      ) : null}
     </>
   );
 }

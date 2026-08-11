@@ -6,18 +6,8 @@ export function ThemeToggle() {
   const [dark, setDark] = useState<boolean | null>(null);
 
   useEffect(() => {
-    const root = document.documentElement;
-    const media = window.matchMedia("(prefers-color-scheme: dark)");
-    const sync = () => setDark(root.dataset.theme === "dark");
-    const followSystem = () => {
-      if (!localStorage.getItem("theme")) {
-        root.dataset.theme = media.matches ? "dark" : "light";
-        sync();
-      }
-    };
-    sync();
-    media.addEventListener("change", followSystem);
-    return () => media.removeEventListener("change", followSystem);
+    const frame = requestAnimationFrame(() => setDark(document.documentElement.dataset.theme === "dark"));
+    return () => cancelAnimationFrame(frame);
   }, []);
 
   const toggleTheme = () => {

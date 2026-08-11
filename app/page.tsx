@@ -1,13 +1,15 @@
-import { MotionController } from "./MotionController";
 import Image from "next/image";
+import { MotionController } from "./MotionController";
 import { PortfolioGrid } from "./PortfolioGrid";
-import { services } from "./portfolio-data";
+import { clients, services, socials, stats, testimonials } from "./portfolio-data";
 import { SiteHeader } from "./SiteHeader";
 
-const socials = [
-  { label: "Instagram", href: null },
-  { label: "YouTube", href: null },
-  { label: "LinkedIn", href: null },
+const footerLinks = [
+  { href: "#work", label: "Work" },
+  { href: "#about", label: "About" },
+  { href: "#services", label: "What I do" },
+  { href: "#youtube", label: "YouTube" },
+  { href: "#contact", label: "Contact" },
 ];
 
 export default function Home() {
@@ -20,9 +22,8 @@ export default function Home() {
       <div id="content">
         <section className="hero" id="top">
           <div className="hero-copy">
-            <p className="availability hero-reveal"><span /> Available for select projects</p>
-            <h1 className="hero-reveal hero-delay-1">I’m Sarthak — a video editor and creator.</h1>
-            <p className="hero-intro hero-reveal hero-delay-2">I edit YouTube videos, shorts, podcasts and social content for people who care about what they put into the world.</p>
+            <h1 className="hero-reveal">Hi, I’m Sarthak.</h1>
+            <p className="hero-intro hero-reveal hero-delay-1">I’m a video editor and creator based in India. I edit YouTube videos, shorts, podcasts and social content for creators and brands around the world.</p>
             <div className="hero-actions hero-reveal hero-delay-2">
               <a className="button button-primary" href="#work">See selected work <span aria-hidden="true">↓</span></a>
               <a className="text-link" href="mailto:hello@sarthaksharma.work">Email me <span aria-hidden="true">↗</span></a>
@@ -36,8 +37,8 @@ export default function Home() {
 
         <section className="section work" id="work" data-reveal>
           <div className="section-head">
-            <div><p className="kicker">Selected work</p><h2>A few places<br />my edits live.</h2></div>
-            <p>The final films will replace these project slots as the reel comes together. The structure is ready for posters, hover previews or full case studies.</p>
+            <div><p className="kicker">Selected work</p><h2>A look at<br />what I edit.</h2></div>
+            <p>Long-form, short-form, podcasts, motion and social content across YouTube, Instagram and X.</p>
           </div>
           <PortfolioGrid />
         </section>
@@ -57,17 +58,14 @@ export default function Home() {
             </div>
           </div>
           <div className="stats" aria-label="Experience in numbers">
-            <div><strong>4–5</strong><p>years editing<br />professionally</p></div>
-            <div><strong>350+</strong><p>long-form<br />videos edited</p></div>
-            <div><strong>700+</strong><p>short-form<br />videos edited</p></div>
-            <div><strong>24k+</strong><p>subscribers on<br />my tech channel</p></div>
+            {stats.map((stat) => <div key={stat.value}><strong>{stat.value}</strong><p>{stat.label}</p></div>)}
           </div>
         </section>
 
         <section className="section services" id="services" data-reveal>
           <div className="section-head">
-            <div><p className="kicker">What I do</p><h2>Editing that feels<br />like you.</h2></div>
-            <p>I can take a project from a folder of footage to the final upload, or join an existing workflow where you need another thoughtful pair of hands.</p>
+            <div><p className="kicker">What I do</p><h2>What I edit.</h2></div>
+            <p>I can handle the full edit from the first assembly to final exports, or work inside an existing team and workflow.</p>
           </div>
           <div className="service-list">
             {services.map((service) => <article className="service" key={service.number}><span>{service.number}</span><h3>{service.title}</h3><p>{service.copy}</p><i aria-hidden="true">↗</i></article>)}
@@ -77,12 +75,11 @@ export default function Home() {
         <section className="section experience-section" data-reveal>
           <div className="section-head compact-head">
             <div><p className="kicker">Experience</p><h2>Some people I’ve worked with.</h2></div>
-            <p>Independent creators, YouTube teams, podcasts, and people making thoughtful work in tech, Bitcoin and finance.</p>
+            <p>I’ve worked with independent creators, YouTube teams and podcasts, along with projects in tech, Bitcoin and finance.</p>
           </div>
           <div className="experience-list" aria-label="Types of clients and collaborations">
-            <span>Creators</span><span>YouTube teams</span><span>Podcasts</span><span>Tech</span><span>Bitcoin & finance</span>
+            {clients.map((client) => <span key={client}>{client}</span>)}
           </div>
-          <p className="experience-note">Client names and links can be added here once you choose what to show publicly.</p>
         </section>
 
         <section className="section youtube" id="youtube" data-reveal>
@@ -90,33 +87,49 @@ export default function Home() {
           <div className="youtube-copy">
             <p className="kicker">Personal project / YouTube</p>
             <h2>I make videos too.</h2>
-            <p>My technology channel has grown to more than 24,000 subscribers and hundreds of uploads. It’s where I test ideas, learn what viewers respond to and remember how an edit feels from the creator’s chair.</p>
-            <span className="text-link is-placeholder">Channel link coming soon</span>
+            <p>I’ve created and published more than 350 long-form videos on my technology channel, which now has over 24,000 subscribers. Running the channel has taught me what works after a video leaves the timeline and reaches a real audience.</p>
+            <a className="text-link" href="https://www.youtube.com/@sarthakeai" target="_blank" rel="noopener noreferrer" aria-label="Visit my YouTube channel, opens in a new tab">Visit my YouTube channel <span aria-hidden="true">↗</span></a>
           </div>
-          <div className="youtube-stat"><strong>24k+</strong><span>subscribers</span></div>
+          <div className="youtube-stat"><strong>24K+</strong><span>subscribers</span></div>
         </section>
 
-        <section className="section testimonial" data-reveal>
-          <p className="kicker">A note from a client</p>
-          <blockquote>“A short, specific testimonial will feel right here—once we choose one that’s real.”</blockquote>
-          <p className="testimonial-label">Testimonial placeholder</p>
-        </section>
+        {testimonials.length > 0 ? (
+          <section className="section testimonial" aria-label="Client testimonials" data-reveal>
+            {testimonials.map((testimonial) => <figure key={`${testimonial.name}-${testimonial.quote}`}><blockquote>“{testimonial.quote}”</blockquote><figcaption>{testimonial.name}{testimonial.role ? ` · ${testimonial.role}` : ""}</figcaption></figure>)}
+          </section>
+        ) : null}
 
         <section className="section contact" id="contact" data-reveal>
           <p className="kicker">Get in touch</p>
-          <h2>Have something<br />you want to make?</h2>
+          <h2>Have something you want to work on?</h2>
           <div className="contact-bottom">
             <a href="mailto:hello@sarthaksharma.work">Email me <span aria-hidden="true">↗</span></a>
-            <p>Tell me what you’re working on, what you need help with and where you are in the process.</p>
+            <p>Send me a note with a little about the project, the format and the timeline.</p>
           </div>
         </section>
       </div>
 
       <footer>
-        <a className="footer-brand" href="#top" aria-label="Sarthak, back to top"><Image src="/eai-white.png" alt="" width={320} height={320} /><span>Sarthak</span></a>
-        <div className="socials" aria-label="Social profiles">{socials.map((social) => social.href ? <a key={social.label} href={social.href}>{social.label} ↗</a> : <span key={social.label} aria-disabled="true">{social.label}</span>)}</div>
-        <p>© {new Date().getFullYear()} Sarthak</p>
-        <a href="#top">Back to top ↑</a>
+        <div className="footer-inner">
+          <div className="footer-top">
+            <div className="footer-intro">
+              <a className="footer-brand" href="#top" aria-label="Sarthak, back to top"><Image src="/eai-white.png" alt="" width={320} height={320} /><span>Sarthak</span></a>
+              <p>Video editor & creator based in India.</p>
+            </div>
+            <nav className="footer-nav" aria-label="Footer navigation">
+              <span className="footer-label">Explore</span>
+              {footerLinks.map((link) => <a key={link.href} href={link.href}>{link.label}</a>)}
+            </nav>
+            <div className="footer-socials" aria-label="Social profiles">
+              <span className="footer-label">Elsewhere</span>
+              {socials.map((social) => <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" aria-label={`${social.label}, opens in a new tab`}>{social.label} <span aria-hidden="true">↗</span></a>)}
+            </div>
+          </div>
+          <div className="footer-bottom">
+            <p>© {new Date().getFullYear()} Sarthak</p>
+            <a className="footer-back" href="#top">Back to top <span aria-hidden="true">↑</span></a>
+          </div>
+        </div>
       </footer>
     </main>
   );

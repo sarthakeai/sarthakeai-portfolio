@@ -1,30 +1,56 @@
-export type Project = {
+type ProjectBase = {
   id: string;
   title: string;
-  context: string;
+  client?: string;
   category: string;
+  contentType: string;
+  description: string;
   artLabel: string;
   tone: string;
   ratio: "portrait" | "wide" | "square";
-  poster?: string;
-  videoUrl?: string;
+  thumbnail?: string;
+  externalUrl?: string;
 };
 
-// Replace a project's title/context and add `poster` or `videoUrl` when final work is ready.
+type ProjectMedia =
+  | { videoUrl: string; captionsUrl: string }
+  | { videoUrl?: never; captionsUrl?: never };
+
+export type Project = ProjectBase & ProjectMedia;
+
+// Add real thumbnail, video and external URLs here as projects are approved for the site.
 export const projects: Project[] = [
-  { id: "shorts", title: "Short-form, made to move", context: "YouTube Shorts, Reels and X clips", category: "Short-form", artLabel: "Hook / Pace / Payoff", tone: "coral", ratio: "portrait" },
-  { id: "long-form", title: "Long-form with a point of view", context: "YouTube videos and narrative edits", category: "Long-form", artLabel: "Story over noise", tone: "cobalt", ratio: "wide" },
-  { id: "podcasts", title: "Conversations worth keeping", context: "Full episodes and social cutdowns", category: "Podcasts", artLabel: "Listen closer", tone: "clay", ratio: "square" },
-  { id: "bitcoin-tech", title: "Complex ideas, cut clearly", context: "Bitcoin, finance and technology", category: "Social", artLabel: "Make it clear", tone: "acid", ratio: "wide" },
-  { id: "motion", title: "Type, timing and movement", context: "Motion graphics and visual systems", category: "Motion", artLabel: "Frame by frame", tone: "ink", ratio: "portrait" },
-  { id: "creator", title: "Content built with creators", context: "Repeatable social series and campaigns", category: "Social", artLabel: "Built to publish", tone: "sand", ratio: "square" },
+  { id: "shorts", title: "Short-form edits", category: "Short-form", contentType: "Shorts / Reels / X", description: "Fast-paced cuts, captions, motion and platform-ready versions.", artLabel: "Short-form", tone: "coral", ratio: "portrait" },
+  { id: "long-form", title: "YouTube & long-form", category: "Long-form", contentType: "YouTube / Long-form", description: "Structure, pacing, sound and clean visual details across longer edits.", artLabel: "Long-form", tone: "cobalt", ratio: "wide" },
+  { id: "podcasts", title: "Podcasts & clips", category: "Podcasts", contentType: "Episodes / Cutdowns", description: "Full conversations and focused clips built from the strongest moments.", artLabel: "Podcasts", tone: "clay", ratio: "square" },
+  { id: "bitcoin-tech", title: "Bitcoin, finance & tech", category: "Social", contentType: "Explainers / Social", description: "Clear edits for detailed topics, from full videos to quick social clips.", artLabel: "Tech / Finance", tone: "acid", ratio: "wide" },
+  { id: "motion", title: "Motion & design", category: "Motion", contentType: "Motion graphics", description: "Titles, captions, transitions and light motion systems for recurring content.", artLabel: "Motion", tone: "ink", ratio: "portrait" },
+  { id: "social", title: "Social content", category: "Social", contentType: "Multi-platform", description: "Repeatable edits and versions made for regular publishing across platforms.", artLabel: "Social", tone: "sand", ratio: "square" },
 ];
 
 export const categories = ["All", "Short-form", "Long-form", "Podcasts", "Motion", "Social"];
 
 export const services = [
-  { number: "01", title: "YouTube & long-form", copy: "Structure, pacing, sound and a clean finish—without sanding away your personality." },
-  { number: "02", title: "Short-form & social", copy: "Shorts, Reels and clips that get to the point quickly and still feel like you." },
-  { number: "03", title: "Podcasts & conversations", copy: "Full episodes, thoughtful cutdowns and the small clean-ups that keep people listening." },
-  { number: "04", title: "Motion & finishing", copy: "Titles, graphics, colour and repeatable visual details for an ongoing series." },
+  { number: "01", title: "YouTube & long-form", copy: "YouTube videos, explainers and longer edits with clear structure, clean pacing and sound." },
+  { number: "02", title: "Short-form & social", copy: "Shorts, Reels and X clips that get to the point quickly and fit the platform." },
+  { number: "03", title: "Podcasts & conversations", copy: "Full episodes and short clips, with the pauses, repeats and rough edges cleaned up." },
+  { number: "04", title: "Motion & finishing", copy: "Titles, captions, transitions, light motion graphics, colour and final polish." },
 ];
+
+export const stats = [
+  { value: "4–5", label: "years editing professionally" },
+  { value: "350+", label: "long-form videos" },
+  { value: "700+", label: "short-form videos" },
+  { value: "24K+", label: "YouTube subscribers" },
+];
+
+export const clients = ["Creators", "YouTube teams", "Podcasts", "Tech", "Bitcoin & finance"];
+
+export const socials = [
+  { label: "Instagram", href: "https://www.instagram.com/sarthak.eai" },
+  { label: "X / Twitter", href: "https://x.com/sarthakeai" },
+  { label: "YouTube", href: "https://www.youtube.com/@sarthakeai" },
+];
+
+export type Testimonial = { quote: string; name: string; role?: string };
+export const testimonials: Testimonial[] = [];
