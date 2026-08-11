@@ -95,7 +95,7 @@ export default function Home() {
         </section>
 
         <section className="section youtube" id="youtube" data-reveal>
-          <div className="youtube-mark"><Image src="/eai-white.png" alt="EAI" width={320} height={320} /></div>
+          <div className="youtube-mark"><Image src="/eai-vector-light.png" alt="EAI" width={1282} height={1038} /></div>
           <div className="youtube-copy">
             <p className="kicker">Personal project / YouTube</p>
             <h2>I make videos too.</h2>
@@ -139,7 +139,7 @@ export default function Home() {
             <div className="footer-intro">
               <a className="footer-brand" href="#top" aria-label="Sarthak, back to top">
                 <span className="brand-name">Sarthak</span>
-                <span className="brand-signature brand-signature-on-dark" aria-hidden="true"><Image className="brand-signature-inverse" src="/eai-white.png" alt="" width={320} height={320} /></span>
+                <span className="brand-signature brand-signature-on-dark" aria-hidden="true"><Image className="brand-signature-inverse" src="/eai-vector-light.png" alt="" width={1282} height={1038} /></span>
               </a>
               <p>Video editor & creator based in India.</p>
             </div>

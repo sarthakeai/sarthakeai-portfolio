@@ -63,6 +63,9 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(timeline, /role="slider"/);
   assert.doesNotMatch(page, /className="portrait"/);
   assert.match(header, /^"use client"/);
+  assert.match(header, /eai-vector-dark\.png/);
+  assert.match(header, /eai-vector-light\.png/);
+  assert.match(page, /eai-vector-light\.png/);
   assert.match(portfolio, /aria-pressed/);
   assert.match(portfolio, /aria-live="polite"/);
   assert.match(portfolio, /aria-modal="true"/);

@@ -93,8 +93,8 @@ export function SiteHeader() {
       <a className="brand" href="#top" aria-label="Sarthak, home" onClick={closeMenu}>
         <span className="brand-name">Sarthak</span>
         <span className="brand-signature" aria-hidden="true">
-          <Image className="brand-signature-default" src="/eai-mark.png" alt="" width={256} height={256} priority />
-          <Image className="brand-signature-inverse" src="/eai-white.png" alt="" width={320} height={320} priority />
+          <Image className="brand-signature-default" src="/eai-vector-dark.png" alt="" width={1282} height={1038} priority />
+          <Image className="brand-signature-inverse" src="/eai-vector-light.png" alt="" width={1282} height={1038} priority />
         </span>
       </a>
       <nav ref={navRef} id="primary-navigation" className="nav" aria-label="Primary navigation" aria-hidden={isMobile && !menuOpen} inert={isMobile && !menuOpen ? true : undefined}>
