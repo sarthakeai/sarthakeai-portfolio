@@ -20,7 +20,7 @@ test("server-renders the complete Sarthak portfolio", async () => {
   assert.doesNotMatch(html, />Sarthak Sharma</);
   assert.match(html, /Hi, I.m Sarthak/);
   assert.match(html, /class="hero-portrait hero-reveal"/);
-  assert.match(html, /class="hero-timeline hero-reveal"/);
+  assert.match(html, /role="slider"/);
   assert.match(html, /id="work"/);
   assert.match(html, /id="about"/);
   assert.match(html, /id="services"/);
@@ -34,17 +34,21 @@ test("server-renders the complete Sarthak portfolio", async () => {
 });
 
 test("keeps interaction scoped and accessibility preferences explicit", async () => {
-  const [page, layout, header, portfolio, theme, css] = await Promise.all([
+  const [page, layout, header, portfolio, theme, timeline, css] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/SiteHeader.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/PortfolioGrid.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/ThemeToggle.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/HeroTimeline.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
   ]);
   assert.doesNotMatch(page, /^"use client"/);
   assert.match(page, /className="hero-portrait hero-reveal"/);
-  assert.match(page, /className="hero-timeline hero-reveal"/);
+  assert.match(page, /<HeroTimeline \/>/);
+  assert.match(timeline, /^"use client"/);
+  assert.match(timeline, /setPointerCapture/);
+  assert.match(timeline, /role="slider"/);
   assert.doesNotMatch(page, /className="portrait"/);
   assert.match(header, /^"use client"/);
   assert.match(portfolio, /aria-pressed/);
