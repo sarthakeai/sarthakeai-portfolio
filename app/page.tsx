@@ -95,7 +95,10 @@ export default function Home() {
         </section>
 
         <section className="section youtube" id="youtube" data-reveal>
-          <div className="youtube-mark"><Image src="/eai-vector-light.png" alt="EAI" width={1282} height={1038} /></div>
+          <div className="youtube-mark">
+            <Image className="youtube-mark-on-dark" src="/eai-vector-light.png" alt="EAI" width={1282} height={1038} />
+            <Image className="youtube-mark-on-light" src="/eai-vector-dark.png" alt="" width={1282} height={1038} aria-hidden="true" />
+          </div>
           <div className="youtube-copy">
             <p className="kicker">Personal project / YouTube</p>
             <h2>I make videos too.</h2>

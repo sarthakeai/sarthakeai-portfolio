@@ -228,9 +228,11 @@ html[data-theme="dark"] .theme-track i { transform: translateX(.96rem); box-shad
 .service i { color: var(--muted); opacity: .45; font-style: normal; justify-self: end; transition: transform 260ms var(--ease-out), color 180ms ease-out, opacity 180ms ease-out; }
 
 .youtube { width: min(calc(100% - (2 * var(--page-gutter))), calc(var(--content-width) - (2 * var(--page-gutter)))); margin-block: var(--section-space); padding: clamp(2.5rem, 6vw, 5.5rem); border: 0; background: var(--dark-panel); color: var(--dark-panel-ink); display: grid; grid-template-columns: minmax(8rem, .5fr) minmax(0, 1.35fr) minmax(7rem, .4fr); gap: clamp(2.5rem, 7vw, 7rem); align-items: end; }
-.youtube-mark { width: clamp(7rem, 14vw, 12rem); aspect-ratio: 1282 / 1038; place-self: center; }
-.youtube-mark img { width: 100%; height: 100%; object-fit: contain; filter: var(--youtube-logo-filter, none); }
-html[data-theme="dark"] .youtube-mark img { filter: invert(1); }
+.youtube-mark { width: clamp(7rem, 14vw, 12rem); aspect-ratio: 1282 / 1038; place-self: center; display: grid; }
+.youtube-mark img { grid-area: 1 / 1; width: 100%; height: 100%; object-fit: contain; }
+.youtube-mark-on-light { display: none; }
+html[data-theme="dark"] .youtube-mark-on-dark { display: none; }
+html[data-theme="dark"] .youtube-mark-on-light { display: block; }
 .youtube .kicker, .youtube-copy p { color: var(--dark-panel-muted); }
 .youtube-copy h2 { margin-block: 1.1rem 1.6rem; }
 .youtube-copy p { max-width: 40rem; line-height: 1.72; font-size: .9rem; }
@@ -306,6 +308,11 @@ footer a:active { transform: scale(.98); }
   .about-grid { gap: 4rem; }
   .youtube { grid-template-columns: .4fr 1.3fr; }
   .youtube-stats { grid-column: 2; grid-template-columns: 1fr; max-width: 14rem; }
+}
+
+@media (min-width: 50.0625rem) {
+  .hero { padding-bottom: clamp(3.5rem, 5vw, 4.5rem); }
+  .hero-portrait { top: clamp(3.25rem, 4vw, 4.25rem); width: clamp(7rem, 7vw, 8rem); margin-bottom: clamp(4.5rem, 5vw, 5.25rem); }
 }
 
 @media (max-width: 50rem) {
