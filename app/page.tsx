@@ -2,7 +2,7 @@ import Image from "next/image";
 import { HeroTimeline } from "./HeroTimeline";
 import { MotionController } from "./MotionController";
 import { PortfolioGrid } from "./PortfolioGrid";
-import { clients, services, socials, stats, testimonials } from "./portfolio-data";
+import { availability, clients, services, socials, stats, testimonials, youtubeStats, youtubeVideos } from "./portfolio-data";
 import { SiteHeader } from "./SiteHeader";
 
 const footerLinks = [
@@ -14,6 +14,8 @@ const footerLinks = [
 ];
 
 export default function Home() {
+  const featuredTestimonial = testimonials[0];
+
   return (
     <main>
       <a className="skip-link" href="#content">Skip to content</a>
@@ -35,10 +37,29 @@ export default function Home() {
             </div>
           </div>
           <aside className="hero-aside hero-reveal hero-delay-2" aria-label="At a glance">
+            <p className={`availability${availability.available ? " is-available" : ""}`}><span aria-hidden="true" />{availability.label}</p>
             <p>Based in India<br />Working worldwide</p>
             <p>Long-form · Shorts<br />Podcasts · Motion</p>
           </aside>
         </section>
+
+        {clients.length > 0 ? (
+          <section className="section selected-clients" aria-labelledby="selected-clients-title" data-reveal>
+            <div className="clients-intro">
+              <p className="kicker" id="selected-clients-title">Selected clients</p>
+              <p>People and teams I’ve worked with.</p>
+            </div>
+            <div className="client-list">
+              {clients.map((client) => client.url ? (
+                <a key={client.name} href={client.url} target="_blank" rel="noopener noreferrer">
+                  {client.logo ? <Image src={client.logo} alt={client.name} width={160} height={56} /> : client.name}
+                </a>
+              ) : (
+                <span key={client.name}>{client.logo ? <Image src={client.logo} alt={client.name} width={160} height={56} /> : client.name}</span>
+              ))}
+            </div>
+          </section>
+        ) : null}
 
         <section className="section work" id="work" data-reveal>
           <div className="section-head">
@@ -73,16 +94,6 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="section experience-section" data-reveal>
-          <div className="section-head compact-head">
-            <div><p className="kicker">Experience</p><h2>Some people I’ve worked with.</h2></div>
-            <p>I’ve worked with independent creators, YouTube teams and podcasts, along with projects in tech, Bitcoin and finance.</p>
-          </div>
-          <div className="experience-list" aria-label="Types of clients and collaborations">
-            {clients.map((client) => <span key={client}>{client}</span>)}
-          </div>
-        </section>
-
         <section className="section youtube" id="youtube" data-reveal>
           <div className="youtube-mark"><Image src="/eai-white.png" alt="EAI" width={320} height={320} /></div>
           <div className="youtube-copy">
@@ -91,12 +102,24 @@ export default function Home() {
             <p>I’ve created and published more than 350 long-form videos on my technology channel, which now has over 24,000 subscribers. Running the channel has taught me what works after a video leaves the timeline and reaches a real audience.</p>
             <a className="text-link" href="https://www.youtube.com/@sarthakeai" target="_blank" rel="noopener noreferrer" aria-label="Visit my YouTube channel, opens in a new tab">Visit my YouTube channel <span aria-hidden="true">↗</span></a>
           </div>
-          <div className="youtube-stat"><strong>24K+</strong><span>subscribers</span></div>
+          <div className="youtube-stats" aria-label="YouTube channel in numbers">
+            {youtubeStats.map((stat) => <div className="youtube-stat" key={stat.label}><strong>{stat.value}</strong><span>{stat.label}</span></div>)}
+          </div>
+          {youtubeVideos.length > 0 ? (
+            <div className="youtube-videos" aria-label="Selected YouTube videos">
+              {youtubeVideos.map((video) => (
+                <a key={video.url} href={video.url} target="_blank" rel="noopener noreferrer">
+                  <span className="youtube-thumbnail"><Image src={video.thumbnail} alt={`${video.title} thumbnail`} fill sizes="(max-width: 800px) 100vw, 40vw" /></span>
+                  <span className="youtube-video-copy"><strong>{video.title}</strong>{video.date || video.views || video.duration ? <small>{[video.date, video.views, video.duration].filter(Boolean).join(" · ")}</small> : null}</span>
+                </a>
+              ))}
+            </div>
+          ) : null}
         </section>
 
-        {testimonials.length > 0 ? (
+        {featuredTestimonial ? (
           <section className="section testimonial" aria-label="Client testimonials" data-reveal>
-            {testimonials.map((testimonial) => <figure key={`${testimonial.name}-${testimonial.quote}`}><blockquote>“{testimonial.quote}”</blockquote><figcaption>{testimonial.name}{testimonial.role ? ` · ${testimonial.role}` : ""}</figcaption></figure>)}
+            <figure><blockquote>“{featuredTestimonial.quote}”</blockquote><figcaption>{featuredTestimonial.name}{featuredTestimonial.role ? ` · ${featuredTestimonial.role}` : ""}{featuredTestimonial.company ? `, ${featuredTestimonial.company}` : ""}</figcaption></figure>
           </section>
         ) : null}
 

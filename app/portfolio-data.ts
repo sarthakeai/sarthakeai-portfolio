@@ -5,11 +5,17 @@ type ProjectBase = {
   category: string;
   contentType: string;
   description: string;
+  roles: string[];
+  deliverables?: string[];
+  result?: { value: string; label: string };
   artLabel: string;
   tone: string;
   ratio: "portrait" | "wide" | "square";
+  featured?: boolean;
   thumbnail?: string;
+  thumbnailAlt?: string;
   externalUrl?: string;
+  caseStudySlug?: string;
 };
 
 type ProjectMedia =
@@ -18,14 +24,83 @@ type ProjectMedia =
 
 export type Project = ProjectBase & ProjectMedia;
 
-// Add real thumbnail, video and external URLs here as projects are approved for the site.
+// Add approved client names, thumbnails, videos, links and verified results here.
+// Empty optional fields stay hidden in the interface.
 export const projects: Project[] = [
-  { id: "shorts", title: "Short-form edits", category: "Short-form", contentType: "Shorts / Reels / X", description: "Fast-paced cuts, captions, motion and platform-ready versions.", artLabel: "Short-form", tone: "coral", ratio: "portrait" },
-  { id: "long-form", title: "YouTube & long-form", category: "Long-form", contentType: "YouTube / Long-form", description: "Structure, pacing, sound and clean visual details across longer edits.", artLabel: "Long-form", tone: "cobalt", ratio: "wide" },
-  { id: "podcasts", title: "Podcasts & clips", category: "Podcasts", contentType: "Episodes / Cutdowns", description: "Full conversations and focused clips built from the strongest moments.", artLabel: "Podcasts", tone: "clay", ratio: "square" },
-  { id: "bitcoin-tech", title: "Bitcoin, finance & tech", category: "Social", contentType: "Explainers / Social", description: "Clear edits for detailed topics, from full videos to quick social clips.", artLabel: "Tech / Finance", tone: "acid", ratio: "wide" },
-  { id: "motion", title: "Motion & design", category: "Motion", contentType: "Motion graphics", description: "Titles, captions, transitions and light motion systems for recurring content.", artLabel: "Motion", tone: "ink", ratio: "portrait" },
-  { id: "social", title: "Social content", category: "Social", contentType: "Multi-platform", description: "Repeatable edits and versions made for regular publishing across platforms.", artLabel: "Social", tone: "sand", ratio: "square" },
+  {
+    id: "shorts",
+    title: "Short-form edits",
+    category: "Short-form",
+    contentType: "Shorts / Reels / X",
+    description: "Fast-paced cuts, captions, motion and platform-ready versions for regular publishing.",
+    roles: ["Editing", "Motion", "Captions", "Sound design"],
+    deliverables: ["Shorts", "Reels", "X clips"],
+    artLabel: "Short-form",
+    tone: "coral",
+    ratio: "portrait",
+    featured: true,
+  },
+  {
+    id: "long-form",
+    title: "YouTube & long-form",
+    category: "Long-form",
+    contentType: "YouTube / Long-form",
+    description: "Structure, pacing, sound and clean visual details across longer edits.",
+    roles: ["Editing", "Story structure", "Sound design"],
+    deliverables: ["YouTube videos", "Explainers"],
+    artLabel: "Long-form",
+    tone: "cobalt",
+    ratio: "wide",
+  },
+  {
+    id: "podcasts",
+    title: "Podcasts & clips",
+    category: "Podcasts",
+    contentType: "Episodes / Cutdowns",
+    description: "Full conversations and focused clips built from the strongest moments.",
+    roles: ["Editing", "Audio cleanup", "Cutdowns"],
+    deliverables: ["Full episodes", "Social clips"],
+    artLabel: "Podcasts",
+    tone: "clay",
+    ratio: "square",
+  },
+  {
+    id: "bitcoin-tech",
+    title: "Bitcoin, finance & tech",
+    category: "Social",
+    contentType: "Explainers / Social",
+    description: "Clear edits for detailed topics, from full videos to quick social clips.",
+    roles: ["Editing", "Motion", "Captions"],
+    deliverables: ["Explainers", "Social cutdowns"],
+    artLabel: "Tech / Finance",
+    tone: "acid",
+    ratio: "wide",
+    featured: true,
+  },
+  {
+    id: "motion",
+    title: "Motion & design",
+    category: "Motion",
+    contentType: "Motion graphics",
+    description: "Titles, captions, transitions and light motion systems for recurring content.",
+    roles: ["Motion", "Titles", "Captions"],
+    deliverables: ["Title systems", "Transitions", "Captions"],
+    artLabel: "Motion",
+    tone: "ink",
+    ratio: "portrait",
+  },
+  {
+    id: "social",
+    title: "Social content",
+    category: "Social",
+    contentType: "Multi-platform",
+    description: "Repeatable edits and versions made for regular publishing across platforms.",
+    roles: ["Editing", "Versioning", "Finishing"],
+    deliverables: ["Platform versions", "Social exports"],
+    artLabel: "Social",
+    tone: "sand",
+    ratio: "square",
+  },
 ];
 
 export const categories = ["All", "Short-form", "Long-form", "Podcasts", "Motion", "Social"];
@@ -44,13 +119,41 @@ export const stats = [
   { value: "24K+", label: "YouTube subscribers" },
 ];
 
-export const clients = ["Creators", "YouTube teams", "Podcasts", "Tech", "Bitcoin & finance"];
+export type Client = { name: string; logo?: string; url?: string };
+export const clients: Client[] = [];
+
+export const availability = {
+  available: true,
+  label: "Available for select projects",
+};
 
 export const socials = [
-  { label: "Instagram", href: "https://www.instagram.com/sarthak.eai" },
-  { label: "X / Twitter", href: "https://x.com/sarthakeai" },
-  { label: "YouTube", href: "https://www.youtube.com/@sarthakeai" },
+  { platform: "instagram", label: "Instagram", href: "https://www.instagram.com/sarthak.eai" },
+  { platform: "x", label: "X / Twitter", href: "https://x.com/sarthakeai" },
+  { platform: "youtube", label: "YouTube", href: "https://www.youtube.com/@sarthakeai" },
 ];
 
-export type Testimonial = { quote: string; name: string; role?: string };
+export const youtubeStats = [
+  { value: "24K+", label: "subscribers" },
+  { value: "350+", label: "long-form videos" },
+];
+
+export type YouTubeVideo = {
+  title: string;
+  thumbnail: string;
+  url: string;
+  date?: string;
+  views?: string;
+  duration?: string;
+};
+export const youtubeVideos: YouTubeVideo[] = [];
+
+export type Testimonial = {
+  quote: string;
+  name: string;
+  role?: string;
+  company?: string;
+  image?: string;
+  logo?: string;
+};
 export const testimonials: Testimonial[] = [];

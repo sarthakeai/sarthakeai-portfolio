@@ -26,6 +26,11 @@ test("server-renders the complete Sarthak portfolio", async () => {
   assert.match(html, /id="services"/);
   assert.match(html, /id="youtube"/);
   assert.match(html, /id="contact"/);
+  assert.match(html, /Available for select projects/);
+  assert.match(html, /My role/);
+  assert.match(html, /350\+/);
+  assert.doesNotMatch(html, /Selected clients/);
+  assert.doesNotMatch(html, /Some people I.ve worked with/);
   assert.match(html, /mailto:hello@sarthaksharma\.work/);
   assert.match(html, /https:\/\/www\.youtube\.com\/@sarthakeai/);
   assert.match(html, /https:\/\/www\.instagram\.com\/sarthak\.eai/);
@@ -34,11 +39,12 @@ test("server-renders the complete Sarthak portfolio", async () => {
 });
 
 test("keeps interaction scoped and accessibility preferences explicit", async () => {
-  const [page, layout, header, portfolio, theme, timeline, css] = await Promise.all([
+  const [page, layout, header, portfolio, data, theme, timeline, css] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/SiteHeader.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/PortfolioGrid.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/portfolio-data.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/ThemeToggle.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/HeroTimeline.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
@@ -54,6 +60,12 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(portfolio, /aria-pressed/);
   assert.match(portfolio, /aria-live="polite"/);
   assert.match(portfolio, /aria-modal="true"/);
+  assert.match(portfolio, /project\.roles\.map/);
+  assert.match(portfolio, /project\.deliverables/);
+  assert.match(portfolio, /project\.result/);
+  assert.match(data, /roles: string\[\]/);
+  assert.match(data, /export const clients: Client\[\] = \[\]/);
+  assert.match(data, /export const youtubeVideos: YouTubeVideo\[\] = \[\]/);
   assert.match(theme, /localStorage\.setItem\("theme"/);
   assert.doesNotMatch(theme, /prefers-color-scheme/);
   assert.match(layout, /stored === 'dark' \? 'dark' : 'light'/);

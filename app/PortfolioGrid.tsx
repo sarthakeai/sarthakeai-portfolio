@@ -63,9 +63,9 @@ export function PortfolioGrid() {
       <p className="sr-only" aria-live="polite">Showing {visible.length} {visible.length === 1 ? "project" : "projects"}.</p>
       <div className="project-grid" id="project-grid">
         {visible.map((project, index) => (
-          <article className={`project ${project.ratio}`} key={project.id} style={{ viewTransitionName: `project-${project.id}` }}>
+          <article className={`project ${project.ratio}${project.featured ? " featured" : ""}`} key={project.id} style={{ viewTransitionName: `project-${project.id}` }}>
             <div className={`project-visual ${project.tone}`}>
-              {project.thumbnail ? <Image src={project.thumbnail} alt="" fill sizes="(max-width: 800px) 100vw, 55vw" /> : null}
+              {project.thumbnail ? <Image src={project.thumbnail} alt={project.thumbnailAlt ?? ""} fill sizes="(max-width: 800px) 100vw, 62vw" /> : null}
               <div className="project-art" aria-label={`${project.title} visual`}>
                 <span className="project-number">{String(index + 1).padStart(2, "0")}</span>
                 <span className="project-category">{project.category}</span>
@@ -76,11 +76,28 @@ export function PortfolioGrid() {
                 <button className="project-action" type="button" onClick={(event) => openVideo(project, event.currentTarget)} aria-label={`Play ${project.title}`}>Play <span aria-hidden="true">▶</span></button>
               ) : project.externalUrl ? (
                 <a className="project-action" href={project.externalUrl} target="_blank" rel="noopener noreferrer" aria-label={`View ${project.title} in a new tab`}>View <span aria-hidden="true">↗</span></a>
+              ) : project.caseStudySlug ? (
+                <a className="project-action" href={`/work/${project.caseStudySlug}`} aria-label={`View ${project.title} case study`}>View project <span aria-hidden="true">↗</span></a>
               ) : null}
             </div>
             <div className="project-info">
-              <div><h3>{project.title}</h3><p>{project.description}</p></div>
-              <div className="project-details"><span>{project.contentType}</span>{project.client ? <span>{project.client}</span> : null}</div>
+              <div className="project-copy">
+                <div className="project-eyebrow">
+                  {project.client ? <span>{project.client}</span> : null}
+                  <span>{project.category}</span>
+                  <span>{project.contentType}</span>
+                </div>
+                <h3>{project.title}</h3>
+                <p>{project.description}</p>
+                <div className="project-role">
+                  <span className="project-label">My role</span>
+                  <ul aria-label={`Roles for ${project.title}`}>
+                    {project.roles.map((role) => <li key={role}>{role}</li>)}
+                  </ul>
+                </div>
+                {project.deliverables?.length ? <p className="project-deliverables"><span>Deliverables</span>{project.deliverables.join(" · ")}</p> : null}
+              </div>
+              {project.result ? <div className="project-result"><strong>{project.result.value}</strong><span>{project.result.label}</span></div> : null}
             </div>
           </article>
         ))}
