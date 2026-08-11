@@ -77,7 +77,7 @@ section[id] { scroll-margin-top: 5.25rem; }
 .brand { position: relative; z-index: 2; display: inline-flex; align-items: center; gap: .24em; min-height: 2.75rem; font-size: clamp(1.05rem, 1.45vw, 1.3rem); }
 .brand-name { display: inline-block; font-size: 1em; font-weight: 760; line-height: 1; letter-spacing: -.045em; text-transform: uppercase; }
 .brand-signature { position: relative; top: -.015em; width: auto; height: .74em; aspect-ratio: 1282 / 1038; flex: 0 0 auto; display: inline-grid; place-items: center; overflow: visible; transition: transform 320ms var(--ease-spring); }
-.brand-logo-only { top: 0; height: 2.125rem; }
+.brand-logo-only { top: 0; height: 1.75rem; }
 .brand-signature img { grid-area: 1 / 1; width: auto; height: 100%; object-fit: contain; }
 .brand-signature-inverse { display: none; }
 html[data-theme="dark"] .brand .brand-signature-default { display: none; }
@@ -318,7 +318,7 @@ footer a:active { transform: scale(.98); }
 @media (max-width: 50rem) {
   :root { --section-space: clamp(4.75rem, 15vw, 6rem); }
   .site-header { height: 4.5rem; }
-  .brand-logo-only { height: 1.875rem; }
+  .brand-logo-only { height: 1.75rem; }
   .site-header.menu-open { height: 4.5rem; background: transparent; border-color: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; }
   .menu { display: flex; }
   .header-actions { margin-left: auto; }
