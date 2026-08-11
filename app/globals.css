@@ -96,7 +96,24 @@ html[data-theme="dark"] .theme-track i { transform: translateX(.96rem); box-shad
 .menu-open .menu span:last-child { transform: translateY(-.21875rem) rotate(-45deg); }
 
 .hero, .section { width: min(100%, var(--content-width)); margin-inline: auto; padding-inline: var(--page-gutter); }
-.hero { min-height: min(50rem, 100svh); padding-top: clamp(9.25rem, 15vw, 12.5rem); padding-bottom: clamp(5rem, 8vw, 7rem); display: grid; grid-template-columns: minmax(0, 2.4fr) minmax(13rem, .65fr); align-items: end; gap: clamp(3rem, 8vw, 8rem); }
+.hero { position: relative; min-height: min(50rem, 100svh); padding-top: clamp(9.25rem, 15vw, 12.5rem); padding-bottom: clamp(5rem, 8vw, 7rem); display: grid; grid-template-columns: minmax(0, 2.4fr) minmax(13rem, .65fr); align-items: end; gap: clamp(3rem, 8vw, 8rem); overflow: hidden; }
+.hero-copy, .hero-aside { position: relative; z-index: 2; }
+.hero-timeline { position: absolute; z-index: 0; inset: clamp(6.75rem, 11vw, 9.25rem) 0 auto; height: clamp(12rem, 22vw, 18rem); pointer-events: none; color: var(--ink); opacity: .84; }
+.timeline-ruler { position: absolute; inset: 2.75rem 0 auto; height: 1.55rem; display: grid; grid-template-columns: repeat(35, 1fr); align-items: end; border-bottom: 1px solid color-mix(in srgb, var(--ink) 14%, transparent); }
+.timeline-ruler i { width: 1px; height: .48rem; justify-self: center; background: currentColor; opacity: .42; }
+.timeline-ruler i.mid { height: .75rem; opacity: .5; }
+.timeline-ruler i.major { height: 1.25rem; opacity: .7; }
+.timeline-clip { position: absolute; display: block; height: 2.45rem; background: color-mix(in srgb, var(--ink) 11%, transparent); animation: timeline-clip-in 900ms 180ms both var(--ease-out); }
+.timeline-clip-a { top: 4.3rem; left: 0; width: 58%; transform-origin: left; }
+.timeline-clip-b { top: 6.75rem; left: 58%; width: 42%; transform-origin: right; }
+.timeline-playhead { position: absolute; top: .7rem; bottom: 0; left: 58%; width: 1.1rem; margin-left: -.55rem; animation: timeline-playhead-in 1100ms 80ms both var(--ease-spring); }
+.timeline-playhead::before { content: ""; position: absolute; top: 0; left: 0; border-left: .55rem solid transparent; border-right: .55rem solid transparent; border-top: .9rem solid var(--accent); }
+.timeline-playhead::after { content: ""; position: absolute; top: 1.5rem; bottom: 0; left: calc(50% - .5px); width: 1px; background: linear-gradient(to bottom, var(--accent) 0 2.8rem, var(--ink) 2.8rem 100%); }
+.timeline-playhead > i { position: absolute; top: 1.45rem; left: calc(50% - 1.5px); width: 3px; height: 2.9rem; background: var(--accent); box-shadow: 0 0 0 3px var(--bg); }
+.timeline-corner { position: absolute; right: 9%; bottom: 1.15rem; width: 3.75rem; height: 3.75rem; border-right: 1px solid currentColor; border-bottom: 1px solid currentColor; opacity: .7; animation: timeline-corner-in 700ms 520ms both var(--ease-out); }
+@keyframes timeline-clip-in { from { opacity: 0; transform: scaleX(.72); } to { opacity: 1; transform: scaleX(1); } }
+@keyframes timeline-playhead-in { from { opacity: 0; transform: translateX(-24vw); } to { opacity: 1; transform: none; } }
+@keyframes timeline-corner-in { from { opacity: 0; transform: translate(.8rem, .8rem); } to { opacity: .7; transform: none; } }
 .hero-portrait { width: clamp(6.5rem, 8vw, 8rem); aspect-ratio: 1; overflow: hidden; margin: 0 0 clamp(2.25rem, 4vw, 3.25rem); background: var(--surface); }
 .hero-portrait img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; filter: saturate(.9); transition: transform 800ms var(--ease-out), filter 280ms ease-out; }
 .kicker { font-family: var(--font-geist-mono), monospace; text-transform: uppercase; letter-spacing: .11em; font-size: .625rem; line-height: 1.5; }
@@ -260,6 +277,13 @@ footer a:active { transform: scale(.98); }
   .nav a { width: 100%; min-height: 4rem; justify-content: space-between; padding: 0; border-bottom: 1px solid var(--line); }
   .nav-cta { border: 0; border-bottom: 1px solid var(--line); margin: 0; padding: 0; }
   .hero { min-height: auto; grid-template-columns: 1fr; gap: 3.5rem; padding-top: 8.5rem; padding-bottom: 5rem; }
+  .hero-timeline { top: 5.25rem; height: 9rem; opacity: .68; }
+  .timeline-ruler { top: 1.65rem; }
+  .timeline-clip-a { top: 3.2rem; width: 64%; }
+  .timeline-clip-b { top: 5.65rem; left: 64%; width: 36%; }
+  .timeline-playhead { top: .15rem; left: 64%; }
+  .timeline-corner { display: none; }
+  .hero-copy { padding-top: 6.5rem; }
   .hero-portrait { width: 5.75rem; margin-bottom: 2rem; }
   .hero h1 { font-size: clamp(2.7rem, 11vw, 4.5rem); }
   .hero-aside { display: grid; grid-template-columns: 1fr 1fr; }
@@ -309,6 +333,7 @@ footer a:active { transform: scale(.98); }
   html { scroll-behavior: auto; }
   body { transition: none; }
   .hero-reveal { animation: none; }
+  .timeline-clip, .timeline-playhead, .timeline-corner { animation: none; }
   .reveal-pending, .reveal-pending.is-visible { opacity: 1; transform: none; transition: opacity 140ms ease-out; }
   .nav, .menu span, .theme-track i, .project-art, .project-visual::before, .hero-portrait img, .service, .service i { transition-duration: 140ms; transition-timing-function: ease-out; }
   ::view-transition-old(root), ::view-transition-new(root) { animation-duration: 100ms; animation-timing-function: ease-out; }

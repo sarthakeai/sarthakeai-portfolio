@@ -21,6 +21,17 @@ export default function Home() {
 
       <div id="content">
         <section className="hero" id="top">
+          <div className="hero-timeline hero-reveal" aria-hidden="true">
+            <div className="timeline-ruler">
+              {Array.from({ length: 35 }, (_, index) => (
+                <i className={index % 5 === 0 ? "major" : index % 2 === 0 ? "mid" : ""} key={index} />
+              ))}
+            </div>
+            <span className="timeline-clip timeline-clip-a" />
+            <span className="timeline-clip timeline-clip-b" />
+            <span className="timeline-playhead"><i /></span>
+            <span className="timeline-corner" />
+          </div>
           <div className="hero-copy">
             <figure className="hero-portrait hero-reveal">
               <Image src="/sarthak-sharma.webp" alt="Sarthak" width={1440} height={1440} sizes="(max-width: 800px) 5.75rem, 8rem" priority />
