@@ -70,7 +70,7 @@ test("server-renders the complete Sarthak portfolio", async () => {
 });
 
 test("keeps interaction scoped and accessibility preferences explicit", async () => {
-  const [page, layout, header, portfolio, data, theme, timeline, emailShortcut, contactForm, css] = await Promise.all([
+  const [page, layout, header, portfolio, data, theme, timeline, emailShortcut, contactForm, css, swanLogo] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/SiteHeader.tsx", import.meta.url), "utf8"),
@@ -81,6 +81,7 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
     readFile(new URL("../app/EmailShortcut.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/ContactForm.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
+    readFile(new URL("../public/collaborators/swan-bitcoin.svg", import.meta.url), "utf8"),
   ]);
   assert.doesNotMatch(page, /^"use client"/);
   assert.doesNotMatch(layout, /next\/headers|generateMetadata/);
@@ -154,6 +155,9 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(css, /Approved dark-mode logo treatment/);
   assert.match(css, /html\[data-theme="dark"\] \.client-logo-set img\[data-theme-treatment="invert"\][^}]+brightness\(\.9\) contrast\(\.9\)[^}]+opacity:\s*\.82/s);
   assert.match(css, /html\[data-theme="dark"\] \.client-logo-set img\[data-logo-presence="strong"\][^}]+opacity:\s*\.88/s);
+  assert.match(swanLogo, /#00305E/);
+  assert.doesNotMatch(swanLogo, /currentColor/);
+  assert.match(css, /img\[src\$="\/collaborators\/swan-bitcoin\.svg"\][^}]+brightness\(0\) invert\(1\) brightness\(\.9\) contrast\(\.9\)/);
   assert.match(css, /\.client-strip::-webkit-scrollbar/);
   assert.match(css, /animation:\s*collaborator-marquee 34s linear infinite/);
   assert.match(css, /translate3d\(-50%, 0, 0\)/);
