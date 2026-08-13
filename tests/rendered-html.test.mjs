@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
+import { contactFormEndpoint, submitContactForm } from "../app/contact-form-submit.mjs";
 
 async function render() {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
@@ -43,14 +44,20 @@ test("server-renders the complete Sarthak portfolio", async () => {
   assert.match(html, /brands and creators around the world/);
   assert.match(html, /Press/);
   assert.match(html, /to copy email/);
+  assert.match(html, /action="https:\/\/formspree\.io\/f\/xkjwbaoe"/);
+  assert.match(html, /name="name"/);
+  assert.match(html, /name="email"/);
+  assert.match(html, /name="message"/);
+  assert.match(html, /name="_gotcha"/);
+  assert.match(html, /Send message/);
   assert.match(html, /https:\/\/www\.youtube\.com\/@sarthakeai/);
   assert.match(html, /https:\/\/www\.instagram\.com\/sarthak\.eai/);
   assert.match(html, /https:\/\/x\.com\/sarthakeai/);
-  assert.doesNotMatch(html, /codex-preview|react-loading-skeleton|Your site is taking shape|Ready for your video|coming soon|placeholder|Client names and links can be added/i);
+  assert.doesNotMatch(html, /codex-preview|react-loading-skeleton|Your site is taking shape|Ready for your video|coming soon|Client names and links can be added/i);
 });
 
 test("keeps interaction scoped and accessibility preferences explicit", async () => {
-  const [page, layout, header, portfolio, data, theme, timeline, emailShortcut, css] = await Promise.all([
+  const [page, layout, header, portfolio, data, theme, timeline, emailShortcut, contactForm, css] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/SiteHeader.tsx", import.meta.url), "utf8"),
@@ -59,6 +66,7 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
     readFile(new URL("../app/ThemeToggle.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/HeroTimeline.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/EmailShortcut.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/ContactForm.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
   ]);
   assert.doesNotMatch(page, /^"use client"/);
@@ -91,6 +99,18 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(emailShortcut, /navigator\.clipboard\.writeText/);
   assert.match(emailShortcut, /target\.closest\("input, textarea, select/);
   assert.match(emailShortcut, /1800/);
+  assert.match(contactForm, /required/);
+  assert.match(contactForm, /type="email"/);
+  assert.match(contactForm, /requestSubmit/);
+  assert.match(contactForm, /event\.ctrlKey/);
+  assert.match(contactForm, /event\.metaKey/);
+  assert.match(contactForm, /form\.reset\(\)/);
+  assert.match(contactForm, /submittingRef\.current/);
+  assert.match(contactForm, /Sending\\u2026/);
+  assert.match(contactForm, /Message sent\. I\\u2019ll get back to you soon\./);
+  assert.match(contactForm, /disabled=\{sending\}/);
+  assert.match(contactForm, /aria-live="polite"/);
+  assert.match(contactForm, /Something went wrong\. Please try again or email me directly\./);
   assert.match(theme, /role="switch"/);
   assert.match(theme, /aria-checked/);
   assert.match(theme, /Switch to light mode/);
@@ -112,4 +132,25 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.doesNotMatch(css, /margin-inline:\s*calc\(var\(--page-gutter\)\s*\*\s*-1\)/);
   assert.match(css, /prefers-reduced-transparency:\s*reduce/);
   assert.match(css, /prefers-contrast:\s*more/);
+});
+
+test("submits contact data to Formspree and handles failures", async () => {
+  assert.equal(contactFormEndpoint, "https://formspree.io/f/xkjwbaoe");
+  const formData = new FormData();
+  formData.set("name", "Test Person");
+  formData.set("email", "test@example.com");
+  formData.set("message", "Test message");
+
+  let captured;
+  const response = await submitContactForm(formData, async (url, options) => {
+    captured = { url, options };
+    return new Response(null, { status: 200 });
+  });
+  assert.equal(response.ok, true);
+  assert.equal(captured.url, contactFormEndpoint);
+  assert.equal(captured.options.method, "POST");
+  assert.equal(captured.options.body, formData);
+  assert.equal(captured.options.headers.Accept, "application/json");
+
+  await assert.rejects(() => submitContactForm(formData, async () => new Response(null, { status: 500 })), /submission failed/);
 });

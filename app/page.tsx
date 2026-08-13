@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { ContactForm } from "./ContactForm";
 import { EmailShortcut } from "./EmailShortcut";
 import { HeroTimeline } from "./HeroTimeline";
 import { MotionController } from "./MotionController";
@@ -130,6 +131,7 @@ export default function Home() {
             <a href="mailto:officialsarthakeai@gmail.com">officialsarthakeai@gmail.com <span aria-hidden="true">↗</span></a>
             <p>Send me a note with a little about the project, the format and the timeline.</p>
           </div>
+          <ContactForm />
         </section>
       </div>
 
