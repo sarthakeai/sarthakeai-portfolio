@@ -18,7 +18,6 @@
   --font-geist-sans: "Geist";
   --font-geist-mono: "Geist Mono";
   --brand-logo: url("/eai-logo-dark.svg");
-  --youtube-logo: url("/eai-logo-light.svg");
   --bg: #ffffff;
   --surface: #f1f1ef;
   --surface-strong: #dededb;
@@ -49,7 +48,6 @@
 
 html[data-theme="dark"] {
   --brand-logo: url("/eai-logo-light.svg");
-  --youtube-logo: url("/eai-logo-dark.svg");
   --bg: #161614;
   --surface: #1e1e1b;
   --surface-strong: #292822;
@@ -267,23 +265,25 @@ html[data-theme="dark"] .client-logo-set img[data-theme-treatment="native"] { fi
 .service p { color: var(--muted); line-height: 1.58; font-size: .8125rem; max-width: 29rem; }
 .service i { color: var(--muted); opacity: .45; font-style: normal; justify-self: end; transition: transform 260ms var(--ease-out), color 180ms ease-out, opacity 180ms ease-out; }
 
-.youtube { width: min(calc(100% - (2 * var(--page-gutter))), calc(var(--content-width) - (2 * var(--page-gutter)))); margin-block: var(--section-space); padding: clamp(2.5rem, 6vw, 5.5rem); border: 0; background: var(--dark-panel); color: var(--dark-panel-ink); display: grid; grid-template-columns: minmax(8rem, .5fr) minmax(0, 1.35fr) minmax(7rem, .4fr); gap: clamp(2.5rem, 7vw, 7rem); align-items: end; }
-.youtube-mark { width: clamp(7rem, 14vw, 12rem); aspect-ratio: 644 / 522; place-self: center; background: var(--youtube-logo) center / contain no-repeat; }
-.youtube .kicker, .youtube-copy p { color: var(--dark-panel-muted); }
-.youtube-copy h2 { margin-block: 1.1rem 1.6rem; }
-.youtube-copy p { max-width: 40rem; line-height: 1.72; font-size: .9rem; }
-.youtube .text-link { margin-top: 1rem; border-color: color-mix(in srgb, var(--dark-panel-ink) 24%, transparent); }
-.youtube-stats { display: grid; gap: 1.4rem; }
-.youtube-stat { text-align: left; border-top: 1px solid color-mix(in srgb, var(--dark-panel-ink) 22%, transparent); padding-top: 1rem; }
-.youtube-stat strong { display: block; font-size: clamp(2.5rem, 5vw, 4.5rem); line-height: 1; letter-spacing: -.06em; }
-.youtube-stat span { color: var(--dark-panel-muted); font-size: .625rem; text-transform: uppercase; letter-spacing: .1em; }
-.youtube-videos { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; padding-top: clamp(2rem, 4vw, 3.5rem); border-top: 1px solid color-mix(in srgb, var(--dark-panel-ink) 22%, transparent); }
+.youtube { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(18rem, .65fr); grid-template-areas: "copy mark" "copy stats" "cta ." "videos videos"; column-gap: clamp(3.5rem, 9vw, 9rem); row-gap: clamp(1.5rem, 2.6vw, 2.5rem); align-items: start; }
+.youtube-mark { grid-area: mark; width: clamp(5.5rem, 7vw, 6.75rem); aspect-ratio: 644 / 522; align-self: end; background: var(--brand-logo) center / contain no-repeat; opacity: .94; transition: opacity 240ms ease-out, transform 360ms var(--ease-spring); }
+.youtube-copy { grid-area: copy; }
+.youtube-copy h2 { max-width: 12ch; margin-block: 1.1rem 1.65rem; }
+.youtube-copy > p:last-child { max-width: 38rem; color: var(--muted); line-height: 1.72; font-size: .9rem; }
+.youtube-stats { grid-area: stats; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-self: end; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.youtube-stat { min-width: 0; padding: clamp(1.15rem, 2vw, 1.65rem) 0; }
+.youtube-stat + .youtube-stat { border-left: 1px solid var(--line); padding-left: clamp(1rem, 2.2vw, 2rem); }
+.youtube-stat strong { display: block; font-size: clamp(2.35rem, 4.2vw, 4rem); font-weight: 580; line-height: .95; letter-spacing: -.06em; font-variant-numeric: tabular-nums; }
+.youtube-stat span { display: block; margin-top: .55rem; color: var(--muted); font: .5625rem/1.35 var(--font-geist-mono), monospace; text-transform: uppercase; letter-spacing: .1em; }
+.youtube-cta { grid-area: cta; width: fit-content; margin-top: .25rem; }
+.youtube-cta span { display: inline-block; color: var(--accent); transition: transform 220ms var(--ease-out); }
+.youtube-videos { grid-area: videos; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; padding-top: clamp(2rem, 4vw, 3.5rem); border-top: 1px solid var(--line); }
 .youtube-videos > a { display: grid; grid-template-columns: minmax(8rem, .75fr) 1fr; gap: 1rem; align-items: center; }
-.youtube-thumbnail { position: relative; display: block; aspect-ratio: 16/9; overflow: hidden; background: color-mix(in srgb, var(--dark-panel-ink) 8%, transparent); }
+.youtube-thumbnail { position: relative; display: block; aspect-ratio: 16/9; overflow: hidden; background: var(--surface); }
 .youtube-thumbnail img { width: 100%; height: 100%; object-fit: cover; transition: transform 700ms var(--ease-out); }
 .youtube-video-copy { display: grid; gap: .45rem; }
 .youtube-video-copy strong { font-size: .875rem; line-height: 1.35; font-weight: 560; }
-.youtube-video-copy small { color: var(--dark-panel-muted); font: .5625rem/1.4 var(--font-geist-mono), monospace; letter-spacing: .05em; text-transform: uppercase; }
+.youtube-video-copy small { color: var(--muted); font: .5625rem/1.4 var(--font-geist-mono), monospace; letter-spacing: .05em; text-transform: uppercase; }
 
 .testimonial { max-width: 74rem; text-align: center; border-top: 0; }
 .testimonial figure { margin: 0; }
@@ -364,6 +364,8 @@ footer a:active { transform: scale(.98); }
   .service:hover::after { transform: scaleX(1); }
   .service:hover h3 { transform: translateX(.2rem); }
   .service:hover i { color: var(--accent); opacity: 1; transform: translate(.15rem, -.15rem); }
+  .youtube:hover .youtube-mark { opacity: 1; transform: translateY(-.12rem); }
+  .youtube-cta:hover span { transform: translate(.15rem, -.15rem); }
   .client-logo-set > *:hover img { opacity: .92; filter: grayscale(1) brightness(.48) contrast(.98); transform: translateY(-2px) scale(1.02); }
   html[data-theme="dark"] .client-logo-set > *:hover img[data-theme-treatment="invert"] { filter: grayscale(1) invert(1) brightness(.94) contrast(.9); opacity: .92; }
   html[data-theme="dark"] .client-logo-set > *:hover img[data-theme-treatment="native"] { filter: grayscale(1) brightness(1.28) contrast(1.12); opacity: .92; }
@@ -383,8 +385,7 @@ footer a:active { transform: scale(.98); }
 @media (max-width: 68rem) {
   .section-head { grid-template-columns: minmax(0, 1.3fr) minmax(15rem, .75fr); }
   .about-grid { gap: 4rem; }
-  .youtube { grid-template-columns: .4fr 1.3fr; }
-  .youtube-stats { grid-column: 2; grid-template-columns: 1fr; max-width: 14rem; }
+  .youtube { grid-template-columns: minmax(0, 1.15fr) minmax(17rem, .85fr); column-gap: clamp(2.5rem, 6vw, 4.5rem); }
 }
 
 @media (min-width: 50.0625rem) {
@@ -460,10 +461,14 @@ footer a:active { transform: scale(.98); }
   .stats { grid-template-columns: 1fr 1fr; gap: 2.75rem; }
   .service { grid-template-columns: .18fr 1fr .1fr; }
   .service p { grid-column: 2/4; margin: 0; }
-  .youtube { grid-template-columns: 1fr; width: calc(100% - (2 * var(--page-gutter))); }
-  .youtube-stats { grid-column: 1; grid-template-columns: 1fr 1fr; }
+  .youtube { grid-template-columns: 1fr; grid-template-areas: "mark" "copy" "stats" "cta" "videos"; row-gap: 2rem; }
+  .youtube-mark { width: clamp(4.5rem, 20vw, 6rem); }
+  .youtube-copy h2 { max-width: 10ch; margin-bottom: 1.35rem; }
+  .youtube-copy > p:last-child { font-size: .875rem; line-height: 1.68; }
+  .youtube-stats { grid-template-columns: 1fr 1fr; margin-top: .2rem; }
+  .youtube-stat strong { font-size: clamp(2.35rem, 11vw, 3.5rem); }
+  .youtube-cta { margin-top: -.35rem; }
   .youtube-videos { grid-template-columns: 1fr; }
-  .youtube-mark { width: 6.5rem; }
   .contact h2 { font-size: clamp(2.85rem, 13vw, 5.5rem); }
   .contact-bottom { display: block; }
   .contact-bottom p { margin-top: 2.25rem; }
@@ -491,7 +496,7 @@ footer a:active { transform: scale(.98); }
   .stats { gap: 2rem 1rem; }
   .service { gap: .8rem; }
   .service h3 { font-size: 1.15rem; }
-  .youtube-stats { grid-template-columns: 1fr; }
+  .youtube-stat + .youtube-stat { padding-left: .9rem; }
   .youtube-videos > a { grid-template-columns: 1fr; }
   .contact h2 { font-size: clamp(2.65rem, 14vw, 4rem); }
   .contact-bottom a { font-size: .9rem; }

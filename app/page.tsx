@@ -120,11 +120,11 @@ export default function Home() {
             <p className="kicker">Personal project / YouTube</p>
             <h2>I make videos too.</h2>
             <p>I’ve created and published more than 350 long-form videos on my technology channel, which now has over 24,000 subscribers. Running the channel has taught me what works after a video leaves the timeline and reaches a real audience.</p>
-            <a className="text-link" href="https://www.youtube.com/@sarthakeai" target="_blank" rel="noopener noreferrer" aria-label="Visit my YouTube channel, opens in a new tab">Visit my YouTube channel <span aria-hidden="true">↗</span></a>
           </div>
           <div className="youtube-stats" aria-label="YouTube channel in numbers">
             {youtubeStats.map((stat) => <div className="youtube-stat" key={stat.label}><strong>{stat.value}</strong><span>{stat.label}</span></div>)}
           </div>
+          <a className="text-link youtube-cta" href="https://www.youtube.com/@sarthakeai" target="_blank" rel="noopener noreferrer" aria-label="Visit my YouTube channel, opens in a new tab">Visit my YouTube channel <span aria-hidden="true">↗</span></a>
           {youtubeVideos.length > 0 ? (
             <div className="youtube-videos" aria-label="Selected YouTube videos">
               {youtubeVideos.map((video) => (

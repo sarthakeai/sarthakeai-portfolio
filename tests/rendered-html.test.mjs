@@ -37,6 +37,8 @@ test("server-renders the complete Sarthak portfolio", async () => {
   assert.doesNotMatch(html, /aria-label="At a glance"/);
   assert.match(html, /My role/);
   assert.match(html, /350\+/);
+  assert.match(html, /long-form videos/);
+  assert.match(html, /class="text-link youtube-cta"/);
   assert.doesNotMatch(html, /Selected clients/);
   assert.doesNotMatch(html, /Some people I.ve worked with/);
   assert.match(html, /Selected brands &amp; creators/i);
