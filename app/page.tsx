@@ -14,6 +14,30 @@ const footerLinks = [
   { href: "#contact", label: "Contact" },
 ];
 
+function ClientLogoSet({ duplicate = false }: { duplicate?: boolean }) {
+  return (
+    <div className="client-logo-set" aria-hidden={duplicate ? true : undefined}>
+      {clients.map((client) => {
+        const logo = (
+          <img
+            src={client.logo}
+            alt={duplicate ? "" : client.name}
+            width={client.width}
+            height={client.height}
+            loading="eager"
+            decoding="async"
+            data-theme-treatment={client.theme ?? "invert"}
+            data-logo-size={client.size ?? "standard"}
+          />
+        );
+
+        if (duplicate || !client.url) return <span key={client.name}>{logo}</span>;
+        return <a key={client.name} href={client.url} target="_blank" rel="noopener noreferrer" aria-label={`${client.name}, opens in a new tab`}>{logo}</a>;
+      })}
+    </div>
+  );
+}
+
 export default function Home() {
   const featuredTestimonial = testimonials[0];
 
@@ -46,15 +70,9 @@ export default function Home() {
               <p className="kicker" id="selected-clients-title">Selected brands &amp; creators</p>
             </div>
             <div className="client-strip" aria-label="Selected brands and creators Sarthak has worked with">
-              <div className="client-list">
-                {clients.map((client) => {
-                  const logo = <img src={client.logo} alt={client.name} width="180" height="64" loading="lazy" decoding="async" data-theme-treatment={client.theme ?? "invert"} />;
-                  return client.url ? (
-                    <a key={client.name} href={client.url} target="_blank" rel="noopener noreferrer" aria-label={`${client.name}, opens in a new tab`}>{logo}</a>
-                  ) : (
-                    <span key={client.name}>{logo}</span>
-                  );
-                })}
+              <div className="client-marquee-track">
+                <ClientLogoSet />
+                <ClientLogoSet duplicate />
               </div>
             </div>
             <p className="clients-note">Across YouTube, short-form, podcasts and social content.</p>

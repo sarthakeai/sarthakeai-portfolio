@@ -122,20 +122,23 @@ export const stats = [
 export type Client = {
   name: string;
   logo: string;
+  width: number;
+  height: number;
   url?: string;
   type?: "brand" | "creator";
   theme?: "invert" | "native";
+  size?: "standard" | "wide" | "tall";
 };
 
 // Add, remove or reorder collaborators here. Links remain optional.
 export const clients: Client[] = [
-  { name: "21st Capital", logo: "/collaborators/21st-capital.svg", type: "brand", theme: "invert" },
-  { name: "Bitcoin Treasuries", logo: "/collaborators/bitcoin-treasuries.svg", type: "brand", theme: "invert" },
-  { name: "BTC Sessions", logo: "/collaborators/btc-sessions.webp", type: "creator", theme: "native" },
-  { name: "Roxom.tv", logo: "/collaborators/roxom-tv.png", type: "brand", theme: "native" },
-  { name: "Simply Bitcoin", logo: "/collaborators/simply-bitcoin.svg", type: "creator", theme: "invert" },
-  { name: "Swan Bitcoin", logo: "/collaborators/swan-bitcoin.svg", type: "brand", theme: "invert" },
-  { name: "Zimo Media", logo: "/collaborators/zimo-media.svg", type: "brand", theme: "invert" },
+  { name: "Swan Bitcoin", logo: "/collaborators/swan-bitcoin.svg", width: 719, height: 204, type: "brand", theme: "invert" },
+  { name: "Bitcoin Treasuries", logo: "/collaborators/bitcoin-treasuries.svg", width: 509, height: 53, type: "brand", theme: "invert", size: "wide" },
+  { name: "Simply Bitcoin", logo: "/collaborators/simply-bitcoin.svg", width: 785, height: 504, type: "creator", theme: "invert", size: "tall" },
+  { name: "Roxom", logo: "/collaborators/roxom-tv.png", width: 757, height: 177, type: "brand", theme: "native" },
+  { name: "21st Capital", logo: "/collaborators/21st-capital.svg", width: 80, height: 30, type: "brand", theme: "invert" },
+  { name: "BTC Sessions", logo: "/collaborators/btc-sessions.webp", width: 1200, height: 800, type: "creator", theme: "native", size: "tall" },
+  { name: "Zimo Media", logo: "/collaborators/zimo-media.svg", width: 382, height: 105, type: "brand", theme: "invert" },
 ];
 
 export const availability = {

@@ -45,6 +45,8 @@ test("server-renders the complete Sarthak portfolio", async () => {
   assert.match(html, /\/collaborators\/21st-capital\.svg/);
   assert.match(html, /\/collaborators\/btc-sessions\.webp/);
   assert.match(html, /\/collaborators\/roxom-tv\.png/);
+  assert.match(html, /client-marquee-track/);
+  assert.equal((html.match(/class="client-logo-set"/g) ?? []).length, 2);
   assert.match(html, /mailto:officialsarthakeai@gmail\.com/);
   assert.doesNotMatch(html, /hello@sarthaksharma\.work/);
   assert.match(html, /brands and creators around the world/);
@@ -134,9 +136,15 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(data, /export const clients: Client\[\] = \[/);
   assert.match(data, /name: "Swan Bitcoin"/);
   assert.match(data, /name: "Simply Bitcoin"/);
+  assert.match(data, /name: "Swan Bitcoin"[\s\S]+name: "Bitcoin Treasuries"[\s\S]+name: "Simply Bitcoin"[\s\S]+name: "Roxom"/);
+  assert.match(data, /width: number/);
+  assert.match(data, /size\?: "standard" \| "wide" \| "tall"/);
   assert.match(css, /\.client-strip[^}]+mask-image:/s);
   assert.match(css, /data-theme-treatment="invert"/);
   assert.match(css, /\.client-strip::-webkit-scrollbar/);
+  assert.match(css, /animation:\s*collaborator-marquee 34s linear infinite/);
+  assert.match(css, /translate3d\(-50%, 0, 0\)/);
+  assert.match(css, /\.client-logo-set\[aria-hidden="true"\]\s*\{\s*display:\s*none/);
   assert.match(data, /export const youtubeVideos: YouTubeVideo\[\] = \[\]/);
   assert.match(theme, /localStorage\.setItem\("theme"/);
   assert.match(emailShortcut, /navigator\.clipboard\.writeText/);
