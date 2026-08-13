@@ -17,6 +17,8 @@
 :root {
   --font-geist-sans: "Geist";
   --font-geist-mono: "Geist Mono";
+  --brand-logo: url("/eai-logo-dark.svg");
+  --youtube-logo: url("/eai-logo-light.svg");
   --bg: #ffffff;
   --surface: #f1f1ef;
   --surface-strong: #dededb;
@@ -46,6 +48,8 @@
 }
 
 html[data-theme="dark"] {
+  --brand-logo: url("/eai-logo-light.svg");
+  --youtube-logo: url("/eai-logo-dark.svg");
   --bg: #161614;
   --surface: #1e1e1b;
   --surface-strong: #292822;
@@ -86,12 +90,9 @@ section[id] { scroll-margin-top: 5.25rem; }
 .site-header.is-scrolled, .site-header.menu-open { height: 4.5rem; background: var(--header); border-color: var(--line); backdrop-filter: blur(1.1rem) saturate(125%); -webkit-backdrop-filter: blur(1.1rem) saturate(125%); }
 .brand { position: relative; z-index: 2; display: inline-flex; align-items: center; gap: .24em; min-height: 2.75rem; font-size: clamp(1.05rem, 1.45vw, 1.3rem); }
 .brand-name { display: inline-block; font-size: 1em; font-weight: 760; line-height: 1; letter-spacing: -.045em; text-transform: uppercase; }
-.brand-signature { position: relative; top: -.015em; width: auto; height: .74em; aspect-ratio: 1282 / 1038; flex: 0 0 auto; display: inline-grid; place-items: center; overflow: visible; transition: transform 320ms var(--ease-spring); }
+.brand-signature { position: relative; top: -.015em; width: auto; height: .74em; aspect-ratio: 644 / 522; flex: 0 0 auto; display: inline-block; overflow: visible; background: var(--brand-logo) center / contain no-repeat; transition: transform 320ms var(--ease-spring); }
 .brand-logo-only { top: 0; height: 1.5rem; }
-.brand-signature img { grid-area: 1 / 1; width: auto; height: 100%; object-fit: contain; }
-.brand-signature-inverse { display: none; }
-html[data-theme="dark"] .brand .brand-signature-default { display: none; }
-html[data-theme="dark"] .brand .brand-signature-inverse, .brand-signature-on-dark .brand-signature-inverse { display: block; }
+.brand-signature-on-dark { background-image: url("/eai-logo-light.svg"); }
 .nav { display: flex; align-items: center; gap: clamp(1.2rem, 2.2vw, 2rem); margin-left: auto; font-size: .75rem; }
 .nav a { display: inline-flex; align-items: center; min-height: 2.75rem; transition: color 180ms ease-out, transform var(--press-speed) ease-out; }
 .nav a:hover { color: var(--accent); }
@@ -256,11 +257,7 @@ html[data-theme="dark"] .theme-icon-moon { color: #f7f5ef; opacity: 1; transform
 .service i { color: var(--muted); opacity: .45; font-style: normal; justify-self: end; transition: transform 260ms var(--ease-out), color 180ms ease-out, opacity 180ms ease-out; }
 
 .youtube { width: min(calc(100% - (2 * var(--page-gutter))), calc(var(--content-width) - (2 * var(--page-gutter)))); margin-block: var(--section-space); padding: clamp(2.5rem, 6vw, 5.5rem); border: 0; background: var(--dark-panel); color: var(--dark-panel-ink); display: grid; grid-template-columns: minmax(8rem, .5fr) minmax(0, 1.35fr) minmax(7rem, .4fr); gap: clamp(2.5rem, 7vw, 7rem); align-items: end; }
-.youtube-mark { width: clamp(7rem, 14vw, 12rem); aspect-ratio: 1282 / 1038; place-self: center; display: grid; }
-.youtube-mark img { grid-area: 1 / 1; width: 100%; height: 100%; object-fit: contain; }
-.youtube-mark-on-light { display: none; }
-html[data-theme="dark"] .youtube-mark-on-dark { display: none; }
-html[data-theme="dark"] .youtube-mark-on-light { display: block; }
+.youtube-mark { width: clamp(7rem, 14vw, 12rem); aspect-ratio: 644 / 522; place-self: center; background: var(--youtube-logo) center / contain no-repeat; }
 .youtube .kicker, .youtube-copy p { color: var(--dark-panel-muted); }
 .youtube-copy h2 { margin-block: 1.1rem 1.6rem; }
 .youtube-copy p { max-width: 40rem; line-height: 1.72; font-size: .9rem; }
@@ -272,7 +269,7 @@ html[data-theme="dark"] .youtube-mark-on-light { display: block; }
 .youtube-videos { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; padding-top: clamp(2rem, 4vw, 3.5rem); border-top: 1px solid color-mix(in srgb, var(--dark-panel-ink) 22%, transparent); }
 .youtube-videos > a { display: grid; grid-template-columns: minmax(8rem, .75fr) 1fr; gap: 1rem; align-items: center; }
 .youtube-thumbnail { position: relative; display: block; aspect-ratio: 16/9; overflow: hidden; background: color-mix(in srgb, var(--dark-panel-ink) 8%, transparent); }
-.youtube-thumbnail img { object-fit: cover; transition: transform 700ms var(--ease-out); }
+.youtube-thumbnail img { width: 100%; height: 100%; object-fit: cover; transition: transform 700ms var(--ease-out); }
 .youtube-video-copy { display: grid; gap: .45rem; }
 .youtube-video-copy strong { font-size: .875rem; line-height: 1.35; font-weight: 560; }
 .youtube-video-copy small { color: var(--dark-panel-muted); font: .5625rem/1.4 var(--font-geist-mono), monospace; letter-spacing: .05em; text-transform: uppercase; }
@@ -337,6 +334,9 @@ footer a:active { transform: scale(.98); }
 
 .reveal-pending { opacity: 0; transform: translateY(1.25rem); }
 .reveal-pending.is-visible { opacity: 1; transform: none; transition: opacity 560ms var(--ease-out), transform 560ms var(--ease-spring); }
+
+/* Keep lower sections out of initial layout and paint work until the browser nears them. */
+.about, .services, .youtube, .testimonial, .contact, footer { content-visibility: auto; contain-intrinsic-block-size: auto 48rem; }
 
 @media (hover: hover) and (pointer: fine) {
   .email-shortcut { display: inline-flex; align-items: center; }

@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { ThemeToggle } from "./ThemeToggle";
 
@@ -91,10 +90,7 @@ export function SiteHeader() {
   return (
     <header ref={headerRef} className={`site-header${scrolled ? " is-scrolled" : ""}${menuOpen ? " menu-open" : ""}`}>
       <a className="brand" href="#top" aria-label="Sarthak, home" onClick={closeMenu}>
-        <span className="brand-signature brand-logo-only" aria-hidden="true">
-          <Image className="brand-signature-default" src="/eai-vector-dark.png" alt="" width={1282} height={1038} priority />
-          <Image className="brand-signature-inverse" src="/eai-vector-light.png" alt="" width={1282} height={1038} priority />
-        </span>
+        <span className="brand-signature brand-logo-only" aria-hidden="true" />
       </a>
       <nav ref={navRef} id="primary-navigation" className="nav" aria-label="Primary navigation" aria-hidden={isMobile && !menuOpen} inert={isMobile && !menuOpen ? true : undefined}>
         {links.map((link) => <a key={link.href} href={link.href} onClick={closeMenu}>{link.label}</a>)}

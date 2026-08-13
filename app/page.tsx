@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { ContactForm } from "./ContactForm";
 import { EmailShortcut } from "./EmailShortcut";
 import { HeroTimeline } from "./HeroTimeline";
@@ -29,7 +28,7 @@ export default function Home() {
           <HeroTimeline />
           <div className="hero-copy">
             <figure className="hero-portrait hero-reveal">
-              <Image src="/sarthak-sharma.webp" alt="Sarthak" width={1440} height={1440} sizes="(max-width: 800px) 5.75rem, 8rem" priority />
+              <img src="/sarthak-sharma.webp" alt="Sarthak" width="320" height="320" fetchPriority="high" />
             </figure>
             <h1 className="hero-reveal hero-delay-1">Hi, I’m Sarthak.</h1>
             <p className="hero-intro hero-reveal hero-delay-2">I’m a video editor and creator based in India. I edit YouTube videos, shorts, podcasts and social content for brands and creators around the world.</p>
@@ -50,10 +49,10 @@ export default function Home() {
             <div className="client-list">
               {clients.map((client) => client.url ? (
                 <a key={client.name} href={client.url} target="_blank" rel="noopener noreferrer">
-                  {client.logo ? <Image src={client.logo} alt={client.name} width={160} height={56} /> : client.name}
+                  {client.logo ? <img src={client.logo} alt={client.name} width="160" height="56" loading="lazy" decoding="async" /> : client.name}
                 </a>
               ) : (
-                <span key={client.name}>{client.logo ? <Image src={client.logo} alt={client.name} width={160} height={56} /> : client.name}</span>
+                <span key={client.name}>{client.logo ? <img src={client.logo} alt={client.name} width="160" height="56" loading="lazy" decoding="async" /> : client.name}</span>
               ))}
             </div>
           </section>
@@ -94,8 +93,7 @@ export default function Home() {
 
         <section className="section youtube" id="youtube" data-reveal>
           <div className="youtube-mark">
-            <Image className="youtube-mark-on-dark" src="/eai-vector-light.png" alt="EAI" width={1282} height={1038} />
-            <Image className="youtube-mark-on-light" src="/eai-vector-dark.png" alt="" width={1282} height={1038} aria-hidden="true" />
+            <span className="sr-only">EAI</span>
           </div>
           <div className="youtube-copy">
             <p className="kicker">Personal project / YouTube</p>
@@ -110,7 +108,7 @@ export default function Home() {
             <div className="youtube-videos" aria-label="Selected YouTube videos">
               {youtubeVideos.map((video) => (
                 <a key={video.url} href={video.url} target="_blank" rel="noopener noreferrer">
-                  <span className="youtube-thumbnail"><Image src={video.thumbnail} alt={`${video.title} thumbnail`} fill sizes="(max-width: 800px) 100vw, 40vw" /></span>
+                  <span className="youtube-thumbnail"><img src={video.thumbnail} alt={`${video.title} thumbnail`} width="640" height="360" loading="lazy" decoding="async" /></span>
                   <span className="youtube-video-copy"><strong>{video.title}</strong>{video.date || video.views || video.duration ? <small>{[video.date, video.views, video.duration].filter(Boolean).join(" · ")}</small> : null}</span>
                 </a>
               ))}
@@ -141,7 +139,7 @@ export default function Home() {
             <div className="footer-intro">
               <a className="footer-brand" href="#top" aria-label="Sarthak, back to top">
                 <span className="brand-name">Sarthak</span>
-                <span className="brand-signature brand-signature-on-dark" aria-hidden="true"><Image className="brand-signature-inverse" src="/eai-vector-light.png" alt="" width={1282} height={1038} /></span>
+                <span className="brand-signature brand-signature-on-dark" aria-hidden="true" />
               </a>
               <p>Video editor & creator based in India.</p>
             </div>

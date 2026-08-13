@@ -1,24 +1,20 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
 import "./globals.css";
 
 const themeScript = `(() => { try { const stored = localStorage.getItem('theme'); const theme = stored === 'dark' ? 'dark' : 'light'; document.documentElement.dataset.theme = theme; document.documentElement.style.colorScheme = theme; } catch (_) { document.documentElement.dataset.theme = 'light'; document.documentElement.style.colorScheme = 'light'; } })();`;
 
-export async function generateMetadata(): Promise<Metadata> {
-  const requestHeaders = await headers();
-  const host = requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host") ?? "localhost:3000";
-  const protocol = requestHeaders.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https");
-  const image = `${protocol}://${host}/og-white.png`;
-  const title = "Sarthak — Video Editor & Creator";
-  const description = "Freelance video editor and creator from India, working across YouTube, short-form, podcasts, tech and social content.";
-  return {
-    title, description,
-    icons: { icon: "/eai-mark.png", shortcut: "/eai-mark.png", apple: "/eai-mark.png" },
-    openGraph: { title, description, type: "website", images: [{ url: image, width: 1200, height: 630, alt: "Sarthak — Video Editor & Creator" }] },
-    twitter: { card: "summary_large_image", title, description, images: [image] },
-  };
-}
+const title = "Sarthak — Video Editor & Creator";
+const description = "Freelance video editor and creator from India, working across YouTube, short-form, podcasts, tech and social content.";
+
+export const metadata: Metadata = {
+  metadataBase: new URL("https://sarthak-sharma-editor.sarthaklamborghini.chatgpt.site"),
+  title,
+  description,
+  icons: { icon: "/favicon.svg", shortcut: "/favicon.svg", apple: "/eai-mark.png" },
+  openGraph: { title, description, type: "website", images: [{ url: "/og-white.png", width: 1200, height: 630, alt: title }] },
+  twitter: { card: "summary_large_image", title, description, images: ["/og-white.png"] },
+};
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en" suppressHydrationWarning><head><script dangerouslySetInnerHTML={{ __html: themeScript }} /></head><body>{children}</body></html>;
+  return <html lang="en" suppressHydrationWarning><head><link rel="preload" href="/fonts/geist-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" /><script dangerouslySetInnerHTML={{ __html: themeScript }} /></head><body>{children}</body></html>;
 }

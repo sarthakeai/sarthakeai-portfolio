@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { readFile, stat } from "node:fs/promises";
 import test from "node:test";
 import { contactFormEndpoint, submitContactForm } from "../app/contact-form-submit.mjs";
 
@@ -70,6 +70,8 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
   ]);
   assert.doesNotMatch(page, /^"use client"/);
+  assert.doesNotMatch(layout, /next\/headers|generateMetadata/);
+  assert.match(layout, /metadataBase/);
   assert.match(page, /className="hero-portrait hero-reveal"/);
   assert.match(page, /<HeroTimeline \/>/);
   assert.match(timeline, /^"use client"/);
@@ -77,13 +79,16 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(timeline, /role="slider"/);
   assert.doesNotMatch(page, /className="portrait"/);
   assert.match(header, /^"use client"/);
-  assert.match(header, /eai-vector-dark\.png/);
-  assert.match(header, /eai-vector-light\.png/);
   assert.match(header, /brand-logo-only/);
   assert.doesNotMatch(header, /brand-name/);
-  assert.match(page, /eai-vector-light\.png/);
-  assert.match(page, /eai-vector-dark\.png/);
-  assert.match(page, /youtube-mark-on-light/);
+  assert.doesNotMatch(page, /from "next\/image"/);
+  assert.doesNotMatch(header, /from "next\/image"/);
+  assert.doesNotMatch(portfolio, /from "next\/image"/);
+  assert.match(page, /fetchPriority="high"/);
+  assert.match(page, /loading="lazy"/);
+  assert.match(css, /eai-logo-dark\.svg/);
+  assert.match(css, /eai-logo-light\.svg/);
+  assert.match(css, /content-visibility:\s*auto/);
   assert.match(portfolio, /aria-pressed/);
   assert.match(portfolio, /aria-live="polite"/);
   assert.match(portfolio, /aria-modal="true"/);
@@ -132,6 +137,17 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.doesNotMatch(css, /margin-inline:\s*calc\(var\(--page-gutter\)\s*\*\s*-1\)/);
   assert.match(css, /prefers-reduced-transparency:\s*reduce/);
   assert.match(css, /prefers-contrast:\s*more/);
+});
+
+test("keeps initial visual assets lightweight", async () => {
+  const [portrait, darkLogo, lightLogo] = await Promise.all([
+    stat(new URL("../public/sarthak-sharma.webp", import.meta.url)),
+    stat(new URL("../public/eai-logo-dark.svg", import.meta.url)),
+    stat(new URL("../public/eai-logo-light.svg", import.meta.url)),
+  ]);
+  assert.ok(portrait.size < 20_000, `hero portrait is ${portrait.size} bytes`);
+  assert.ok(darkLogo.size < 3_000, `dark logo is ${darkLogo.size} bytes`);
+  assert.ok(lightLogo.size < 3_000, `light logo is ${lightLogo.size} bytes`);
 });
 
 test("submits contact data to Formspree and handles failures", async () => {

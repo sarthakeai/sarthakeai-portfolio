@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { categories, projects, type Project } from "./portfolio-data";
 
@@ -82,7 +81,7 @@ export function PortfolioGrid() {
         {visible.map((project, index) => (
           <article className={`project ${project.ratio}${project.featured ? " featured" : ""}`} key={project.id} style={{ viewTransitionName: `project-${project.id}` }}>
             <div className={`project-visual ${project.tone}`}>
-              {project.thumbnail ? <Image src={project.thumbnail} alt={project.thumbnailAlt ?? ""} fill sizes="(max-width: 800px) 100vw, 62vw" /> : null}
+              {project.thumbnail ? <img src={project.thumbnail} alt={project.thumbnailAlt ?? ""} width="1280" height="720" loading="lazy" decoding="async" /> : null}
               <div className="project-art" aria-label={`${project.title} visual`}>
                 <span className="project-number">{String(index + 1).padStart(2, "0")}</span>
                 <span className="project-category">{project.category}</span>
