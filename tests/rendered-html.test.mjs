@@ -150,6 +150,10 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(css, /\.client-strip[^}]+mask-image:/s);
   assert.match(css, /data-theme-treatment="invert"/);
   assert.match(css, /data-logo-presence="strong"/);
+  assert.match(css, /\.client-logo-set img \{[^}]+filter:\s*none;[^}]+opacity:\s*\.82/s);
+  assert.match(css, /Approved dark-mode logo treatment/);
+  assert.match(css, /html\[data-theme="dark"\] \.client-logo-set img\[data-theme-treatment="invert"\][^}]+brightness\(\.9\) contrast\(\.9\)[^}]+opacity:\s*\.82/s);
+  assert.match(css, /html\[data-theme="dark"\] \.client-logo-set img\[data-logo-presence="strong"\][^}]+opacity:\s*\.88/s);
   assert.match(css, /\.client-strip::-webkit-scrollbar/);
   assert.match(css, /animation:\s*collaborator-marquee 34s linear infinite/);
   assert.match(css, /translate3d\(-50%, 0, 0\)/);
