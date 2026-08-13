@@ -185,9 +185,6 @@ export default function Home() {
             </div>
           </div>
           <div className="footer-divider" aria-hidden="true" />
-          <div className="footer-lower">
-            <a className="footer-back" href="#top">Back to top <span aria-hidden="true">↑</span></a>
-          </div>
         </div>
       </footer>
     </main>

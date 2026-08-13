@@ -40,7 +40,7 @@ test("server-renders the complete Sarthak portfolio", async () => {
   assert.doesNotMatch(html, /footer-nav-index/);
   assert.match(html, /© 2026 Sarthak Sharma/);
   assert.match(html, /All Rights Reserved\./);
-  assert.match(html, /Back to top/);
+  assert.doesNotMatch(html, /Back to top|footer-lower|footer-back/);
   assert.doesNotMatch(html, /footer-accordion/);
   assert.doesNotMatch(html, /hero-meta/);
   assert.doesNotMatch(html, /aria-label="At a glance"/);
@@ -211,10 +211,9 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(css, /\.footer-directory[^}]+grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/s);
   assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.footer-upper[^}]+display:\s*contents/);
   assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.footer-directory[^}]+order:\s*1[^}]+grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/);
-  assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.footer-lower[^}]+order:\s*2/);
-  assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.footer-divider[^}]+order:\s*3/);
-  assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.footer-copyright[^}]+order:\s*4/);
-  assert.match(css, /\.footer-lower[^}]+justify-content:\s*flex-end/s);
+  assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.footer-divider[^}]+order:\s*2/);
+  assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.footer-copyright[^}]+order:\s*3/);
+  assert.doesNotMatch(css, /footer-lower|footer-back/);
   assert.doesNotMatch(css, /footer-nav-row|footer-nav-index|footer-social-links|social-icon/);
 });
 
