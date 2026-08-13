@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { ThemeToggle } from "./ThemeToggle";
 
 const links = [
@@ -20,11 +20,14 @@ const mobileSocials = [
 
 export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [selectedHref, setSelectedHref] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const headerRef = useRef<HTMLElement>(null);
   const navRef = useRef<HTMLElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const closeTimerRef = useRef<number | null>(null);
+  const scrollTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
     const media = window.matchMedia("(max-width: 50rem)");
@@ -91,7 +94,52 @@ export function SiteHeader() {
     };
   }, [isMobile, menuOpen]);
 
-  const closeMenu = () => setMenuOpen(false);
+  useEffect(() => () => {
+    if (closeTimerRef.current !== null) window.clearTimeout(closeTimerRef.current);
+    if (scrollTimerRef.current !== null) window.clearTimeout(scrollTimerRef.current);
+  }, []);
+
+  const clearNavigationTimers = () => {
+    if (closeTimerRef.current !== null) window.clearTimeout(closeTimerRef.current);
+    if (scrollTimerRef.current !== null) window.clearTimeout(scrollTimerRef.current);
+    closeTimerRef.current = null;
+    scrollTimerRef.current = null;
+  };
+
+  const closeMenu = () => {
+    clearNavigationTimers();
+    setSelectedHref(null);
+    setMenuOpen(false);
+  };
+
+  const toggleMenu = () => {
+    clearNavigationTimers();
+    setSelectedHref(null);
+    setMenuOpen((open) => !open);
+  };
+
+  const navigateFromMenu = (event: MouseEvent<HTMLAnchorElement>, href: string) => {
+    event.preventDefault();
+    if (selectedHref !== null) return;
+
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    setSelectedHref(href);
+
+    closeTimerRef.current = window.setTimeout(() => {
+      setMenuOpen(false);
+      closeTimerRef.current = null;
+    }, reducedMotion ? 0 : 80);
+
+    scrollTimerRef.current = window.setTimeout(() => {
+      const destination = document.querySelector<HTMLElement>(href);
+      if (destination) {
+        if (window.location.hash !== href) window.history.pushState(null, "", href);
+        destination.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" });
+      }
+      setSelectedHref(null);
+      scrollTimerRef.current = null;
+    }, reducedMotion ? 0 : 320);
+  };
 
   return (
     <header ref={headerRef} className={`site-header${scrolled ? " is-scrolled" : ""}${menuOpen ? " menu-open" : ""}`}>
@@ -106,7 +154,7 @@ export function SiteHeader() {
         <span className="mobile-nav-label">Menu</span>
         <div className="mobile-nav-list">
           {mobileLinks.map((link, index) => (
-            <a className={`mobile-nav-item${link.href === "#contact" ? " mobile-nav-cta" : ""}`} key={link.href} href={link.href} onClick={closeMenu}>
+            <a className={`mobile-nav-item${link.href === "#contact" ? " mobile-nav-cta" : ""}${selectedHref === link.href ? " is-selected" : ""}`} key={link.href} href={link.href} onClick={(event) => navigateFromMenu(event, link.href)}>
               <span className="mobile-nav-index">{String(index + 1).padStart(2, "0")}</span>
               <span className="mobile-nav-text">{link.label}</span>
               <span className="mobile-nav-arrow" aria-hidden="true">↗</span>
@@ -126,7 +174,7 @@ export function SiteHeader() {
       </nav>
       <div className="header-actions">
         <ThemeToggle />
-        <button ref={menuButtonRef} className="menu" type="button" onClick={() => setMenuOpen((open) => !open)} aria-label={menuOpen ? "Close navigation" : "Open navigation"} aria-expanded={menuOpen} aria-controls="primary-navigation">
+        <button ref={menuButtonRef} className="menu" type="button" onClick={toggleMenu} aria-label={menuOpen ? "Close navigation" : "Open navigation"} aria-expanded={menuOpen} aria-controls="primary-navigation">
           <span /><span />
         </button>
       </div>

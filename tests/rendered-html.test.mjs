@@ -89,6 +89,10 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(header, /mobile-nav-label">Menu/);
   assert.match(header, /mobile-nav-index/);
   assert.match(header, /mobile-nav-cta/);
+  assert.match(header, /navigateFromMenu/);
+  assert.match(header, /scrollIntoView\(\{ behavior: reducedMotion \? "auto" : "smooth"/);
+  assert.match(header, /window\.history\.pushState/);
+  assert.match(header, /selectedHref === link\.href \? " is-selected"/);
   assert.match(header, /Available for select projects/);
   assert.match(header, /instagram\.com\/sarthak\.eai/);
   assert.match(header, /x\.com\/sarthakeai/);
@@ -103,6 +107,11 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(css, /content-visibility:\s*auto/);
   assert.match(css, /\.mobile-nav-text[^}]+var\(--font-geist-sans\)/s);
   assert.match(css, /font-size:\s*clamp\(1\.8rem, 7\.7vw, 2\.125rem\)/);
+  assert.match(css, /transform:\s*translateY\(\.625rem\)/);
+  assert.match(css, /opacity 340ms var\(--ease-out\) var\(--row-open-delay\)/);
+  assert.match(css, /--row-open-delay:\s*245ms/);
+  assert.match(css, /\.mobile-nav-item\.is-selected/);
+  assert.match(css, /scroll-margin-top:\s*calc\(5\.5rem \+ env\(safe-area-inset-top\)\)/);
   assert.match(css, /min-height:\s*100dvh/);
   assert.match(css, /env\(safe-area-inset-top\)/);
   assert.match(css, /env\(safe-area-inset-bottom\)/);
