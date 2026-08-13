@@ -209,7 +209,11 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(css, /prefers-contrast:\s*more/);
   assert.match(css, /\.footer-upper[^}]+grid-template-columns:\s*minmax\(0, 1\.5fr\) minmax\(27rem, \.9fr\)/s);
   assert.match(css, /\.footer-directory[^}]+grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/s);
-  assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.footer-directory[^}]+grid-template-columns:\s*1fr/);
+  assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.footer-upper[^}]+display:\s*contents/);
+  assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.footer-directory[^}]+order:\s*1[^}]+grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/);
+  assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.footer-lower[^}]+order:\s*2/);
+  assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.footer-divider[^}]+order:\s*3/);
+  assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.footer-copyright[^}]+order:\s*4/);
   assert.match(css, /\.footer-lower[^}]+justify-content:\s*flex-end/s);
   assert.doesNotMatch(css, /footer-nav-row|footer-nav-index|footer-social-links|social-icon/);
 });

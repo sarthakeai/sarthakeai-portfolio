@@ -506,14 +506,15 @@ footer a:active { opacity: .7; }
 }
 
 @media (max-width: 42rem) {
-  .footer-inner { width: 100%; }
-  .footer-upper { gap: 3rem; padding: 3.75rem 0 3.5rem; }
-  .footer-copyright { font-size: clamp(1.55rem, 7vw, 2.15rem); line-height: .98; letter-spacing: -.052em; }
-  .footer-directory { width: 100%; grid-template-columns: 1fr; gap: 2.75rem; }
+  .footer-inner { width: 100%; display: grid; }
+  .footer-upper { display: contents; }
+  .footer-directory { order: 1; width: 100%; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(1rem, 5vw, 1.5rem); padding: 3.75rem 0 3.25rem; }
   .footer-link-list { gap: .15rem; }
-  .footer-directory-link { min-height: 2.5rem; }
+  .footer-directory-link { min-height: 2.5rem; gap: .4rem; }
   .footer-link-title { font-size: clamp(1.15rem, 5.2vw, 1.4rem); }
-  .footer-lower { justify-content: flex-start; padding: 1.5rem 0 2.5rem; }
+  .footer-lower { order: 2; justify-content: flex-end; padding: 0 0 1.5rem; }
+  .footer-divider { order: 3; }
+  .footer-copyright { order: 4; padding: 2.25rem 0 2.5rem; font-size: clamp(1.75rem, 7.7vw, 2.25rem); line-height: .96; letter-spacing: -.055em; }
 }
 
 @media (max-width: 28rem) {
