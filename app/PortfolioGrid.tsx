@@ -12,6 +12,7 @@ export function PortfolioGrid() {
   const [active, setActive] = useState("All");
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
   const returnFocusRef = useRef<HTMLElement | null>(null);
   const visible = active === "All" ? projects : projects.filter((project) => project.category === active);
 
@@ -23,12 +24,12 @@ export function PortfolioGrid() {
     else update();
   };
 
-  const openVideo = (project: Project, trigger: HTMLElement) => {
+  const openProject = (project: Project, trigger: HTMLElement) => {
     returnFocusRef.current = trigger;
     setSelectedProject(project);
   };
 
-  const closeVideo = () => setSelectedProject(null);
+  const closeProject = () => setSelectedProject(null);
 
   useEffect(() => {
     if (!selectedProject) return;
@@ -38,9 +39,25 @@ export function PortfolioGrid() {
     const previousBodyOverflow = body.style.overflow;
     root.style.overflow = "hidden";
     body.style.overflow = "hidden";
+    const focusableElements = () => Array.from(dialogRef.current?.querySelectorAll<HTMLElement>("a[href], button:not([disabled]), video[controls], [tabindex]:not([tabindex='-1'])") ?? []);
     requestAnimationFrame(() => closeButtonRef.current?.focus());
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") closeVideo();
+      if (event.key === "Escape") {
+        closeProject();
+        return;
+      }
+      if (event.key !== "Tab") return;
+      const items = focusableElements();
+      const first = items[0];
+      const last = items.at(-1);
+      if (!first || !last) return;
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
     };
     document.addEventListener("keydown", onKeyDown);
     return () => {
@@ -72,13 +89,9 @@ export function PortfolioGrid() {
                 <strong>{project.artLabel}</strong>
                 <span className="project-meta">{project.contentType}</span>
               </div>
-              {project.videoUrl ? (
-                <button className="project-action" type="button" onClick={(event) => openVideo(project, event.currentTarget)} aria-label={`Play ${project.title}`}>Play <span aria-hidden="true">▶</span></button>
-              ) : project.externalUrl ? (
-                <a className="project-action" href={project.externalUrl} target="_blank" rel="noopener noreferrer" aria-label={`View ${project.title} in a new tab`}>View <span aria-hidden="true">↗</span></a>
-              ) : project.caseStudySlug ? (
-                <a className="project-action" href={`/work/${project.caseStudySlug}`} aria-label={`View ${project.title} case study`}>View project <span aria-hidden="true">↗</span></a>
-              ) : null}
+              <button className="project-open" type="button" onClick={(event) => openProject(project, event.currentTarget)} aria-label={`View details for ${project.title}`}>
+                <span>{project.videoUrl ? "Play" : "View"} <b aria-hidden="true">↗</b></span>
+              </button>
             </div>
             <div className="project-info">
               <div className="project-copy">
@@ -103,17 +116,34 @@ export function PortfolioGrid() {
         ))}
       </div>
 
-      {selectedProject?.videoUrl ? (
-        <div className="video-modal" role="dialog" aria-modal="true" aria-labelledby="video-modal-title" aria-describedby="video-modal-description" onPointerDown={(event) => { if (event.target === event.currentTarget) closeVideo(); }}>
-          <div className="video-modal-inner">
+      {selectedProject ? (
+        <div className="video-modal" role="dialog" aria-modal="true" aria-labelledby="video-modal-title" aria-describedby="video-modal-description" onPointerDown={(event) => { if (event.target === event.currentTarget) closeProject(); }}>
+          <div ref={dialogRef} className="video-modal-inner">
             <div className="video-modal-head">
-              <div><h2 id="video-modal-title">{selectedProject.title}</h2><p id="video-modal-description">{selectedProject.description}</p></div>
-              <button ref={closeButtonRef} type="button" onClick={closeVideo} aria-label="Close video">Close</button>
+              <div>
+                <p className="project-eyebrow">{[selectedProject.client, selectedProject.category, selectedProject.contentType].filter(Boolean).join(" / ")}</p>
+                <h2 id="video-modal-title">{selectedProject.title}</h2>
+                <p id="video-modal-description">{selectedProject.description}</p>
+              </div>
+              <button ref={closeButtonRef} type="button" onClick={closeProject} aria-label="Close project details">Close</button>
             </div>
-            <video src={selectedProject.videoUrl} poster={selectedProject.thumbnail} controls autoPlay playsInline preload="metadata" aria-label={selectedProject.title}>
-              <track kind="captions" src={selectedProject.captionsUrl} srcLang="en" label="English" default />
-            </video>
-            {selectedProject.externalUrl ? <a className="text-link" href={selectedProject.externalUrl} target="_blank" rel="noopener noreferrer">View original <span aria-hidden="true">↗</span></a> : null}
+            {selectedProject.videoUrl ? (
+              <video src={selectedProject.videoUrl} poster={selectedProject.thumbnail} controls autoPlay playsInline preload="metadata" aria-label={selectedProject.title}>
+                <track kind="captions" src={selectedProject.captionsUrl} srcLang="en" label="English" default />
+              </video>
+            ) : (
+              <div className={`video-modal-art ${selectedProject.tone}`} aria-hidden="true"><strong>{selectedProject.artLabel}</strong></div>
+            )}
+            <div className="video-modal-details">
+              <div className="video-modal-role">
+                <span className="project-label">My role</span>
+                <ul>{selectedProject.roles.map((role) => <li key={role}>{role}</li>)}</ul>
+              </div>
+              {selectedProject.deliverables?.length ? <p className="project-deliverables"><span>Deliverables</span>{selectedProject.deliverables.join(" · ")}</p> : null}
+              {selectedProject.result ? <div className="project-result"><strong>{selectedProject.result.value}</strong><span>{selectedProject.result.label}</span></div> : null}
+            </div>
+            {selectedProject.externalUrl ? <a className="text-link" href={selectedProject.externalUrl} target="_blank" rel="noopener noreferrer">Watch original <span aria-hidden="true">↗</span></a> : null}
+            {selectedProject.caseStudySlug ? <a className="text-link" href={`/work/${selectedProject.caseStudySlug}`}>View case study <span aria-hidden="true">↗</span></a> : null}
           </div>
         </div>
       ) : null}

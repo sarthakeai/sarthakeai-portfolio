@@ -41,6 +41,8 @@ test("server-renders the complete Sarthak portfolio", async () => {
   assert.match(html, /mailto:officialsarthakeai@gmail\.com/);
   assert.doesNotMatch(html, /hello@sarthaksharma\.work/);
   assert.match(html, /brands and creators around the world/);
+  assert.match(html, /Press/);
+  assert.match(html, /to copy email/);
   assert.match(html, /https:\/\/www\.youtube\.com\/@sarthakeai/);
   assert.match(html, /https:\/\/www\.instagram\.com\/sarthak\.eai/);
   assert.match(html, /https:\/\/x\.com\/sarthakeai/);
@@ -48,7 +50,7 @@ test("server-renders the complete Sarthak portfolio", async () => {
 });
 
 test("keeps interaction scoped and accessibility preferences explicit", async () => {
-  const [page, layout, header, portfolio, data, theme, timeline, css] = await Promise.all([
+  const [page, layout, header, portfolio, data, theme, timeline, emailShortcut, css] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/SiteHeader.tsx", import.meta.url), "utf8"),
@@ -56,6 +58,7 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
     readFile(new URL("../app/portfolio-data.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/ThemeToggle.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/HeroTimeline.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/EmailShortcut.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
   ]);
   assert.doesNotMatch(page, /^"use client"/);
@@ -76,6 +79,8 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(portfolio, /aria-pressed/);
   assert.match(portfolio, /aria-live="polite"/);
   assert.match(portfolio, /aria-modal="true"/);
+  assert.match(portfolio, /View details for/);
+  assert.match(portfolio, /focusableElements/);
   assert.match(portfolio, /project\.roles\.map/);
   assert.match(portfolio, /project\.deliverables/);
   assert.match(portfolio, /project\.result/);
@@ -83,6 +88,9 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(data, /export const clients: Client\[\] = \[\]/);
   assert.match(data, /export const youtubeVideos: YouTubeVideo\[\] = \[\]/);
   assert.match(theme, /localStorage\.setItem\("theme"/);
+  assert.match(emailShortcut, /navigator\.clipboard\.writeText/);
+  assert.match(emailShortcut, /target\.closest\("input, textarea, select/);
+  assert.match(emailShortcut, /1800/);
   assert.match(theme, /role="switch"/);
   assert.match(theme, /aria-checked/);
   assert.match(theme, /Switch to light mode/);
@@ -97,6 +105,9 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(header, /body\.style\.overflow = "hidden"/);
   assert.match(css, /:focus-visible/);
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
+  assert.match(css, /--frame-bg/);
+  assert.match(css, /project-open/);
+  assert.match(css, /modal-panel-in/);
   assert.match(css, /html\[data-theme="dark"\] \.theme-track i \{ transform: translateX\(1\.3125rem\)/);
   assert.doesNotMatch(css, /margin-inline:\s*calc\(var\(--page-gutter\)\s*\*\s*-1\)/);
   assert.match(css, /prefers-reduced-transparency:\s*reduce/);

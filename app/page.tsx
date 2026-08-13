@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { EmailShortcut } from "./EmailShortcut";
 import { HeroTimeline } from "./HeroTimeline";
 import { MotionController } from "./MotionController";
 import { PortfolioGrid } from "./PortfolioGrid";
@@ -34,6 +35,7 @@ export default function Home() {
             <div className="hero-actions hero-reveal hero-delay-2">
               <a className="button button-primary" href="#work">See selected work <span aria-hidden="true">↓</span></a>
               <a className="text-link" href="mailto:officialsarthakeai@gmail.com">Email me <span aria-hidden="true">↗</span></a>
+              <EmailShortcut />
             </div>
           </div>
         </section>
