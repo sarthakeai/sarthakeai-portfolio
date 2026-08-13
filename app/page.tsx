@@ -156,31 +156,30 @@ export default function Home() {
 
       <footer>
         <div className="footer-inner">
-          <div className="footer-top">
-            <div className="footer-intro">
-              <a className="footer-brand" href="#top" aria-label="Sarthak, back to top">
-                <span className="brand-name">Sarthak</span>
-                <span className="brand-signature brand-signature-on-dark" aria-hidden="true" />
-              </a>
-              <p>Video editor & creator based in India.</p>
-            </div>
+          <div className="footer-explore">
+            <p className="footer-label">Explore</p>
             <nav className="footer-nav" aria-label="Footer navigation">
-              <span className="footer-label">Explore</span>
-              {footerLinks.map((link) => <a key={link.href} href={link.href}>{link.label}</a>)}
+              {footerLinks.map((link, index) => (
+                <a className={`footer-nav-row${link.href === "#contact" ? " footer-nav-contact" : ""}`} key={link.href} href={link.href}>
+                  <span className="footer-nav-index">{String(index + 1).padStart(2, "0")}</span>
+                  <span className="footer-nav-title">{link.label}</span>
+                  <span className="footer-nav-arrow" aria-hidden="true">↗</span>
+                </a>
+              ))}
             </nav>
-            <div className="footer-socials" aria-label="Social profiles">
-              <span className="footer-label">Elsewhere</span>
-              <div className="footer-social-links">
-                {socials.map((social) => (
-                  <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" aria-label={`${social.label}, opens in a new tab`}>
-                    <span className={`social-icon social-icon-${social.platform}`} aria-hidden="true">{social.platform === "x" ? "𝕏" : null}</span>
-                  </a>
-                ))}
-              </div>
+          </div>
+          <div className="footer-elsewhere" aria-label="Social profiles">
+            <p className="footer-label">Elsewhere</p>
+            <div className="footer-social-links">
+              {socials.map((social) => (
+                <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" aria-label={`${social.label}, opens in a new tab`}>
+                  <span className={`social-icon social-icon-${social.platform}`} aria-hidden="true" />
+                </a>
+              ))}
             </div>
           </div>
-          <div className="footer-bottom">
-            <p>© {new Date().getFullYear()} Sarthak</p>
+          <div className="footer-closing">
+            <p className="footer-copyright"><span>© 2026 Sarthak Sharma</span><span>All Rights Reserved.</span></p>
             <a className="footer-back" href="#top">Back to top <span aria-hidden="true">↑</span></a>
           </div>
         </div>

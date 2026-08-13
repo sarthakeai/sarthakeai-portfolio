@@ -19,8 +19,7 @@ test("server-renders the complete Sarthak portfolio", async () => {
   const html = await response.text();
   assert.match(html, /Sarthak/);
   assert.doesNotMatch(html, />Sarthak Sharma</);
-  assert.match(html, /class="brand-name"/);
-  assert.match(html, /class="brand-signature/);
+  assert.match(html, /class="brand-signature brand-logo-only"/);
   assert.match(html, /Hi, I.m Sarthak/);
   assert.match(html, /class="hero-portrait hero-reveal"/);
   assert.match(html, /role="slider"/);
@@ -32,6 +31,10 @@ test("server-renders the complete Sarthak portfolio", async () => {
   assert.match(html, /social-icon-instagram/);
   assert.match(html, /social-icon-x/);
   assert.match(html, /social-icon-youtube/);
+  assert.equal((html.match(/class="footer-nav-row/g) ?? []).length, 5);
+  assert.match(html, /© 2026 Sarthak Sharma/);
+  assert.match(html, /All Rights Reserved\./);
+  assert.match(html, /Back to top/);
   assert.doesNotMatch(html, /footer-accordion/);
   assert.doesNotMatch(html, /hero-meta/);
   assert.doesNotMatch(html, /aria-label="At a glance"/);
