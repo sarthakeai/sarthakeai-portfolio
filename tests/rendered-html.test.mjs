@@ -151,7 +151,8 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(data, /name: "BTC Sessions"[^\n]+size: "padded"/);
   assert.match(data, /presence\?: "balanced" \| "strong"/);
   assert.match(page, /data-logo-presence=/);
-  assert.match(css, /\.client-strip[^}]+mask-image:/s);
+  assert.match(css, /\.client-strip\s*\{[^}]+overflow:\s*hidden/s);
+  assert.doesNotMatch(css, /\.client-strip[^}]+mask-image:/s);
   assert.match(css, /data-theme-treatment="invert"/);
   assert.match(css, /data-logo-presence="strong"/);
   assert.match(css, /\.client-logo-set img \{[^}]+filter:\s*none;[^}]+opacity:\s*\.82/s);
