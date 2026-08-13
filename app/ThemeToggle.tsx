@@ -23,11 +23,16 @@ export function ThemeToggle() {
       className="theme-toggle"
       type="button"
       onClick={toggleTheme}
-      aria-label="Change colour theme"
-      aria-pressed={dark ?? undefined}
+      role="switch"
+      aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
+      aria-checked={dark ?? false}
       title={dark ? "Use light theme" : "Use dark theme"}
     >
-      <span className="theme-track" aria-hidden="true"><i /></span>
+      <span className="theme-track" aria-hidden="true">
+        <span className="theme-icon theme-icon-sun">☀</span>
+        <span className="theme-icon theme-icon-moon">☾</span>
+        <i />
+      </span>
     </button>
   );
 }

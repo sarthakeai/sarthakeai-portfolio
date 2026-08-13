@@ -32,12 +32,15 @@ test("server-renders the complete Sarthak portfolio", async () => {
   assert.match(html, /social-icon-x/);
   assert.match(html, /social-icon-youtube/);
   assert.doesNotMatch(html, /footer-accordion/);
-  assert.match(html, /Available for select projects/);
+  assert.doesNotMatch(html, /Available for select projects/);
+  assert.doesNotMatch(html, /aria-label="At a glance"/);
   assert.match(html, /My role/);
   assert.match(html, /350\+/);
   assert.doesNotMatch(html, /Selected clients/);
   assert.doesNotMatch(html, /Some people I.ve worked with/);
-  assert.match(html, /mailto:hello@sarthaksharma\.work/);
+  assert.match(html, /mailto:officialsarthakeai@gmail\.com/);
+  assert.doesNotMatch(html, /hello@sarthaksharma\.work/);
+  assert.match(html, /brands and creators around the world/);
   assert.match(html, /https:\/\/www\.youtube\.com\/@sarthakeai/);
   assert.match(html, /https:\/\/www\.instagram\.com\/sarthak\.eai/);
   assert.match(html, /https:\/\/x\.com\/sarthakeai/);
@@ -80,6 +83,10 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(data, /export const clients: Client\[\] = \[\]/);
   assert.match(data, /export const youtubeVideos: YouTubeVideo\[\] = \[\]/);
   assert.match(theme, /localStorage\.setItem\("theme"/);
+  assert.match(theme, /role="switch"/);
+  assert.match(theme, /aria-checked/);
+  assert.match(theme, /Switch to light mode/);
+  assert.match(theme, /Switch to dark mode/);
   assert.doesNotMatch(theme, /prefers-color-scheme/);
   assert.match(layout, /stored === 'dark' \? 'dark' : 'light'/);
   assert.doesNotMatch(layout, /prefers-color-scheme/);
@@ -87,6 +94,7 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(header, /body\.style\.overflow = "hidden"/);
   assert.match(css, /:focus-visible/);
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
+  assert.doesNotMatch(css, /margin-inline:\s*calc\(var\(--page-gutter\)\s*\*\s*-1\)/);
   assert.match(css, /prefers-reduced-transparency:\s*reduce/);
   assert.match(css, /prefers-contrast:\s*more/);
 });

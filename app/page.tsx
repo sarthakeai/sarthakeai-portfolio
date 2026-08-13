@@ -2,7 +2,7 @@ import Image from "next/image";
 import { HeroTimeline } from "./HeroTimeline";
 import { MotionController } from "./MotionController";
 import { PortfolioGrid } from "./PortfolioGrid";
-import { availability, clients, services, socials, stats, testimonials, youtubeStats, youtubeVideos } from "./portfolio-data";
+import { clients, services, socials, stats, testimonials, youtubeStats, youtubeVideos } from "./portfolio-data";
 import { SiteHeader } from "./SiteHeader";
 
 const footerLinks = [
@@ -30,17 +30,12 @@ export default function Home() {
               <Image src="/sarthak-sharma.webp" alt="Sarthak" width={1440} height={1440} sizes="(max-width: 800px) 5.75rem, 8rem" priority />
             </figure>
             <h1 className="hero-reveal hero-delay-1">Hi, I’m Sarthak.</h1>
-            <p className="hero-intro hero-reveal hero-delay-2">I’m a video editor and creator based in India. I edit YouTube videos, shorts, podcasts and social content for creators and brands around the world.</p>
+            <p className="hero-intro hero-reveal hero-delay-2">I’m a video editor and creator based in India. I edit YouTube videos, shorts, podcasts and social content for brands and creators around the world.</p>
             <div className="hero-actions hero-reveal hero-delay-2">
               <a className="button button-primary" href="#work">See selected work <span aria-hidden="true">↓</span></a>
-              <a className="text-link" href="mailto:hello@sarthaksharma.work">Email me <span aria-hidden="true">↗</span></a>
+              <a className="text-link" href="mailto:officialsarthakeai@gmail.com">Email me <span aria-hidden="true">↗</span></a>
             </div>
           </div>
-          <aside className="hero-aside hero-reveal hero-delay-2" aria-label="At a glance">
-            <p className={`availability${availability.available ? " is-available" : ""}`}><span aria-hidden="true" />{availability.label}</p>
-            <p>Based in India<br />Working worldwide</p>
-            <p>Long-form · Shorts<br />Podcasts · Motion</p>
-          </aside>
         </section>
 
         {clients.length > 0 ? (
@@ -130,7 +125,7 @@ export default function Home() {
           <p className="kicker">Get in touch</p>
           <h2>Have something you want to work on?</h2>
           <div className="contact-bottom">
-            <a href="mailto:hello@sarthaksharma.work">Email me <span aria-hidden="true">↗</span></a>
+            <a href="mailto:officialsarthakeai@gmail.com">officialsarthakeai@gmail.com <span aria-hidden="true">↗</span></a>
             <p>Send me a note with a little about the project, the format and the timeline.</p>
           </div>
         </section>
