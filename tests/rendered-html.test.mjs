@@ -72,6 +72,10 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.doesNotMatch(page, /^"use client"/);
   assert.doesNotMatch(layout, /next\/headers|generateMetadata/);
   assert.match(layout, /metadataBase/);
+  assert.match(layout, /history\.scrollRestoration = 'manual'/);
+  assert.match(layout, /history\.replaceState/);
+  assert.match(layout, /window\.scrollTo\(0, 0\)/);
+  assert.match(layout, /window\.addEventListener\('pageshow'/);
   assert.match(page, /className="hero-portrait hero-reveal"/);
   assert.match(page, /<HeroTimeline \/>/);
   assert.match(timeline, /^"use client"/);
