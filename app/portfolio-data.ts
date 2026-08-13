@@ -119,8 +119,24 @@ export const stats = [
   { value: "24K+", label: "YouTube subscribers" },
 ];
 
-export type Client = { name: string; logo?: string; url?: string };
-export const clients: Client[] = [];
+export type Client = {
+  name: string;
+  logo: string;
+  url?: string;
+  type?: "brand" | "creator";
+  theme?: "invert" | "native";
+};
+
+// Add, remove or reorder collaborators here. Links remain optional.
+export const clients: Client[] = [
+  { name: "21st Capital", logo: "/collaborators/21st-capital.svg", type: "brand", theme: "invert" },
+  { name: "Bitcoin Treasuries", logo: "/collaborators/bitcoin-treasuries.svg", type: "brand", theme: "invert" },
+  { name: "BTC Sessions", logo: "/collaborators/btc-sessions.webp", type: "creator", theme: "native" },
+  { name: "Roxom.tv", logo: "/collaborators/roxom-tv.png", type: "brand", theme: "native" },
+  { name: "Simply Bitcoin", logo: "/collaborators/simply-bitcoin.svg", type: "creator", theme: "invert" },
+  { name: "Swan Bitcoin", logo: "/collaborators/swan-bitcoin.svg", type: "brand", theme: "invert" },
+  { name: "Zimo Media", logo: "/collaborators/zimo-media.svg", type: "brand", theme: "invert" },
+];
 
 export const availability = {
   available: true,

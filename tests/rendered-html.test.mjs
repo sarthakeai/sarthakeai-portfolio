@@ -39,6 +39,12 @@ test("server-renders the complete Sarthak portfolio", async () => {
   assert.match(html, /350\+/);
   assert.doesNotMatch(html, /Selected clients/);
   assert.doesNotMatch(html, /Some people I.ve worked with/);
+  assert.match(html, /Selected brands &amp; creators/i);
+  assert.match(html, /Selected brands and creators Sarthak has worked with/);
+  assert.match(html, /Across YouTube, short-form, podcasts and social content\./);
+  assert.match(html, /\/collaborators\/21st-capital\.svg/);
+  assert.match(html, /\/collaborators\/btc-sessions\.webp/);
+  assert.match(html, /\/collaborators\/roxom-tv\.png/);
   assert.match(html, /mailto:officialsarthakeai@gmail\.com/);
   assert.doesNotMatch(html, /hello@sarthaksharma\.work/);
   assert.match(html, /brands and creators around the world/);
@@ -124,7 +130,13 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(portfolio, /project\.deliverables/);
   assert.match(portfolio, /project\.result/);
   assert.match(data, /roles: string\[\]/);
-  assert.match(data, /export const clients: Client\[\] = \[\]/);
+  assert.match(data, /type\?: "brand" \| "creator"/);
+  assert.match(data, /export const clients: Client\[\] = \[/);
+  assert.match(data, /name: "Swan Bitcoin"/);
+  assert.match(data, /name: "Simply Bitcoin"/);
+  assert.match(css, /\.client-strip[^}]+mask-image:/s);
+  assert.match(css, /data-theme-treatment="invert"/);
+  assert.match(css, /\.client-strip::-webkit-scrollbar/);
   assert.match(data, /export const youtubeVideos: YouTubeVideo\[\] = \[\]/);
   assert.match(theme, /localStorage\.setItem\("theme"/);
   assert.match(emailShortcut, /navigator\.clipboard\.writeText/);

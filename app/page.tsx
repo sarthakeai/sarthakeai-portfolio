@@ -43,18 +43,21 @@ export default function Home() {
         {clients.length > 0 ? (
           <section className="section selected-clients" aria-labelledby="selected-clients-title" data-reveal>
             <div className="clients-intro">
-              <p className="kicker" id="selected-clients-title">Selected clients</p>
-              <p>People and teams I’ve worked with.</p>
+              <p className="kicker" id="selected-clients-title">Selected brands &amp; creators</p>
             </div>
-            <div className="client-list">
-              {clients.map((client) => client.url ? (
-                <a key={client.name} href={client.url} target="_blank" rel="noopener noreferrer">
-                  {client.logo ? <img src={client.logo} alt={client.name} width="160" height="56" loading="lazy" decoding="async" /> : client.name}
-                </a>
-              ) : (
-                <span key={client.name}>{client.logo ? <img src={client.logo} alt={client.name} width="160" height="56" loading="lazy" decoding="async" /> : client.name}</span>
-              ))}
+            <div className="client-strip" aria-label="Selected brands and creators Sarthak has worked with">
+              <div className="client-list">
+                {clients.map((client) => {
+                  const logo = <img src={client.logo} alt={client.name} width="180" height="64" loading="lazy" decoding="async" data-theme-treatment={client.theme ?? "invert"} />;
+                  return client.url ? (
+                    <a key={client.name} href={client.url} target="_blank" rel="noopener noreferrer" aria-label={`${client.name}, opens in a new tab`}>{logo}</a>
+                  ) : (
+                    <span key={client.name}>{logo}</span>
+                  );
+                })}
+              </div>
             </div>
+            <p className="clients-note">Across YouTube, short-form, podcasts and social content.</p>
           </section>
         ) : null}
 
