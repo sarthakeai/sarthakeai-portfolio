@@ -184,6 +184,7 @@ html[data-theme="dark"] .theme-icon-moon { color: #f7f5ef; opacity: 1; transform
 .client-logo-set img { width: auto; height: 2.65rem; max-width: 13.5rem; object-fit: contain; object-position: center; filter: grayscale(1) brightness(.52) contrast(1.12); opacity: .78; transform: translateY(0) scale(.99); transition: opacity 220ms ease-out, filter 220ms ease-out, transform 220ms var(--ease-out); }
 .client-logo-set img[data-logo-size="wide"] { height: 2.2rem; max-width: 18.5rem; }
 .client-logo-set img[data-logo-size="tall"] { height: 3.15rem; max-width: 8rem; }
+.client-logo-set img[data-logo-size="padded"] { height: 4.35rem; max-width: 9rem; margin-block: -.6rem; }
 .client-logo-set img[data-theme-treatment="native"] { filter: grayscale(1) brightness(.58) contrast(1.14); opacity: .78; }
 .client-logo-set img[data-logo-presence="strong"] { opacity: .86; }
 html[data-theme="dark"] .client-logo-set img[data-theme-treatment="invert"] { filter: grayscale(1) invert(1) brightness(.9) contrast(.9); opacity: .82; }
@@ -473,6 +474,7 @@ footer a:active { opacity: .7; }
   .client-logo-set img { height: 2.25rem; max-width: 11.5rem; }
   .client-logo-set img[data-logo-size="wide"] { height: 1.85rem; max-width: 15rem; }
   .client-logo-set img[data-logo-size="tall"] { height: 2.7rem; max-width: 6.75rem; }
+  .client-logo-set img[data-logo-size="padded"] { height: 3.75rem; max-width: 7.75rem; margin-block: -.5rem; }
   .clients-note { max-width: 20rem; }
   .section-head { gap: 1.75rem; }
   .filters { overflow-x: auto; overflow-y: hidden; flex-wrap: nowrap; padding: .2rem .1rem .65rem 0; scroll-padding-inline: .1rem; scrollbar-width: none; scroll-snap-type: x proximity; overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch; }

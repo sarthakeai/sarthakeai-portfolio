@@ -127,7 +127,7 @@ export type Client = {
   url?: string;
   type?: "brand" | "creator";
   theme?: "invert" | "native";
-  size?: "standard" | "wide" | "tall";
+  size?: "standard" | "wide" | "tall" | "padded";
   presence?: "balanced" | "strong";
 };
 
@@ -138,7 +138,7 @@ export const clients: Client[] = [
   { name: "Simply Bitcoin", logo: "/collaborators/simply-bitcoin.svg", width: 785, height: 504, type: "creator", theme: "invert", size: "tall", presence: "strong" },
   { name: "Roxom", logo: "/collaborators/roxom-tv.png", width: 757, height: 177, type: "brand", theme: "native" },
   { name: "21st Capital", logo: "/collaborators/21st-capital.svg", width: 80, height: 30, type: "brand", theme: "invert", presence: "strong" },
-  { name: "BTC Sessions", logo: "/collaborators/btc-sessions.webp", width: 1200, height: 800, type: "creator", theme: "native", size: "tall", presence: "strong" },
+  { name: "BTC Sessions", logo: "/collaborators/btc-sessions.webp", width: 1200, height: 800, type: "creator", theme: "native", size: "padded", presence: "strong" },
   { name: "Zimo Media", logo: "/collaborators/zimo-media.svg", width: 382, height: 105, type: "brand", theme: "invert" },
 ];
 
