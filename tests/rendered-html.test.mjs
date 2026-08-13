@@ -31,7 +31,10 @@ test("server-renders the complete Sarthak portfolio", async () => {
   assert.match(html, /social-icon-instagram/);
   assert.match(html, /social-icon-x/);
   assert.match(html, /social-icon-youtube/);
-  assert.equal((html.match(/class="footer-nav-row/g) ?? []).length, 5);
+  assert.equal((html.match(/class="footer-nav-link/g) ?? []).length, 5);
+  assert.match(html, /class="footer-upper"/);
+  assert.match(html, /class="footer-divider"/);
+  assert.doesNotMatch(html, /footer-nav-index/);
   assert.match(html, /© 2026 Sarthak Sharma/);
   assert.match(html, /All Rights Reserved\./);
   assert.match(html, /Back to top/);
@@ -200,6 +203,10 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.doesNotMatch(css, /margin-inline:\s*calc\(var\(--page-gutter\)\s*\*\s*-1\)/);
   assert.match(css, /prefers-reduced-transparency:\s*reduce/);
   assert.match(css, /prefers-contrast:\s*more/);
+  assert.match(css, /\.footer-upper[^}]+grid-template-columns:\s*minmax\(0, 1\.55fr\) minmax\(14rem, \.55fr\)/s);
+  assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.footer-upper[^}]+grid-template-columns:\s*1fr/);
+  assert.match(css, /\.footer-closing[^}]+grid-template-columns:\s*minmax\(0, 1fr\) auto/s);
+  assert.doesNotMatch(css, /footer-nav-row|footer-nav-index/);
 });
 
 test("keeps initial visual assets lightweight", async () => {

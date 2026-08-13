@@ -157,28 +157,30 @@ export default function Home() {
 
       <footer>
         <div className="footer-inner">
-          <div className="footer-explore">
-            <p className="footer-label">Explore</p>
-            <nav className="footer-nav" aria-label="Footer navigation">
-              {footerLinks.map((link, index) => (
-                <a className={`footer-nav-row${link.href === "#contact" ? " footer-nav-contact" : ""}`} key={link.href} href={link.href}>
-                  <span className="footer-nav-index">{String(index + 1).padStart(2, "0")}</span>
-                  <span className="footer-nav-title">{link.label}</span>
-                  <span className="footer-nav-arrow" aria-hidden="true">↗</span>
-                </a>
-              ))}
-            </nav>
-          </div>
-          <div className="footer-elsewhere" aria-label="Social profiles">
-            <p className="footer-label">Elsewhere</p>
-            <div className="footer-social-links">
-              {socials.map((social) => (
-                <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" aria-label={`${social.label}, opens in a new tab`}>
-                  <span className={`social-icon social-icon-${social.platform}`} aria-hidden="true" />
-                </a>
-              ))}
+          <div className="footer-upper">
+            <div className="footer-explore">
+              <p className="footer-label">Explore</p>
+              <nav className="footer-nav" aria-label="Footer navigation">
+                {footerLinks.map((link) => (
+                  <a className={`footer-nav-link${link.href === "#contact" ? " footer-nav-contact" : ""}`} key={link.href} href={link.href}>
+                    <span className="footer-nav-title">{link.label}</span>
+                    <span className="footer-nav-arrow" aria-hidden="true">↗</span>
+                  </a>
+                ))}
+              </nav>
+            </div>
+            <div className="footer-elsewhere" aria-label="Social profiles">
+              <p className="footer-label">Elsewhere</p>
+              <div className="footer-social-links">
+                {socials.map((social) => (
+                  <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" aria-label={`${social.label}, opens in a new tab`}>
+                    <span className={`social-icon social-icon-${social.platform}`} aria-hidden="true" />
+                  </a>
+                ))}
+              </div>
             </div>
           </div>
+          <div className="footer-divider" aria-hidden="true" />
           <div className="footer-closing">
             <p className="footer-copyright"><span>© 2026 Sarthak Sharma</span><span>All Rights Reserved.</span></p>
             <a className="footer-back" href="#top">Back to top <span aria-hidden="true">↑</span></a>
