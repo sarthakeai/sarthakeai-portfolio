@@ -28,6 +28,7 @@ function ClientLogoSet({ duplicate = false }: { duplicate?: boolean }) {
             decoding="async"
             data-theme-treatment={client.theme ?? "invert"}
             data-logo-size={client.size ?? "standard"}
+            data-logo-presence={client.presence ?? "balanced"}
           />
         );
 

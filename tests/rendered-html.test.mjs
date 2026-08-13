@@ -144,8 +144,11 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(data, /name: "Swan Bitcoin"[\s\S]+name: "Bitcoin Treasuries"[\s\S]+name: "Simply Bitcoin"[\s\S]+name: "Roxom"/);
   assert.match(data, /width: number/);
   assert.match(data, /size\?: "standard" \| "wide" \| "tall"/);
+  assert.match(data, /presence\?: "balanced" \| "strong"/);
+  assert.match(page, /data-logo-presence=/);
   assert.match(css, /\.client-strip[^}]+mask-image:/s);
   assert.match(css, /data-theme-treatment="invert"/);
+  assert.match(css, /data-logo-presence="strong"/);
   assert.match(css, /\.client-strip::-webkit-scrollbar/);
   assert.match(css, /animation:\s*collaborator-marquee 34s linear infinite/);
   assert.match(css, /translate3d\(-50%, 0, 0\)/);

@@ -181,12 +181,14 @@ html[data-theme="dark"] .theme-icon-moon { color: #f7f5ef; opacity: 1; transform
 .client-marquee-track { width: max-content; display: flex; align-items: center; animation: collaborator-marquee 34s linear infinite; will-change: transform; }
 .client-logo-set { --client-logo-gap: clamp(4.5rem, 6vw, 7rem); flex: 0 0 auto; display: flex; align-items: center; gap: var(--client-logo-gap); padding-right: var(--client-logo-gap); }
 .client-logo-set > * { min-height: 3.75rem; flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; color: var(--muted-strong); }
-.client-logo-set img { width: auto; height: 2.65rem; max-width: 13.5rem; object-fit: contain; object-position: center; filter: grayscale(1) brightness(.64) contrast(.82); opacity: .58; transform: translateY(0) scale(.99); transition: opacity 200ms ease-out, filter 200ms ease-out, transform 220ms var(--ease-out); }
+.client-logo-set img { width: auto; height: 2.65rem; max-width: 13.5rem; object-fit: contain; object-position: center; filter: grayscale(1) brightness(.52) contrast(1.12); opacity: .78; transform: translateY(0) scale(.99); transition: opacity 220ms ease-out, filter 220ms ease-out, transform 220ms var(--ease-out); }
 .client-logo-set img[data-logo-size="wide"] { height: 2.2rem; max-width: 18.5rem; }
 .client-logo-set img[data-logo-size="tall"] { height: 3.15rem; max-width: 8rem; }
-.client-logo-set img[data-theme-treatment="native"] { filter: grayscale(1) brightness(.72) contrast(.88); opacity: .56; }
-html[data-theme="dark"] .client-logo-set img[data-theme-treatment="invert"] { filter: grayscale(1) invert(1) brightness(.82) contrast(.72); opacity: .58; }
-html[data-theme="dark"] .client-logo-set img[data-theme-treatment="native"] { filter: grayscale(1) brightness(1.15) contrast(1.05); opacity: .58; }
+.client-logo-set img[data-theme-treatment="native"] { filter: grayscale(1) brightness(.58) contrast(1.14); opacity: .78; }
+.client-logo-set img[data-logo-presence="strong"] { opacity: .86; }
+html[data-theme="dark"] .client-logo-set img[data-theme-treatment="invert"] { filter: grayscale(1) invert(1) brightness(.9) contrast(.9); opacity: .82; }
+html[data-theme="dark"] .client-logo-set img[data-theme-treatment="native"] { filter: grayscale(1) brightness(1.08) contrast(1); opacity: .82; }
+html[data-theme="dark"] .client-logo-set img[data-logo-presence="strong"] { opacity: .88; }
 .clients-note { margin: clamp(1.15rem, 2vw, 1.75rem) 0 0; color: var(--muted); font-size: .6875rem; line-height: 1.55; }
 @keyframes collaborator-marquee { to { transform: translate3d(-50%, 0, 0); } }
 
@@ -391,9 +393,10 @@ footer a:active { opacity: .7; }
   .footer-social-links a:hover { color: var(--accent); transform: translateY(-.125rem); }
   .footer-back:hover { color: var(--footer-ink); }
   .footer-back:hover span { color: var(--accent); transform: translateY(-.2rem); }
-  .client-logo-set > *:hover img { opacity: .92; filter: grayscale(1) brightness(.48) contrast(.98); transform: translateY(-2px) scale(1.02); }
-  html[data-theme="dark"] .client-logo-set > *:hover img[data-theme-treatment="invert"] { filter: grayscale(1) invert(1) brightness(.94) contrast(.9); opacity: .92; }
-  html[data-theme="dark"] .client-logo-set > *:hover img[data-theme-treatment="native"] { filter: grayscale(1) brightness(1.28) contrast(1.12); opacity: .92; }
+  .client-logo-set > *:hover img { opacity: .98; filter: grayscale(1) brightness(.48) contrast(1.24); transform: translateY(-2px) scale(1.02); }
+  .client-logo-set > *:hover img[data-theme-treatment="native"] { filter: grayscale(1) brightness(.62) contrast(1.26); }
+  html[data-theme="dark"] .client-logo-set > *:hover img[data-theme-treatment="invert"] { filter: grayscale(1) invert(1) brightness(.96) contrast(.96); opacity: .98; }
+  html[data-theme="dark"] .client-logo-set > *:hover img[data-theme-treatment="native"] { filter: grayscale(1) brightness(1.1) contrast(1.08); opacity: .98; }
   .mobile-nav-item:hover { border-color: color-mix(in srgb, var(--ink) 26%, transparent); }
   .mobile-nav-item:hover .mobile-nav-index { opacity: 1; }
   .mobile-nav-item:hover .mobile-nav-text { transform: translateX(.3125rem); }
