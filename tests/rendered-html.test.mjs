@@ -87,6 +87,9 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(theme, /aria-checked/);
   assert.match(theme, /Switch to light mode/);
   assert.match(theme, /Switch to dark mode/);
+  assert.match(theme, /<svg/);
+  assert.match(theme, /stroke="currentColor"/);
+  assert.doesNotMatch(theme, /☀|☾|🌙/);
   assert.doesNotMatch(theme, /prefers-color-scheme/);
   assert.match(layout, /stored === 'dark' \? 'dark' : 'light'/);
   assert.doesNotMatch(layout, /prefers-color-scheme/);
