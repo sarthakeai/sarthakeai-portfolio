@@ -158,31 +158,34 @@ export default function Home() {
       <footer>
         <div className="footer-inner">
           <div className="footer-upper">
-            <div className="footer-explore">
-              <p className="footer-label">Explore</p>
-              <nav className="footer-nav" aria-label="Footer navigation">
-                {footerLinks.map((link) => (
-                  <a className={`footer-nav-link${link.href === "#contact" ? " footer-nav-contact" : ""}`} key={link.href} href={link.href}>
-                    <span className="footer-nav-title">{link.label}</span>
-                    <span className="footer-nav-arrow" aria-hidden="true">↗</span>
-                  </a>
-                ))}
+            <p className="footer-copyright"><span>© 2026 Sarthak Sharma</span><span>All Rights Reserved.</span></p>
+            <div className="footer-directory">
+              <nav className="footer-column" aria-label="Footer navigation">
+                <p className="footer-label">Navigation</p>
+                <div className="footer-link-list">
+                  {footerLinks.map((link) => (
+                    <a className={`footer-directory-link${link.href === "#contact" ? " footer-link-contact" : ""}`} key={link.href} href={link.href}>
+                      <span className="footer-link-title">{link.label}</span>
+                      <span className="footer-link-arrow" aria-hidden="true">↗</span>
+                    </a>
+                  ))}
+                </div>
               </nav>
-            </div>
-            <div className="footer-elsewhere" aria-label="Social profiles">
-              <p className="footer-label">Elsewhere</p>
-              <div className="footer-social-links">
-                {socials.map((social) => (
-                  <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" aria-label={`${social.label}, opens in a new tab`}>
-                    <span className={`social-icon social-icon-${social.platform}`} aria-hidden="true" />
-                  </a>
-                ))}
+              <div className="footer-column" aria-label="Social profiles">
+                <p className="footer-label">Elsewhere</p>
+                <div className="footer-link-list">
+                  {socials.map((social) => (
+                    <a className="footer-directory-link" key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" aria-label={`${social.label}, opens in a new tab`}>
+                      <span className="footer-link-title">{social.platform === "x" ? "X / Twitter" : social.label}</span>
+                      <span className="footer-link-arrow" aria-hidden="true">↗</span>
+                    </a>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
           <div className="footer-divider" aria-hidden="true" />
-          <div className="footer-closing">
-            <p className="footer-copyright"><span>© 2026 Sarthak Sharma</span><span>All Rights Reserved.</span></p>
+          <div className="footer-lower">
             <a className="footer-back" href="#top">Back to top <span aria-hidden="true">↑</span></a>
           </div>
         </div>

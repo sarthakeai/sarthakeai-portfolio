@@ -28,12 +28,15 @@ test("server-renders the complete Sarthak portfolio", async () => {
   assert.match(html, /id="services"/);
   assert.match(html, /id="youtube"/);
   assert.match(html, /id="contact"/);
-  assert.match(html, /social-icon-instagram/);
-  assert.match(html, /social-icon-x/);
-  assert.match(html, /social-icon-youtube/);
-  assert.equal((html.match(/class="footer-nav-link/g) ?? []).length, 5);
+  assert.equal((html.match(/class="footer-directory-link/g) ?? []).length, 8);
   assert.match(html, /class="footer-upper"/);
+  assert.match(html, /class="footer-directory"/);
   assert.match(html, /class="footer-divider"/);
+  assert.match(html, />Navigation</);
+  assert.match(html, />Elsewhere</);
+  assert.match(html, />Instagram</);
+  assert.match(html, />X \/ Twitter</);
+  assert.match(html, />YouTube</);
   assert.doesNotMatch(html, /footer-nav-index/);
   assert.match(html, /© 2026 Sarthak Sharma/);
   assert.match(html, /All Rights Reserved\./);
@@ -204,10 +207,11 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.doesNotMatch(css, /margin-inline:\s*calc\(var\(--page-gutter\)\s*\*\s*-1\)/);
   assert.match(css, /prefers-reduced-transparency:\s*reduce/);
   assert.match(css, /prefers-contrast:\s*more/);
-  assert.match(css, /\.footer-upper[^}]+grid-template-columns:\s*minmax\(0, 1\.55fr\) minmax\(14rem, \.55fr\)/s);
-  assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.footer-upper[^}]+grid-template-columns:\s*1fr/);
-  assert.match(css, /\.footer-closing[^}]+grid-template-columns:\s*minmax\(0, 1fr\) auto/s);
-  assert.doesNotMatch(css, /footer-nav-row|footer-nav-index/);
+  assert.match(css, /\.footer-upper[^}]+grid-template-columns:\s*minmax\(0, 1\.5fr\) minmax\(27rem, \.9fr\)/s);
+  assert.match(css, /\.footer-directory[^}]+grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/s);
+  assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.footer-directory[^}]+grid-template-columns:\s*1fr/);
+  assert.match(css, /\.footer-lower[^}]+justify-content:\s*flex-end/s);
+  assert.doesNotMatch(css, /footer-nav-row|footer-nav-index|footer-social-links|social-icon/);
 });
 
 test("keeps initial visual assets lightweight", async () => {
