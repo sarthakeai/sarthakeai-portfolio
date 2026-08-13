@@ -33,7 +33,7 @@ test("server-renders the complete Sarthak portfolio", async () => {
   assert.match(html, /social-icon-x/);
   assert.match(html, /social-icon-youtube/);
   assert.doesNotMatch(html, /footer-accordion/);
-  assert.doesNotMatch(html, /Available for select projects/);
+  assert.doesNotMatch(html, /hero-meta/);
   assert.doesNotMatch(html, /aria-label="At a glance"/);
   assert.match(html, /My role/);
   assert.match(html, /350\+/);
@@ -85,6 +85,14 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(header, /^"use client"/);
   assert.match(header, /brand-logo-only/);
   assert.doesNotMatch(header, /brand-name/);
+  assert.match(header, /nav-desktop/);
+  assert.match(header, /mobile-nav-label">Menu/);
+  assert.match(header, /mobile-nav-index/);
+  assert.match(header, /mobile-nav-cta/);
+  assert.match(header, /Available for select projects/);
+  assert.match(header, /instagram\.com\/sarthak\.eai/);
+  assert.match(header, /x\.com\/sarthakeai/);
+  assert.match(header, /youtube\.com\/@sarthakeai/);
   assert.doesNotMatch(page, /from "next\/image"/);
   assert.doesNotMatch(header, /from "next\/image"/);
   assert.doesNotMatch(portfolio, /from "next\/image"/);
@@ -93,6 +101,11 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(css, /eai-logo-dark\.svg/);
   assert.match(css, /eai-logo-light\.svg/);
   assert.match(css, /content-visibility:\s*auto/);
+  assert.match(css, /\.mobile-nav-text[^}]+var\(--font-geist-sans\)/s);
+  assert.match(css, /font-size:\s*clamp\(1\.8rem, 7\.7vw, 2\.125rem\)/);
+  assert.match(css, /min-height:\s*100dvh/);
+  assert.match(css, /env\(safe-area-inset-top\)/);
+  assert.match(css, /env\(safe-area-inset-bottom\)/);
   assert.match(portfolio, /aria-pressed/);
   assert.match(portfolio, /aria-live="polite"/);
   assert.match(portfolio, /aria-modal="true"/);

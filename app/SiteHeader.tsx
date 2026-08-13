@@ -10,6 +10,14 @@ const links = [
   { href: "#youtube", label: "YouTube" },
 ];
 
+const mobileLinks = [...links, { href: "#contact", label: "Let’s talk" }];
+
+const mobileSocials = [
+  { href: "https://www.instagram.com/sarthak.eai", label: "Instagram" },
+  { href: "https://x.com/sarthakeai", label: "X / Twitter" },
+  { href: "https://www.youtube.com/@sarthakeai", label: "YouTube" },
+];
+
 export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -54,9 +62,7 @@ export function SiteHeader() {
     body.style.overflow = "hidden";
     body.style.touchAction = "none";
 
-    const focusables = () => Array.from(headerRef.current?.querySelectorAll<HTMLElement>("a[href], button:not([disabled])") ?? []);
-    requestAnimationFrame(() => navRef.current?.querySelector<HTMLElement>("a[href]")?.focus());
-
+    const focusables = () => Array.from(headerRef.current?.querySelectorAll<HTMLElement>("a[href], button:not([disabled])") ?? []).filter((element) => element.offsetParent !== null);
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setMenuOpen(false);
@@ -92,9 +98,31 @@ export function SiteHeader() {
       <a className="brand" href="#top" aria-label="Sarthak, home" onClick={closeMenu}>
         <span className="brand-signature brand-logo-only" aria-hidden="true" />
       </a>
-      <nav ref={navRef} id="primary-navigation" className="nav" aria-label="Primary navigation" aria-hidden={isMobile && !menuOpen} inert={isMobile && !menuOpen ? true : undefined}>
+      <nav className="nav nav-desktop" aria-label="Primary navigation" aria-hidden={isMobile ? true : undefined} inert={isMobile ? true : undefined}>
         {links.map((link) => <a key={link.href} href={link.href} onClick={closeMenu}>{link.label}</a>)}
         <a className="nav-cta" href="#contact" onClick={closeMenu}>Let’s talk <span aria-hidden="true">↗</span></a>
+      </nav>
+      <nav ref={navRef} id="primary-navigation" className="mobile-nav" aria-label="Mobile navigation" aria-hidden={!isMobile || !menuOpen} inert={!isMobile || !menuOpen ? true : undefined}>
+        <span className="mobile-nav-label">Menu</span>
+        <div className="mobile-nav-list">
+          {mobileLinks.map((link, index) => (
+            <a className={`mobile-nav-item${link.href === "#contact" ? " mobile-nav-cta" : ""}`} key={link.href} href={link.href} onClick={closeMenu}>
+              <span className="mobile-nav-index">{String(index + 1).padStart(2, "0")}</span>
+              <span className="mobile-nav-text">{link.label}</span>
+              <span className="mobile-nav-arrow" aria-hidden="true">↗</span>
+            </a>
+          ))}
+        </div>
+        <div className="mobile-nav-spacer" aria-hidden="true" />
+        <div className="mobile-nav-utility">
+          <div className="mobile-nav-utility-head">
+            <span>Elsewhere</span>
+            <span className="mobile-availability"><i aria-hidden="true" />Available for select projects</span>
+          </div>
+          <div className="mobile-nav-socials">
+            {mobileSocials.map((social) => <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer">{social.label}<span aria-hidden="true">↗</span></a>)}
+          </div>
+        </div>
       </nav>
       <div className="header-actions">
         <ThemeToggle />
