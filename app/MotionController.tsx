@@ -24,7 +24,7 @@ export function MotionController() {
         entry.target.classList.add("is-visible");
         observer.unobserve(entry.target);
       });
-    }, { rootMargin: "0px 0px -10%", threshold: 0.08 });
+    }, { rootMargin: "0px 0px -5%", threshold: 0.04 });
     pending.forEach((element) => observer.observe(element));
     return () => observer.disconnect();
   }, []);

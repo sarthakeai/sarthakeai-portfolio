@@ -47,7 +47,7 @@ export const projects: Project[] = [
     artLabel: "Swan Bitcoin",
     tone: "ink",
     ratio: "portrait",
-    featured: true,
+    layout: "large",
     media: [
       { id: "swan-01", title: "China Is Laughing at America", videoUrl: "/work/swan/swan-short-01-preview.mp4", poster: "/work/swan/swan-short-01-poster.webp", width: 540, height: 960 },
       { id: "swan-02", title: "How Bitcoin Changed Property Forever", videoUrl: "/work/swan/swan-short-02-preview.mp4", poster: "/work/swan/swan-short-02-poster.webp", width: 540, height: 960 },
@@ -73,7 +73,7 @@ export const projects: Project[] = [
     artLabel: "Roxom",
     tone: "cobalt",
     ratio: "portrait",
-    layout: "large",
+    layout: "small",
     media: [
       { id: "roxom-01", title: "Can Bitcoin Monetize Peace?", videoUrl: "/work/roxom/roxom-short-01-preview.mp4", poster: "/work/roxom/roxom-short-01-poster.webp", width: 540, height: 960, featured: true },
       { id: "roxom-02", title: "Bitcoin Will Only Get Rarer", videoUrl: "/work/roxom/roxom-short-02-preview.mp4", poster: "/work/roxom/roxom-short-02-poster.webp", width: 540, height: 960 },
@@ -123,7 +123,7 @@ export const projects: Project[] = [
     artLabel: "21st Capital",
     tone: "acid",
     ratio: "wide",
-    layout: "small",
+    layout: "large",
     media: [
       { id: "21st-capital-01", title: "Unlock Bitcoin's Potential", videoUrl: "/work/21st-capital/21st-capital-intro-preview.mp4", poster: "/work/21st-capital/21st-capital-intro-poster.webp", width: 1280, height: 720, featured: true },
     ],
@@ -180,7 +180,7 @@ export const projects: Project[] = [
     artLabel: "21st Capital interview",
     tone: "ink",
     ratio: "wide",
-    layout: "centered",
+    layout: "small",
     externalUrl: "https://youtu.be/X5Z5VLdJxC4?si=xjztMcaGd1S-CfQH",
     media: [
       {
@@ -217,7 +217,7 @@ export const services = [
 ];
 
 export const stats = [
-  { value: "4–5", label: "years editing professionally" },
+  { value: "5", label: "years editing professionally" },
   { value: "350+", label: "long-form videos" },
   { value: "700+", label: "short-form videos" },
   { value: "24K+", label: "YouTube subscribers" },
@@ -254,7 +254,6 @@ export const socials = [
 
 export const youtubeStats = [
   { value: "24K+", label: "subscribers" },
-  { value: "350+", label: "long-form videos" },
 ];
 
 export type YouTubeVideo = {

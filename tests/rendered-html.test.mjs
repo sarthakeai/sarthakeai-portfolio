@@ -26,7 +26,8 @@ test("server-renders the complete Sarthak portfolio", async () => {
   assert.match(html, /role="slider"/);
   assert.match(html, /id="work"/);
   assert.match(html, /Client testimonials/i);
-  assert.match(html, /Don’t take my word for it — hear it from my clients\./);
+  assert.match(html, /What clients say\./);
+  assert.doesNotMatch(html, /Don’t take my word for it/);
   assert.match(html, /He goes above and beyond to deliver an incredible product every time\./);
   assert.match(html, /MEGAN O MORAN/);
   assert.match(html, /Co-Founder · Zimo Media/);
@@ -61,7 +62,8 @@ test("server-renders the complete Sarthak portfolio", async () => {
   assert.doesNotMatch(html, /footer-nav-index/);
   assert.match(html, /© 2026 Sarthak Sharma/);
   assert.match(html, /All Rights Reserved\./);
-  assert.doesNotMatch(html, /Back to top|footer-lower|footer-back/);
+  assert.match(html, /aria-label="Back to top"/);
+  assert.match(html, /class="footer-back-to-top"/);
   assert.doesNotMatch(html, /footer-accordion/);
   assert.doesNotMatch(html, /hero-meta/);
   assert.doesNotMatch(html, /aria-label="At a glance"/);
@@ -82,7 +84,8 @@ test("server-renders the complete Sarthak portfolio", async () => {
   assert.match(html, /mailto:officialsarthakeai@gmail\.com/);
   assert.doesNotMatch(html, /hello@sarthaksharma\.work/);
   assert.match(html, /brands and creators around the world/);
-  assert.match(html, /Book a call or send me an email\./);
+  assert.match(html, /Book a 30-minute call\./);
+  assert.match(html, /Send me a project message\./);
   assert.match(html, />Connect <span/);
   assert.match(html, /checking availability/i);
   assert.doesNotMatch(html, /\b2 slots available\b/i);
@@ -109,20 +112,22 @@ test("keeps the testimonial carousel real, exact, and accessible", async () => {
 
   assert.equal((data.match(/id: "/g) ?? []).length, 2);
   assert.match(data, /image: \{[\s\S]+\/testimonials\/megan-o-moran\.webp/);
-  assert.match(data, /id: "youtube-client"[\s\S]+image: null/);
+  assert.match(data, /id: "pradeep-chintapalli"[\s\S]+image: null/);
   assert.match(data, /He goes above and beyond to deliver an incredible product every time\./);
   assert.match(data, /Sarthak is an absolute pleasure to work with\./);
   assert.match(data, /MEGAN O MORAN/);
   assert.match(data, /Co-Founder · Zimo Media/);
   assert.match(data, /Your product is in very good hands as long as he is working on it\./);
   assert.match(data, /Sarthak is very competent with editing videos as per your requirement\./);
-  assert.match(data, /YOUTUBE CLIENT/);
+  assert.match(data, /PRADEEP CHINTAPALLI/);
   assert.match(data, /YouTube Channel · Video Editing/);
   assert.doesNotMatch(data, /rating|stars|source|date|company logo/i);
   assert.match(component, /aria-label="Previous testimonial"/);
   assert.match(component, /aria-label="Next testimonial"/);
   assert.match(component, /event\.key === "ArrowLeft"/);
   assert.match(component, /event\.key === "ArrowRight"/);
+  assert.match(component, /tabIndex=\{0\}/);
+  assert.match(component, /onKeyDown=\{handleKeyDown\}/);
   assert.match(component, /loading="lazy"/);
   assert.ok(image.size < 100_000, `Megan testimonial image is ${image.size} bytes`);
 });
@@ -164,6 +169,7 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.doesNotMatch(page, /className="portrait"/);
   assert.match(header, /^"use client"/);
   assert.match(header, /brand-logo-only/);
+  assert.match(header, /site-header-inner/);
   assert.doesNotMatch(header, /brand-name/);
   assert.match(header, /nav-desktop/);
   assert.match(header, /mobile-nav-label">Menu/);
@@ -199,9 +205,11 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.doesNotMatch(portfolio, /from "next\/image"/);
   assert.match(page, /fetchPriority="high"/);
   assert.match(page, /loading="lazy"/);
+  assert.match(layout, /rel="preload" href="\/eai-logo-dark\.svg"/);
+  assert.match(layout, /rel="preload" href="\/eai-logo-light\.svg"/);
   assert.match(css, /eai-logo-dark\.svg/);
   assert.match(css, /eai-logo-light\.svg/);
-  assert.match(css, /content-visibility:\s*auto/);
+  assert.doesNotMatch(css, /\.about[^}]+content-visibility:\s*auto/s);
   assert.match(css, /\.mobile-nav-text[^}]+var\(--font-geist-sans\)/s);
   assert.match(css, /font-size:\s*clamp\(1\.8rem, 7\.7vw, 2\.125rem\)/);
   assert.match(css, /transform:\s*translateY\(\.625rem\)/);
@@ -213,6 +221,8 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(css, /env\(safe-area-inset-top\)/);
   assert.match(css, /env\(safe-area-inset-bottom\)/);
   assert.match(portfolio, /aria-pressed/);
+  assert.match(portfolio, /scrollIntoView\(\{ behavior: reducedMotion \? "auto" : "smooth", block: "nearest", inline: "center" \}\)/);
+  assert.match(portfolio, /fetchPriority=\{priority \? "high" : "auto"\}/);
   assert.match(portfolio, /aria-live="polite"/);
   assert.match(portfolio, /aria-modal="true"/);
   assert.match(portfolio, /View details for/);
@@ -247,6 +257,8 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(data, /title: "21st Capital interview"/);
   assert.match(data, /contentType: "10 selected edits"/);
   assert.match(data, /contentType: "4 selected edits"/);
+  assert.match(data, /\{ value: "5", label: "years editing professionally" \}/);
+  assert.match(data, /export const youtubeStats = \[\s*\{ value: "24K\+", label: "subscribers" \},\s*\];/);
   assert.equal((data.match(/id: "swan-\d{2}"/g) ?? []).length, 10);
   assert.equal((data.match(/id: "roxom-\d{2}"/g) ?? []).length, 4);
   assert.match(data, /"YouTube Long-Form"/);
@@ -339,7 +351,7 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(css, /project-open/);
   assert.match(css, /modal-panel-in/);
   assert.match(css, /\.project-preview-triptych/);
-  assert.match(css, /\.project\.portrait \.project-visual\.has-media\s*\{\s*aspect-ratio:\s*16\/10/);
+  assert.match(css, /\.project\.portrait \.project-visual\.has-media\s*\{\s*aspect-ratio:\s*27\/16/);
   assert.match(css, /\.project-preview-triptych\s*\{[^}]+repeat\(3, minmax\(0, 1fr\)\)[^}]+padding:\s*0/s);
   assert.match(css, /\.project-meta-line\s*\{[^}]+grid-template-columns:\s*auto minmax\(0, 1fr\) auto/s);
   assert.doesNotMatch(css, /project-art-media/);
@@ -348,7 +360,8 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(css, /\.video-modal-media-portrait\s*\{[^}]+repeat\(3, minmax\(0, 1fr\)\)/s);
   assert.match(css, /\.video-modal-media video\s*\{[^}]+width:\s*100%/s);
   assert.match(css, /\.video-modal-youtube/);
-  assert.match(css, /\.hero-connect\s*\{[^}]+height:\s*3rem;[^}]+border-radius:\s*0;[^}]+background:\s*var\(--accent\)/s);
+  assert.match(css, /\.button\s*\{[^}]+border-radius:\s*var\(--control-radius\)/s);
+  assert.doesNotMatch(css, /\.hero-connect\s*\{[^}]+text-transform:\s*uppercase/s);
   assert.match(css, /\.about-portrait/);
   assert.match(css, /\.booking-calendar\s*\{[^}]+justify-content:\s*center/s);
   assert.match(css, /html\[data-theme="dark"\] \.theme-track i \{ transform: translateX\(1\.3125rem\)/);
@@ -361,7 +374,7 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.footer-directory[^}]+order:\s*1[^}]+grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/);
   assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.footer-divider[^}]+order:\s*2/);
   assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.footer-copyright[^}]+order:\s*3/);
-  assert.doesNotMatch(css, /footer-lower|footer-back/);
+  assert.match(css, /\.footer-back-to-top/);
   assert.doesNotMatch(css, /footer-nav-row|footer-nav-index|footer-social-links|social-icon/);
 });
 

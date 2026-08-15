@@ -26,7 +26,7 @@ function getYouTubeId(url?: string) {
   return null;
 }
 
-function PosterImage({ media, alt, sizes }: { media: ProjectMedia; alt: string; sizes: string }) {
+function PosterImage({ media, alt, sizes, priority = false }: { media: ProjectMedia; alt: string; sizes: string; priority?: boolean }) {
   const sources = [media.poster, ...(media.posterFallbacks ?? [])];
   const [sourceIndex, setSourceIndex] = useState(0);
 
@@ -37,7 +37,8 @@ function PosterImage({ media, alt, sizes }: { media: ProjectMedia; alt: string; 
       width={media.width}
       height={media.height}
       sizes={sizes}
-      loading="lazy"
+      loading={priority ? "eager" : "lazy"}
+      fetchPriority={priority ? "high" : "auto"}
       decoding="async"
       onError={() => setSourceIndex((index) => Math.min(index + 1, sources.length - 1))}
     />
@@ -136,7 +137,20 @@ export function PortfolioGrid() {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const returnFocusRef = useRef<HTMLElement | null>(null);
+  const filterButtonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const filterReadyRef = useRef(false);
   const visible = active === "All" ? projects : projects.filter((project) => project.category === active);
+
+  useEffect(() => {
+    if (!filterReadyRef.current) {
+      filterReadyRef.current = true;
+      return;
+    }
+    const button = filterButtonRefs.current[active];
+    if (!button) return;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    button.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "nearest", inline: "center" });
+  }, [active]);
 
   const selectCategory = (category: string) => {
     if (category === active) return;
@@ -202,13 +216,13 @@ export function PortfolioGrid() {
     <>
       <div className="filters" role="group" aria-label="Filter selected work">
         {categories.map((category) => (
-          <button key={category} type="button" aria-pressed={active === category} aria-controls="project-grid" className={active === category ? "active" : ""} onClick={() => selectCategory(category)}>
+          <button ref={(button) => { filterButtonRefs.current[category] = button; }} key={category} type="button" aria-pressed={active === category} aria-controls="project-grid" className={active === category ? "active" : ""} onClick={() => selectCategory(category)}>
             {category}
           </button>
         ))}
       </div>
       <p className="sr-only" aria-live="polite">Showing {visible.length} {visible.length === 1 ? "project" : "projects"}.</p>
-      <div className="project-grid" id="project-grid">
+      <div className={`project-grid${active === "All" ? "" : " is-filtered"}`} id="project-grid">
         {visible.map((project) => {
           const featuredMedia = project.media?.filter((media) => media.featured) ?? [];
           const previewMedia = (featuredMedia.length ? featuredMedia : project.media ?? []).slice(0, 3);
@@ -223,10 +237,10 @@ export function PortfolioGrid() {
               </div>
               <div className={`project-visual ${project.tone}${previewMedia.length ? " has-media" : ""}`}>
                 {previewMedia.length ? (
-                  <div className={`project-preview${previewMedia.length > 1 ? " project-preview-triptych" : " project-preview-single"}`}>
+                  <div className={`project-preview preview-count-${previewMedia.length}${previewMedia.length > 1 ? " project-preview-triptych" : " project-preview-single"}`}>
                     {previewMedia.map((media) => (
                       <figure key={media.id}>
-                        <PosterImage media={media} alt={`${media.title} — ${project.client ?? project.title}`} sizes="(max-width: 50rem) calc(100vw - 2.5rem), (max-width: 92rem) 48vw, 44rem" />
+                        <PosterImage media={media} alt={`${media.title} — ${project.client ?? project.title}`} sizes="(max-width: 42rem) calc(100vw - 2.5rem), (max-width: 64rem) 48vw, (max-width: 92rem) 54vw, 48rem" priority={active === "All" && projectNumber <= 2} />
                       </figure>
                     ))}
                   </div>

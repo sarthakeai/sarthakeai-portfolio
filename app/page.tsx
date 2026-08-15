@@ -61,7 +61,7 @@ export default function Home() {
             <p className="hero-intro hero-reveal hero-delay-2">I’m a video editor and creator based in India. I edit YouTube videos, shorts, podcasts and social content for brands and creators around the world.</p>
             <div className="hero-actions hero-reveal hero-delay-2">
               <a className="button button-primary" href="#work">See selected work <span aria-hidden="true">↓</span></a>
-              <BookingTrigger className="text-link hero-connect">Connect <span aria-hidden="true">↗</span></BookingTrigger>
+              <BookingTrigger className="button button-secondary hero-connect">Connect <span aria-hidden="true">↗</span></BookingTrigger>
             </div>
           </div>
         </section>
@@ -81,7 +81,7 @@ export default function Home() {
           </section>
         ) : null}
 
-        <section className="section work" id="work" data-reveal>
+        <section className="section work" id="work">
           <div className="section-head">
             <div><p className="kicker">Selected work</p><h2>A look at<br />what I edit.</h2></div>
             <p>Selected edits across short-form, YouTube, company video, motion and interview work.</p>
@@ -129,16 +129,16 @@ export default function Home() {
         </section>
 
         <section className="section youtube" id="youtube" data-reveal>
-          <div className="youtube-mark">
-            <span className="sr-only">EAI</span>
-          </div>
           <div className="youtube-copy">
             <p className="kicker">Personal project / YouTube</p>
             <h2>I make videos too.</h2>
             <p>I’ve created and published more than 350 long-form videos on my technology channel, which now has over 24,000 subscribers. Running the channel has taught me what works after a video leaves the timeline and reaches a real audience.</p>
           </div>
-          <div className="youtube-stats" aria-label="YouTube channel in numbers">
-            {youtubeStats.map((stat) => <div className="youtube-stat" key={stat.label}><strong>{stat.value}</strong><span>{stat.label}</span></div>)}
+          <div className="youtube-panel" aria-label="YouTube channel in numbers">
+            <div className="youtube-mark"><span className="sr-only">EAI</span></div>
+            <div className="youtube-stats">
+              {youtubeStats.map((stat) => <div className="youtube-stat" key={stat.label}><strong>{stat.value}</strong><span>{stat.label}</span></div>)}
+            </div>
           </div>
           <a className="text-link youtube-cta" href="https://www.youtube.com/@sarthakeai" target="_blank" rel="noopener noreferrer" aria-label="Visit my YouTube channel, opens in a new tab">Visit my YouTube channel <span aria-hidden="true">↗</span></a>
           {youtubeVideos.length > 0 ? (
@@ -159,22 +159,24 @@ export default function Home() {
           <div className="contact-bottom">
             <div className="contact-route-copy">
               <p className="contact-route-label">Prefer a call?</p>
-              <p>Book a call or send me an email.</p>
+              <p>Book a 30-minute call.</p>
             </div>
             <div className="contact-actions">
               <BookingTrigger className="button button-primary contact-connect">Connect <span aria-hidden="true">↗</span></BookingTrigger>
-              <a className="contact-email" href="mailto:officialsarthakeai@gmail.com">officialsarthakeai@gmail.com <span aria-hidden="true">↗</span></a>
             </div>
           </div>
           <div className="contact-form-intro">
             <p className="contact-route-label">Prefer to write?</p>
-            <p>Send me a project message below.</p>
+            <div className="contact-write-copy">
+              <p>Send me a project message.</p>
+              <a className="contact-email" href="mailto:officialsarthakeai@gmail.com">officialsarthakeai@gmail.com <span aria-hidden="true">↗</span></a>
+            </div>
           </div>
           <ContactForm />
         </section>
       </div>
 
-      <footer>
+      <footer className="site-footer">
         <div className="footer-inner">
           <div className="footer-upper">
             <p className="footer-copyright"><span>© 2026 Sarthak Sharma</span><span>All Rights Reserved.</span></p>
@@ -204,6 +206,9 @@ export default function Home() {
             </div>
           </div>
           <div className="footer-divider" aria-hidden="true" />
+          <div className="footer-bottom">
+            <a className="footer-back-to-top" href="#top" aria-label="Back to top">Back to top <span aria-hidden="true">↑</span></a>
+          </div>
         </div>
       </footer>
     </main>

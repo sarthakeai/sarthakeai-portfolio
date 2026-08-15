@@ -1,8 +1,9 @@
 "use client";
 
 /* eslint-disable @next/next/no-img-element -- The testimonial portrait is pre-compressed and served responsively without the Next image runtime. */
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-noninteractive-tabindex -- The carousel region is deliberately focusable for scoped arrow-key navigation. */
 
-import { useCallback, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { clientTestimonials, type ClientTestimonial } from "./testimonials-data";
 
 type Direction = 1 | -1;
@@ -12,11 +13,15 @@ function TestimonialSlide({
   className = "",
   slideRef,
   onAnimationEnd,
+  controls,
+  ariaHidden = false,
 }: {
   testimonial: ClientTestimonial;
   className?: string;
   slideRef?: React.Ref<HTMLElement>;
   onAnimationEnd?: React.AnimationEventHandler<HTMLElement>;
+  controls: ReactNode;
+  ariaHidden?: boolean;
 }) {
   return (
     <article
@@ -24,6 +29,7 @@ function TestimonialSlide({
       className={`testimonial-slide${testimonial.image ? " has-image" : " is-text-only"}${className}`}
       onAnimationEnd={onAnimationEnd}
       aria-label={`${testimonial.name} testimonial`}
+      aria-hidden={ariaHidden}
     >
       {testimonial.image ? (
         <figure className="testimonial-portrait">
@@ -50,6 +56,7 @@ function TestimonialSlide({
             <cite>{testimonial.name}</cite>
             <span>{testimonial.role}</span>
           </div>
+          {controls}
         </footer>
       </div>
     </article>
@@ -102,19 +109,32 @@ export function ClientTestimonials() {
 
   const activeTestimonial = clientTestimonials[activeIndex];
   const pendingTestimonial = nextIndex === null ? null : clientTestimonials[nextIndex];
+  const controls = (interactive: boolean) => (
+    <div className="testimonial-controls" aria-label={interactive ? "Testimonial navigation" : undefined} aria-hidden={!interactive}>
+      <button type="button" onClick={() => move(-1)} aria-label="Previous testimonial" disabled={!interactive || nextIndex !== null} tabIndex={interactive ? 0 : -1}>
+        <span aria-hidden="true">←</span>
+      </button>
+      <button type="button" onClick={() => move(1)} aria-label="Next testimonial" disabled={!interactive || nextIndex !== null} tabIndex={interactive ? 0 : -1}>
+        <span aria-hidden="true">→</span>
+      </button>
+    </div>
+  );
 
   return (
     <section className="section client-testimonials" aria-labelledby="client-testimonials-title" data-reveal>
       <header className="testimonials-intro">
-        <p className="kicker" id="client-testimonials-title">Client testimonials</p>
-        <p>Don’t take my word for it — hear it from my clients.</p>
+        <p className="kicker">Client testimonials</p>
+        <h2 id="client-testimonials-title">What clients say.</h2>
       </header>
 
+      {/* The focused carousel region owns left/right navigation without stealing ordinary page keys. */}
       <div
         className="testimonials-carousel"
         role="region"
         aria-roledescription="carousel"
         aria-label="Client testimonials"
+        tabIndex={0}
+        onKeyDown={handleKeyDown}
       >
         <div
           className={`testimonials-stage${nextIndex !== null ? " is-transitioning" : ""}`}
@@ -125,6 +145,7 @@ export function ClientTestimonials() {
             testimonial={activeTestimonial}
             slideRef={activeSlideRef}
             className={nextIndex === null ? " is-active" : direction === 1 ? " is-exiting-left" : " is-exiting-right"}
+            controls={controls(nextIndex === null)}
           />
           {pendingTestimonial ? (
             <TestimonialSlide
@@ -132,17 +153,10 @@ export function ClientTestimonials() {
               slideRef={nextSlideRef}
               className={direction === 1 ? " is-entering-right" : " is-entering-left"}
               onAnimationEnd={finishTransition}
+              controls={controls(false)}
+              ariaHidden
             />
           ) : null}
-        </div>
-
-        <div className="testimonial-controls" aria-label="Testimonial navigation">
-          <button type="button" onClick={() => move(-1)} onKeyDown={handleKeyDown} aria-label="Previous testimonial" disabled={nextIndex !== null}>
-            <span aria-hidden="true">←</span>
-          </button>
-          <button type="button" onClick={() => move(1)} onKeyDown={handleKeyDown} aria-label="Next testimonial" disabled={nextIndex !== null}>
-            <span aria-hidden="true">→</span>
-          </button>
         </div>
       </div>
     </section>

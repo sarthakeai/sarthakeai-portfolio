@@ -11,7 +11,7 @@ const links = [
   { href: "#youtube", label: "YouTube" },
 ];
 
-const mobileLinks = [...links, { href: "#contact", label: "Let’s talk" }];
+const mobileLinks = [...links, { href: "#contact", label: "Connect" }];
 
 const mobileSocials = [
   { href: "https://www.instagram.com/sarthak.eai", label: "Instagram" },
@@ -216,6 +216,7 @@ export function SiteHeader() {
 
   return (
     <header ref={headerRef} className={`site-header${scrolled ? " is-scrolled" : ""}${menuOpen ? " menu-open" : ""}`}>
+      <div className="site-header-inner">
       <a className="brand" href="#top" aria-label="Sarthak, home" onClick={closeMenu}>
         <span className="brand-signature brand-logo-only" aria-hidden="true" />
       </a>
@@ -257,6 +258,7 @@ export function SiteHeader() {
         <button ref={menuButtonRef} className="menu" type="button" onClick={toggleMenu} aria-label={menuOpen ? "Close navigation" : "Open navigation"} aria-expanded={menuOpen} aria-controls="primary-navigation">
           <span /><span />
         </button>
+      </div>
       </div>
     </header>
   );
