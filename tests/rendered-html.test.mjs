@@ -277,7 +277,7 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(css, /\.video-modal-media-portrait\s*\{[^}]+repeat\(3, minmax\(0, 1fr\)\)/s);
   assert.match(css, /\.video-modal-media video\s*\{[^}]+width:\s*100%/s);
   assert.match(css, /\.video-modal-youtube/);
-  assert.match(css, /\.hero-connect\s*\{[^}]+border-radius:\s*50%/s);
+  assert.match(css, /\.hero-connect\s*\{[^}]+height:\s*3rem;[^}]+border-radius:\s*0;[^}]+background:\s*var\(--accent\)/s);
   assert.match(css, /\.about-portrait/);
   assert.match(css, /\.booking-calendar\s*\{[^}]+justify-content:\s*center/s);
   assert.match(css, /html\[data-theme="dark"\] \.theme-track i \{ transform: translateX\(1\.3125rem\)/);

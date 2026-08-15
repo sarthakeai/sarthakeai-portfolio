@@ -165,10 +165,10 @@ html[data-theme="dark"] .theme-icon-moon { color: #f7f5ef; opacity: 1; transform
 .button:active { transform: scale(.98); }
 .text-link { min-height: 2.75rem; display: inline-flex; align-items: center; gap: .7rem; border-bottom: 1px solid var(--line); font-size: .75rem; transition: border-color 180ms ease-out, color 180ms ease-out; }
 .text-link:hover { color: var(--accent); border-color: var(--accent); }
-.hero-connect { width: clamp(7rem, 7.75vw, 8.125rem); height: clamp(7rem, 7.75vw, 8.125rem); min-height: 0; flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; gap: .55rem; padding: 0; border: 1px solid color-mix(in srgb, var(--ink) 48%, var(--line)); border-radius: 50%; background: color-mix(in srgb, var(--surface) 52%, transparent); color: var(--ink); font-size: .6875rem; font-weight: 650; letter-spacing: .09em; text-transform: uppercase; cursor: pointer; transition: color 260ms cubic-bezier(.22, 1, .36, 1), border-color 260ms cubic-bezier(.22, 1, .36, 1), background-color 260ms cubic-bezier(.22, 1, .36, 1), transform 260ms cubic-bezier(.22, 1, .36, 1); }
-.hero-connect span { color: var(--accent); transition: color 240ms cubic-bezier(.22, 1, .36, 1), transform 240ms cubic-bezier(.22, 1, .36, 1); }
-.hero-connect:hover { border-color: var(--accent); background: var(--accent); color: var(--accent-ink); transform: translateY(-1px) scale(1.02); }
-.hero-connect:hover span { color: currentColor; transform: translate(.2rem, -.2rem); }
+.hero-connect { width: auto; min-width: 10.25rem; height: 3rem; min-height: 3rem; flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: space-between; gap: 2rem; padding: 0 1rem; border: 1px solid var(--accent); border-radius: 0; background: var(--accent); color: #fff; font-size: .6875rem; font-weight: 680; letter-spacing: .085em; text-transform: uppercase; cursor: pointer; transition: color 240ms cubic-bezier(.22, 1, .36, 1), border-color 240ms cubic-bezier(.22, 1, .36, 1), background-color 240ms cubic-bezier(.22, 1, .36, 1), transform 240ms cubic-bezier(.22, 1, .36, 1); }
+.hero-connect span { color: currentColor; transition: transform 220ms cubic-bezier(.22, 1, .36, 1); }
+.hero-connect:hover { border-color: color-mix(in srgb, var(--accent) 82%, var(--ink)); background: color-mix(in srgb, var(--accent) 82%, var(--ink)); color: #fff; transform: translateY(-2px); }
+.hero-connect:hover span { transform: translate(.2rem, -.2rem); }
 .hero-reveal { animation: hero-reveal 620ms both var(--ease-out); }
 .hero-delay-1 { animation-delay: 70ms; }
 .hero-delay-2 { animation-delay: 140ms; }
@@ -577,7 +577,7 @@ footer a:active { opacity: .7; }
   :root { --page-gutter: 1.1rem; }
   .hero-actions { align-items: flex-start; flex-direction: column; gap: .65rem; }
   .button { width: 100%; }
-  .hero-connect { width: 7.25rem; height: 7.25rem; justify-content: center; }
+  .hero-connect { width: 100%; min-width: 0; height: 3rem; justify-content: space-between; }
   .section-head h2, .about h2, .youtube h2 { font-size: clamp(2.35rem, 12vw, 3.5rem); }
   .project-art strong { max-width: 88%; }
   .stats { gap: 2rem 1rem; }
