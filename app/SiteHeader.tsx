@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { BookingTrigger } from "./BookingExperience";
+import { availability } from "./portfolio-data";
 import { ThemeToggle } from "./ThemeToggle";
 
 const links = [
@@ -19,16 +20,37 @@ const mobileSocials = [
   { href: "https://www.youtube.com/@sarthakeai", label: "YouTube" },
 ];
 
+const delhiTimeFormatter = new Intl.DateTimeFormat("en-GB", {
+  timeZone: "Asia/Kolkata",
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
+  hour12: false,
+});
+
+function getAvailabilityLabel(slots: number) {
+  return `${slots} ${slots === 1 ? "slot" : "slots"} available`;
+}
+
 export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedHref, setSelectedHref] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [delhiTime, setDelhiTime] = useState("--:--:--");
   const headerRef = useRef<HTMLElement>(null);
   const navRef = useRef<HTMLElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const closeTimerRef = useRef<number | null>(null);
   const scrollTimerRef = useRef<number | null>(null);
+  const availabilityLabel = getAvailabilityLabel(availability.slots);
+
+  useEffect(() => {
+    const updateClock = () => setDelhiTime(delhiTimeFormatter.format(new Date()));
+    updateClock();
+    const interval = window.setInterval(updateClock, 1000);
+    return () => window.clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const media = window.matchMedia("(max-width: 50rem)");
@@ -147,11 +169,14 @@ export function SiteHeader() {
       <a className="brand" href="#top" aria-label="Sarthak, home" onClick={closeMenu}>
         <span className="brand-signature brand-logo-only" aria-hidden="true" />
       </a>
+      <div className="header-location" aria-label={`New Delhi local time ${delhiTime}`}>
+        <span>New Delhi</span><i aria-hidden="true">──</i><time>{delhiTime}</time>
+      </div>
       <nav className="nav nav-desktop" aria-label="Primary navigation" aria-hidden={isMobile ? true : undefined} inert={isMobile ? true : undefined}>
         {links.map((link) => <a key={link.href} href={link.href} onClick={closeMenu}>{link.label}</a>)}
-        <BookingTrigger className="nav-cta availability-cta" aria-label="Available for projects. Book a call with Sarthak">
+        <BookingTrigger className="nav-cta availability-cta" aria-label={`${availabilityLabel}. Book a call with Sarthak`}>
           <i className="availability-dot" aria-hidden="true" />
-          <span>Available for projects</span>
+          <span>{availabilityLabel}</span>
         </BookingTrigger>
       </nav>
       <nav ref={navRef} id="primary-navigation" className="mobile-nav" aria-label="Mobile navigation" aria-hidden={!isMobile || !menuOpen} inert={!isMobile || !menuOpen ? true : undefined}>
@@ -169,8 +194,9 @@ export function SiteHeader() {
         <div className="mobile-nav-utility">
           <div className="mobile-nav-utility-head">
             <span>Elsewhere</span>
-            <BookingTrigger className="mobile-availability" aria-label="Available for projects. Book a call with Sarthak"><i aria-hidden="true" />Available for projects</BookingTrigger>
+            <BookingTrigger className="mobile-availability" aria-label={`${availabilityLabel}. Book a call with Sarthak`}><i aria-hidden="true" />{availabilityLabel}</BookingTrigger>
           </div>
+          <div className="mobile-local-time" aria-label={`New Delhi local time ${delhiTime}`}><span>New Delhi</span><span>Local time <time>{delhiTime}</time></span></div>
           <div className="mobile-nav-socials">
             {mobileSocials.map((social) => <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer">{social.label}<span aria-hidden="true">↗</span></a>)}
           </div>

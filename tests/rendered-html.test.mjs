@@ -34,13 +34,13 @@ test("server-renders the complete Sarthak portfolio", async () => {
   assert.match(html, /21st Capital introduction/);
   assert.match(html, /Motion &amp; Brand Animation/);
   assert.match(html, /21st Capital interview/);
-  assert.equal((html.match(/<article class="project/g) ?? []).length, 6);
+  assert.equal((html.match(/<article data-project-id="[^"]+" class="project/g) ?? []).length, 6);
   assert.match(html, /\/work\/swan\/swan-short-04-poster\.webp/);
   assert.match(html, /\/work\/roxom\/roxom-short-01-poster\.webp/);
-  assert.match(html, /i\.ytimg\.com\/vi\/5MWtToYnA00\/hqdefault\.jpg/);
+  assert.match(html, /\/work\/youtube\/xiaomi-13-pro-poster\.webp/);
   assert.match(html, /\/work\/21st-capital\/21st-capital-intro-poster\.webp/);
   assert.match(html, /\/work\/motion\/motion-bitcoin-treasuries-poster\.webp/);
-  assert.match(html, /i\.ytimg\.com\/vi\/X5Z5VLdJxC4\/hqdefault\.jpg/);
+  assert.match(html, /\/work\/youtube\/21st-capital-interview-poster\.webp/);
   assert.doesNotMatch(html, /\.mp4/);
   assert.equal((html.match(/class="footer-directory-link/g) ?? []).length, 8);
   assert.match(html, /class="footer-upper"/);
@@ -77,7 +77,10 @@ test("server-renders the complete Sarthak portfolio", async () => {
   assert.match(html, /brands and creators around the world/);
   assert.match(html, /Book a call or send me an email\./);
   assert.match(html, />Connect <span/);
-  assert.match(html, /Available for projects/);
+  assert.match(html, /2 slots available/i);
+  assert.match(html, /class="header-location"/);
+  assert.match(html, /New Delhi/i);
+  assert.match(html, /\/sarthak-about-960\.webp/);
   assert.doesNotMatch(html, /Press|to copy email|Send message/);
   assert.doesNotMatch(html, /formspree|name="name"|name="message"|name="_gotcha"/);
   assert.match(html, /https:\/\/www\.youtube\.com\/@sarthakeai/);
@@ -87,12 +90,13 @@ test("server-renders the complete Sarthak portfolio", async () => {
 });
 
 test("keeps interaction scoped and accessibility preferences explicit", async () => {
-  const [page, layout, header, booking, portfolio, data, theme, timeline, css, swanLogo, favicon] = await Promise.all([
+  const [page, layout, header, booking, portfolio, mediaPlayback, data, theme, timeline, css, swanLogo, favicon] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/SiteHeader.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/BookingExperience.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/PortfolioGrid.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/media-playback.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/portfolio-data.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/ThemeToggle.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/HeroTimeline.tsx", import.meta.url), "utf8"),
@@ -128,7 +132,13 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(header, /scrollIntoView\(\{ behavior: reducedMotion \? "auto" : "smooth"/);
   assert.match(header, /window\.history\.pushState/);
   assert.match(header, /selectedHref === link\.href \? " is-selected"/);
-  assert.match(header, /Available for projects/);
+  assert.match(header, /availability\.slots/);
+  assert.match(header, /slots === 1 \? "slot" : "slots"/);
+  assert.match(header, /Asia\/Kolkata/);
+  assert.match(header, /window\.setInterval\(updateClock, 1000\)/);
+  assert.match(header, /window\.clearInterval\(interval\)/);
+  assert.match(header, /header-location/);
+  assert.match(header, /mobile-local-time/);
   assert.match(header, /availability-cta/);
   assert.match(header, /mobile-availability/);
   assert.match(header, /BookingTrigger/);
@@ -170,6 +180,14 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(portfolio, /setStarted\(true\)/);
   assert.match(portfolio, /videoRef\.current\?\.play\(\)/);
   assert.doesNotMatch(portfolio, /autoPlay/);
+  assert.match(portfolio, /youtube-nocookie\.com\/embed/);
+  assert.match(portfolio, /Watch on YouTube/);
+  assert.match(portfolio, /MEDIA_PLAYBACK_EVENT/);
+  assert.match(portfolio, /stopMediaWithin\(dialogRef\.current\)/);
+  assert.match(portfolio, /onPlay=\{\(event\) => activateMedia/);
+  assert.match(mediaPlayback, /video\.pause\(\)/);
+  assert.match(mediaPlayback, /activeId/);
+  assert.match(mediaPlayback, /iframe\.src = "about:blank"/);
   assert.match(data, /roles: string\[\]/);
   assert.match(data, /export type ProjectMedia/);
   assert.match(data, /title: "Swan Bitcoin short-form"/);
@@ -187,6 +205,10 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(data, /"Podcast \/ Interview"/);
   assert.match(data, /https:\/\/youtu\.be\/5MWtToYnA00\?si=C8LS743wbJXIkAWy/);
   assert.match(data, /https:\/\/youtu\.be\/X5Z5VLdJxC4\?si=xjztMcaGd1S-CfQH/);
+  assert.match(data, /xiaomi-13-pro-poster\.webp/);
+  assert.match(data, /21st-capital-interview-poster\.webp/);
+  assert.match(data, /posterFallbacks/);
+  assert.match(data, /export const availability = \{\s*slots: 2,/s);
   assert.match(data, /type\?: "brand" \| "creator"/);
   assert.match(data, /export const clients: Client\[\] = \[/);
   assert.match(data, /name: "Swan Bitcoin"/);
@@ -221,6 +243,8 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(booking, /event\.key === "Escape"/);
   assert.match(booking, /body\.style\.overflow = "hidden"/);
   assert.match(booking, /returnFocus\?\.focus/);
+  assert.match(booking, /setCalendarSlow/);
+  assert.match(booking, /Open Calendly/);
   assert.match(booking, /BookingTrigger must be used within BookingProvider/);
   assert.match(page, /<BookingProvider>/);
   assert.equal((page.match(/<BookingTrigger/g) ?? []).length, 2);
@@ -252,6 +276,10 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.doesNotMatch(css, /transform:\s*scale\(1\.045\)/);
   assert.match(css, /\.video-modal-media-portrait\s*\{[^}]+repeat\(3, minmax\(0, 1fr\)\)/s);
   assert.match(css, /\.video-modal-media video\s*\{[^}]+width:\s*100%/s);
+  assert.match(css, /\.video-modal-youtube/);
+  assert.match(css, /\.hero-connect\s*\{[^}]+border-radius:\s*50%/s);
+  assert.match(css, /\.about-portrait/);
+  assert.match(css, /\.booking-calendar\s*\{[^}]+justify-content:\s*center/s);
   assert.match(css, /html\[data-theme="dark"\] \.theme-track i \{ transform: translateX\(1\.3125rem\)/);
   assert.doesNotMatch(css, /margin-inline:\s*calc\(var\(--page-gutter\)\s*\*\s*-1\)/);
   assert.match(css, /prefers-reduced-transparency:\s*reduce/);
@@ -267,12 +295,14 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
 });
 
 test("keeps initial visual assets lightweight", async () => {
-  const [portrait, darkLogo, lightLogo] = await Promise.all([
+  const [portrait, aboutPortrait, darkLogo, lightLogo] = await Promise.all([
     stat(new URL("../public/sarthak-sharma.webp", import.meta.url)),
+    stat(new URL("../public/sarthak-about-1600.webp", import.meta.url)),
     stat(new URL("../public/eai-logo-dark.svg", import.meta.url)),
     stat(new URL("../public/eai-logo-light.svg", import.meta.url)),
   ]);
   assert.ok(portrait.size < 20_000, `hero portrait is ${portrait.size} bytes`);
+  assert.ok(aboutPortrait.size < 800_000, `About portrait is ${aboutPortrait.size} bytes`);
   assert.ok(darkLogo.size < 3_000, `dark logo is ${darkLogo.size} bytes`);
   assert.ok(lightLogo.size < 3_000, `light logo is ${lightLogo.size} bytes`);
 });
@@ -287,6 +317,8 @@ test("keeps portfolio media optimized and poster-led", async () => {
     ...Array.from({ length: 10 }, (_, index) => `swan/swan-short-${String(index + 1).padStart(2, "0")}-preview.mp4`),
   ];
   const posterPaths = [
+    "youtube/xiaomi-13-pro-poster.webp",
+    "youtube/21st-capital-interview-poster.webp",
     "21st-capital/21st-capital-intro-poster.webp",
     "motion/motion-bitcoin-treasuries-poster.webp",
     "motion/motion-hashrateup-swan-poster.webp",
@@ -299,8 +331,8 @@ test("keeps portfolio media optimized and poster-led", async () => {
   const totalVideoBytes = videoStats.reduce((total, file) => total + file.size, 0);
   const totalPosterBytes = posterStats.reduce((total, file) => total + file.size, 0);
   assert.equal(videoStats.length, 18);
-  assert.equal(posterStats.length, 18);
+  assert.equal(posterStats.length, 20);
   assert.ok(totalVideoBytes < 82_000_000, `portfolio previews total ${totalVideoBytes} bytes`);
-  assert.ok(totalPosterBytes < 550_000, `portfolio posters total ${totalPosterBytes} bytes`);
+  assert.ok(totalPosterBytes < 650_000, `portfolio posters total ${totalPosterBytes} bytes`);
   assert.ok(Math.max(...posterStats.map((file) => file.size)) < 50_000, "every portfolio poster stays below 50 KB");
 });

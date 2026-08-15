@@ -4,25 +4,105 @@
 /* eslint-disable jsx-a11y/media-has-caption -- Supplied portfolio previews use their source/open captions; separate timed-text files were not provided. */
 
 import { useEffect, useRef, useState } from "react";
+import { activateMedia, MEDIA_PLAYBACK_EVENT, stopAllMedia, stopMediaWithin, type MediaPlaybackEvent } from "./media-playback";
 import { categories, projects, type Project, type ProjectMedia } from "./portfolio-data";
 
 type ViewTransitionDocument = Document & {
   startViewTransition?: (update: () => void) => void;
 };
 
+function getYouTubeId(url?: string) {
+  if (!url) return null;
+  try {
+    const parsed = new URL(url);
+    if (parsed.hostname === "youtu.be") return parsed.pathname.split("/").filter(Boolean)[0] ?? null;
+    if (parsed.hostname.endsWith("youtube.com")) {
+      if (parsed.pathname.startsWith("/embed/")) return parsed.pathname.split("/")[2] ?? null;
+      return parsed.searchParams.get("v");
+    }
+  } catch {
+    return null;
+  }
+  return null;
+}
+
+function PosterImage({ media, alt, sizes }: { media: ProjectMedia; alt: string; sizes: string }) {
+  const sources = [media.poster, ...(media.posterFallbacks ?? [])];
+  const [sourceIndex, setSourceIndex] = useState(0);
+
+  return (
+    <img
+      src={sources[sourceIndex]}
+      alt={alt}
+      width={media.width}
+      height={media.height}
+      sizes={sizes}
+      loading="lazy"
+      decoding="async"
+      onError={() => setSourceIndex((index) => Math.min(index + 1, sources.length - 1))}
+    />
+  );
+}
+
 function PortfolioVideo({ media, projectLabel, ratio }: { media: ProjectMedia; projectLabel: string; ratio: Project["ratio"] }) {
   const [started, setStarted] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const youtubeId = getYouTubeId(media.externalUrl);
 
   useEffect(() => {
-    if (!started) return;
+    const onPlaybackChange = (event: Event) => {
+      const { activeId } = (event as MediaPlaybackEvent).detail;
+      if (activeId === media.id) return;
+      videoRef.current?.pause();
+      if (youtubeId) setStarted(false);
+    };
+
+    window.addEventListener(MEDIA_PLAYBACK_EVENT, onPlaybackChange);
+    return () => {
+      window.removeEventListener(MEDIA_PLAYBACK_EVENT, onPlaybackChange);
+    };
+  }, [media.id, youtubeId]);
+
+  useEffect(() => {
+    if (!started || youtubeId) return;
     void videoRef.current?.play().catch(() => undefined);
-  }, [started]);
+  }, [started, youtubeId]);
+
+  const startPlayback = () => {
+    activateMedia(media.id);
+    setStarted(true);
+  };
+
+  if (youtubeId) {
+    if (!started) {
+      return (
+        <div className={`video-modal-poster video-modal-poster-${ratio}`}>
+          <PosterImage media={media} alt="" sizes="(max-width: 50rem) calc(100vw - 3rem), 64rem" />
+          <button type="button" onClick={startPlayback} aria-label={`Play ${media.title} — ${projectLabel} inside this website`}>
+            <span aria-hidden="true" />
+          </button>
+        </div>
+      );
+    }
+
+    return (
+      <div className="video-modal-youtube">
+        <iframe
+          data-media-player="youtube"
+          src={`https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=1&rel=0&playsinline=1`}
+          title={`${media.title} — ${projectLabel}`}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+          allowFullScreen
+          loading="lazy"
+        />
+      </div>
+    );
+  }
 
   if (media.externalUrl) {
     return (
       <a className={`video-modal-external video-modal-external-${ratio}`} href={media.externalUrl} target="_blank" rel="noopener noreferrer" aria-label={`Watch ${media.title} — ${projectLabel}, opens in a new tab`}>
-        <img src={media.poster} alt={`${media.title} — ${projectLabel}`} width={media.width} height={media.height} loading="lazy" decoding="async" />
+        <PosterImage media={media} alt={`${media.title} — ${projectLabel}`} sizes="(max-width: 50rem) calc(100vw - 3rem), 64rem" />
         <span>Watch project <b aria-hidden="true">↗</b></span>
       </a>
     );
@@ -35,8 +115,8 @@ function PortfolioVideo({ media, projectLabel, ratio }: { media: ProjectMedia; p
   if (!started) {
     return (
       <div className={`video-modal-poster video-modal-poster-${ratio}`}>
-        <img src={media.poster} alt="" width={media.width} height={media.height} loading="lazy" decoding="async" />
-        <button type="button" onClick={() => setStarted(true)} aria-label={`Play ${media.title} — ${projectLabel}`}>
+        <PosterImage media={media} alt="" sizes="(max-width: 42rem) min(20rem, calc(100vw - 3rem)), (max-width: 50rem) 45vw, 21rem" />
+        <button type="button" onClick={startPlayback} aria-label={`Play ${media.title} — ${projectLabel}`}>
           <span aria-hidden="true" />
         </button>
       </div>
@@ -44,7 +124,7 @@ function PortfolioVideo({ media, projectLabel, ratio }: { media: ProjectMedia; p
   }
 
   return (
-    <video ref={videoRef} controls playsInline preload="none" poster={media.poster} aria-label={`${media.title} — ${projectLabel}`}>
+    <video ref={videoRef} controls playsInline preload="none" poster={media.poster} aria-label={`${media.title} — ${projectLabel}`} onPlay={(event) => activateMedia(media.id, event.currentTarget)}>
       <source src={media.videoUrl} type="video/mp4" />
     </video>
   );
@@ -67,21 +147,27 @@ export function PortfolioGrid() {
   };
 
   const openProject = (project: Project, trigger: HTMLElement) => {
+    stopAllMedia();
     returnFocusRef.current = trigger;
     setSelectedProject(project);
   };
 
-  const closeProject = () => setSelectedProject(null);
+  const closeProject = () => {
+    stopMediaWithin(dialogRef.current);
+    stopAllMedia();
+    setSelectedProject(null);
+  };
 
   useEffect(() => {
     if (!selectedProject) return;
+    const dialog = dialogRef.current;
     const root = document.documentElement;
     const body = document.body;
     const previousRootOverflow = root.style.overflow;
     const previousBodyOverflow = body.style.overflow;
     root.style.overflow = "hidden";
     body.style.overflow = "hidden";
-    const focusableElements = () => Array.from(dialogRef.current?.querySelectorAll<HTMLElement>("a[href], button:not([disabled]), video[controls], [tabindex]:not([tabindex='-1'])") ?? []);
+    const focusableElements = () => Array.from(dialog?.querySelectorAll<HTMLElement>("a[href], button:not([disabled]), video[controls], iframe, [tabindex]:not([tabindex='-1'])") ?? []);
     requestAnimationFrame(() => closeButtonRef.current?.focus());
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -103,6 +189,8 @@ export function PortfolioGrid() {
     };
     document.addEventListener("keydown", onKeyDown);
     return () => {
+      stopMediaWithin(dialog);
+      stopAllMedia();
       root.style.overflow = previousRootOverflow;
       body.style.overflow = previousBodyOverflow;
       document.removeEventListener("keydown", onKeyDown);
@@ -127,7 +215,7 @@ export function PortfolioGrid() {
           const projectNumber = projects.findIndex((item) => item.id === project.id) + 1;
 
           return (
-            <article className={`project ${project.ratio}${project.featured ? " featured" : ""}${project.layout ? ` layout-${project.layout}` : ""}`} key={project.id} style={{ viewTransitionName: `project-${project.id}` }}>
+            <article data-project-id={project.id} className={`project ${project.ratio}${project.featured ? " featured" : ""}${project.layout ? ` layout-${project.layout}` : ""}`} key={project.id} style={{ viewTransitionName: `project-${project.id}` }}>
               <div className="project-meta-line" aria-label={`Project ${String(projectNumber).padStart(2, "0")}: ${project.category}, ${project.contentType}`}>
                 <span className="project-number">{String(projectNumber).padStart(2, "0")}</span>
                 <span className="project-category">{project.category}</span>
@@ -138,7 +226,7 @@ export function PortfolioGrid() {
                   <div className={`project-preview${previewMedia.length > 1 ? " project-preview-triptych" : " project-preview-single"}`}>
                     {previewMedia.map((media) => (
                       <figure key={media.id}>
-                        <img src={media.poster} alt={`${media.title} — ${project.client ?? project.title}`} width={media.width} height={media.height} loading="lazy" decoding="async" />
+                        <PosterImage media={media} alt={`${media.title} — ${project.client ?? project.title}`} sizes="(max-width: 50rem) calc(100vw - 2.5rem), (max-width: 92rem) 48vw, 44rem" />
                       </figure>
                     ))}
                   </div>
@@ -204,7 +292,7 @@ export function PortfolioGrid() {
               {selectedProject.deliverables?.length ? <p className="project-deliverables"><span>Deliverables</span>{selectedProject.deliverables.join(" · ")}</p> : null}
               {selectedProject.result ? <div className="project-result"><strong>{selectedProject.result.value}</strong><span>{selectedProject.result.label}</span></div> : null}
             </div>
-            {selectedProject.externalUrl ? <a className="text-link" href={selectedProject.externalUrl} target="_blank" rel="noopener noreferrer">Watch project <span aria-hidden="true">↗</span></a> : null}
+            {selectedProject.externalUrl ? <a className="text-link" href={selectedProject.externalUrl} target="_blank" rel="noopener noreferrer">{getYouTubeId(selectedProject.externalUrl) ? "Watch on YouTube" : "Watch project"} <span aria-hidden="true">↗</span></a> : null}
             {selectedProject.caseStudySlug ? <a className="text-link" href={`/work/${selectedProject.caseStudySlug}`}>View case study <span aria-hidden="true">↗</span></a> : null}
           </div>
         </div>

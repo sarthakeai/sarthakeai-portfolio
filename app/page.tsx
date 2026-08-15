@@ -1,3 +1,5 @@
+/* eslint-disable @next/next/no-img-element -- This site ships hand-optimized responsive image assets without the Next image runtime. */
+
 import { BookingProvider, BookingTrigger } from "./BookingExperience";
 import { HeroTimeline } from "./HeroTimeline";
 import { MotionController } from "./MotionController";
@@ -90,6 +92,18 @@ export default function Home() {
         <section className="section about" id="about" data-reveal>
           <div className="about-grid">
             <p className="kicker">About</p>
+            <figure className="about-portrait">
+              <img
+                src="/sarthak-about-960.webp"
+                srcSet="/sarthak-about-960.webp 960w, /sarthak-about-1600.webp 1600w"
+                sizes="(max-width: 50rem) 11rem, (max-width: 68rem) 14rem, 17rem"
+                alt="Sarthak beside his motorcycle in the mountains"
+                width="1600"
+                height="2132"
+                loading="lazy"
+                decoding="async"
+              />
+            </figure>
             <div className="about-copy">
               <h2>I know the edit from both sides of the timeline.</h2>
               <p>I’ve been editing professionally for around five years, mostly for creators working across YouTube, podcasts, tech, finance and social.</p>

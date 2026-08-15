@@ -24,6 +24,7 @@ export type ProjectMedia = {
   videoUrl?: string;
   externalUrl?: string;
   poster: string;
+  posterFallbacks?: string[];
   width: number;
   height: number;
   featured?: boolean;
@@ -99,9 +100,13 @@ export const projects: Project[] = [
         id: "youtube-xiaomi-13-pro",
         title: "Xiaomi 13 Pro Review: Just Wow! (Hindi)",
         externalUrl: "https://youtu.be/5MWtToYnA00?si=C8LS743wbJXIkAWy",
-        poster: "https://i.ytimg.com/vi/5MWtToYnA00/hqdefault.jpg",
-        width: 480,
-        height: 360,
+        poster: "/work/youtube/xiaomi-13-pro-poster.webp",
+        posterFallbacks: [
+          "https://i.ytimg.com/vi/5MWtToYnA00/sddefault.jpg",
+          "https://i.ytimg.com/vi/5MWtToYnA00/hqdefault.jpg",
+        ],
+        width: 1280,
+        height: 720,
         featured: true,
       },
     ],
@@ -182,9 +187,13 @@ export const projects: Project[] = [
         id: "podcast-21st-capital",
         title: "21st Capital Panic is Coming",
         externalUrl: "https://youtu.be/X5Z5VLdJxC4?si=xjztMcaGd1S-CfQH",
-        poster: "https://i.ytimg.com/vi/X5Z5VLdJxC4/hqdefault.jpg",
-        width: 480,
-        height: 360,
+        poster: "/work/youtube/21st-capital-interview-poster.webp",
+        posterFallbacks: [
+          "https://i.ytimg.com/vi/X5Z5VLdJxC4/sddefault.jpg",
+          "https://i.ytimg.com/vi/X5Z5VLdJxC4/hqdefault.jpg",
+        ],
+        width: 1280,
+        height: 720,
         featured: true,
       },
     ],
@@ -238,8 +247,7 @@ export const clients: Client[] = [
 ];
 
 export const availability = {
-  available: true,
-  label: "Available for select projects",
+  slots: 2,
 };
 
 export const socials = [

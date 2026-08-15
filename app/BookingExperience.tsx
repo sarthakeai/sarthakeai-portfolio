@@ -29,6 +29,7 @@ const BookingContext = createContext<BookingContextValue | null>(null);
 export function BookingProvider({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
   const [calendarLoaded, setCalendarLoaded] = useState(false);
+  const [calendarSlow, setCalendarSlow] = useState(false);
   const [darkCalendar, setDarkCalendar] = useState(false);
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
@@ -37,6 +38,7 @@ export function BookingProvider({ children }: { children: ReactNode }) {
   const openBooking = useCallback((trigger?: HTMLElement | null) => {
     returnFocusRef.current = trigger ?? (document.activeElement instanceof HTMLElement ? document.activeElement : null);
     setCalendarLoaded(false);
+    setCalendarSlow(false);
     setDarkCalendar(document.documentElement.dataset.theme === "dark");
     setOpen(true);
   }, []);
@@ -95,6 +97,12 @@ export function BookingProvider({ children }: { children: ReactNode }) {
     };
   }, [closeBooking, open]);
 
+  useEffect(() => {
+    if (!open || calendarLoaded) return;
+    const fallbackTimer = window.setTimeout(() => setCalendarSlow(true), 8000);
+    return () => window.clearTimeout(fallbackTimer);
+  }, [calendarLoaded, open]);
+
   return (
     <BookingContext.Provider value={{ openBooking }}>
       {children}
@@ -124,11 +132,12 @@ export function BookingProvider({ children }: { children: ReactNode }) {
             </div>
             <div className="booking-calendar" aria-busy={!calendarLoaded}>
               {!calendarLoaded ? <p className="booking-loading" aria-live="polite">Loading calendar&hellip;</p> : null}
+              {calendarSlow ? <p className="booking-fallback">Calendar taking longer than expected. <a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer">Open Calendly <span aria-hidden="true">↗</span></a></p> : null}
               <iframe
                 src={getCalendlyEmbedUrl(darkCalendar)}
                 title="Book a 30-minute call with Sarthak"
                 loading="eager"
-                onLoad={() => setCalendarLoaded(true)}
+                onLoad={() => { setCalendarLoaded(true); setCalendarSlow(false); }}
               />
             </div>
           </div>
