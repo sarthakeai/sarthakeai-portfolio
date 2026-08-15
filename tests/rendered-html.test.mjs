@@ -1,7 +1,6 @@
 import assert from "node:assert/strict";
 import { readFile, stat } from "node:fs/promises";
 import test from "node:test";
-import { contactFormEndpoint, submitContactForm } from "../app/contact-form-submit.mjs";
 
 async function render() {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
@@ -17,6 +16,7 @@ test("server-renders the complete Sarthak portfolio", async () => {
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
   const html = await response.text();
+  assert.match(html, /<title>Sarthak \| Video Editor<\/title>/);
   assert.match(html, /Sarthak/);
   assert.doesNotMatch(html, />Sarthak Sharma</);
   assert.match(html, /class="brand-signature brand-logo-only"/);
@@ -28,6 +28,20 @@ test("server-renders the complete Sarthak portfolio", async () => {
   assert.match(html, /id="services"/);
   assert.match(html, /id="youtube"/);
   assert.match(html, /id="contact"/);
+  assert.match(html, /Swan Bitcoin short-form/);
+  assert.match(html, /Roxom social edits/);
+  assert.match(html, /Xiaomi 13 Pro review/);
+  assert.match(html, /21st Capital introduction/);
+  assert.match(html, /Motion &amp; Brand Animation/);
+  assert.match(html, /21st Capital interview/);
+  assert.equal((html.match(/<article class="project/g) ?? []).length, 6);
+  assert.match(html, /\/work\/swan\/swan-short-04-poster\.webp/);
+  assert.match(html, /\/work\/roxom\/roxom-short-01-poster\.webp/);
+  assert.match(html, /i\.ytimg\.com\/vi\/5MWtToYnA00\/hqdefault\.jpg/);
+  assert.match(html, /\/work\/21st-capital\/21st-capital-intro-poster\.webp/);
+  assert.match(html, /\/work\/motion\/motion-bitcoin-treasuries-poster\.webp/);
+  assert.match(html, /i\.ytimg\.com\/vi\/X5Z5VLdJxC4\/hqdefault\.jpg/);
+  assert.doesNotMatch(html, /\.mp4/);
   assert.equal((html.match(/class="footer-directory-link/g) ?? []).length, 8);
   assert.match(html, /class="footer-upper"/);
   assert.match(html, /class="footer-directory"/);
@@ -61,14 +75,11 @@ test("server-renders the complete Sarthak portfolio", async () => {
   assert.match(html, /mailto:officialsarthakeai@gmail\.com/);
   assert.doesNotMatch(html, /hello@sarthaksharma\.work/);
   assert.match(html, /brands and creators around the world/);
-  assert.match(html, /Press/);
-  assert.match(html, /to copy email/);
-  assert.match(html, /action="https:\/\/formspree\.io\/f\/xkjwbaoe"/);
-  assert.match(html, /name="name"/);
-  assert.match(html, /name="email"/);
-  assert.match(html, /name="message"/);
-  assert.match(html, /name="_gotcha"/);
-  assert.match(html, /Send message/);
+  assert.match(html, /Book a call or send me an email\./);
+  assert.match(html, />Connect <span/);
+  assert.match(html, /Available for projects/);
+  assert.doesNotMatch(html, /Press|to copy email|Send message/);
+  assert.doesNotMatch(html, /formspree|name="name"|name="message"|name="_gotcha"/);
   assert.match(html, /https:\/\/www\.youtube\.com\/@sarthakeai/);
   assert.match(html, /https:\/\/www\.instagram\.com\/sarthak\.eai/);
   assert.match(html, /https:\/\/x\.com\/sarthakeai/);
@@ -76,22 +87,26 @@ test("server-renders the complete Sarthak portfolio", async () => {
 });
 
 test("keeps interaction scoped and accessibility preferences explicit", async () => {
-  const [page, layout, header, portfolio, data, theme, timeline, emailShortcut, contactForm, css, swanLogo] = await Promise.all([
+  const [page, layout, header, booking, portfolio, data, theme, timeline, css, swanLogo, favicon] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/SiteHeader.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/BookingExperience.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/PortfolioGrid.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/portfolio-data.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/ThemeToggle.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/HeroTimeline.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/EmailShortcut.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/ContactForm.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     readFile(new URL("../public/collaborators/swan-bitcoin.svg", import.meta.url), "utf8"),
+    readFile(new URL("../public/favicon.svg", import.meta.url), "utf8"),
   ]);
   assert.doesNotMatch(page, /^"use client"/);
   assert.doesNotMatch(layout, /next\/headers|generateMetadata/);
   assert.match(layout, /metadataBase/);
+  assert.match(layout, /const title = "Sarthak \| Video Editor"/);
+  assert.match(layout, /icons: \{ icon: "\/favicon\.svg"/);
+  assert.match(favicon, /<g fill="#ffffff"/);
+  assert.match(favicon, /fill="#ff0000"/);
   assert.match(layout, /history\.scrollRestoration = 'manual'/);
   assert.match(layout, /history\.replaceState/);
   assert.match(layout, /window\.scrollTo\(0, 0\)/);
@@ -113,7 +128,10 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(header, /scrollIntoView\(\{ behavior: reducedMotion \? "auto" : "smooth"/);
   assert.match(header, /window\.history\.pushState/);
   assert.match(header, /selectedHref === link\.href \? " is-selected"/);
-  assert.match(header, /Available for select projects/);
+  assert.match(header, /Available for projects/);
+  assert.match(header, /availability-cta/);
+  assert.match(header, /mobile-availability/);
+  assert.match(header, /BookingTrigger/);
   assert.match(header, /instagram\.com\/sarthak\.eai/);
   assert.match(header, /x\.com\/sarthakeai/);
   assert.match(header, /youtube\.com\/@sarthakeai/);
@@ -143,7 +161,32 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(portfolio, /project\.roles\.map/);
   assert.match(portfolio, /project\.deliverables/);
   assert.match(portfolio, /project\.result/);
+  assert.match(portfolio, /selectedProject\.media/);
+  assert.match(portfolio, /preload="none"/);
+  assert.match(portfolio, /playsInline/);
+  assert.match(portfolio, /poster=\{media\.poster\}/);
+  assert.match(portfolio, /<source src=\{media\.videoUrl\} type="video\/mp4"/);
+  assert.match(portfolio, /video-modal-poster/);
+  assert.match(portfolio, /setStarted\(true\)/);
+  assert.match(portfolio, /videoRef\.current\?\.play\(\)/);
+  assert.doesNotMatch(portfolio, /autoPlay/);
   assert.match(data, /roles: string\[\]/);
+  assert.match(data, /export type ProjectMedia/);
+  assert.match(data, /title: "Swan Bitcoin short-form"/);
+  assert.match(data, /title: "Roxom social edits"/);
+  assert.match(data, /title: "Xiaomi 13 Pro review"/);
+  assert.match(data, /title: "21st Capital introduction"/);
+  assert.match(data, /title: "Motion & Brand Animation"/);
+  assert.match(data, /title: "21st Capital interview"/);
+  assert.match(data, /contentType: "10 selected edits"/);
+  assert.match(data, /contentType: "4 selected edits"/);
+  assert.equal((data.match(/id: "swan-\d{2}"/g) ?? []).length, 10);
+  assert.equal((data.match(/id: "roxom-\d{2}"/g) ?? []).length, 4);
+  assert.match(data, /"YouTube Long-Form"/);
+  assert.match(data, /"Motion Graphics \/ Brand Animation"/);
+  assert.match(data, /"Podcast \/ Interview"/);
+  assert.match(data, /https:\/\/youtu\.be\/5MWtToYnA00\?si=C8LS743wbJXIkAWy/);
+  assert.match(data, /https:\/\/youtu\.be\/X5Z5VLdJxC4\?si=xjztMcaGd1S-CfQH/);
   assert.match(data, /type\?: "brand" \| "creator"/);
   assert.match(data, /export const clients: Client\[\] = \[/);
   assert.match(data, /name: "Swan Bitcoin"/);
@@ -171,21 +214,18 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(css, /\.client-logo-set\[aria-hidden="true"\]\s*\{\s*display:\s*none/);
   assert.match(data, /export const youtubeVideos: YouTubeVideo\[\] = \[\]/);
   assert.match(theme, /localStorage\.setItem\("theme"/);
-  assert.match(emailShortcut, /navigator\.clipboard\.writeText/);
-  assert.match(emailShortcut, /target\.closest\("input, textarea, select/);
-  assert.match(emailShortcut, /1800/);
-  assert.match(contactForm, /required/);
-  assert.match(contactForm, /type="email"/);
-  assert.match(contactForm, /requestSubmit/);
-  assert.match(contactForm, /event\.ctrlKey/);
-  assert.match(contactForm, /event\.metaKey/);
-  assert.match(contactForm, /form\.reset\(\)/);
-  assert.match(contactForm, /submittingRef\.current/);
-  assert.match(contactForm, /Sending\\u2026/);
-  assert.match(contactForm, /Message sent\. I\\u2019ll get back to you soon\./);
-  assert.match(contactForm, /disabled=\{sending\}/);
-  assert.match(contactForm, /aria-live="polite"/);
-  assert.match(contactForm, /Something went wrong\. Please try again or email me directly\./);
+  assert.match(booking, /https:\/\/calendly\.com\/officialsarthakeai\/30min/);
+  assert.match(booking, /role="dialog"/);
+  assert.match(booking, /aria-modal="true"/);
+  assert.match(booking, /<iframe/);
+  assert.match(booking, /event\.key === "Escape"/);
+  assert.match(booking, /body\.style\.overflow = "hidden"/);
+  assert.match(booking, /returnFocus\?\.focus/);
+  assert.match(booking, /BookingTrigger must be used within BookingProvider/);
+  assert.match(page, /<BookingProvider>/);
+  assert.equal((page.match(/<BookingTrigger/g) ?? []).length, 2);
+  assert.doesNotMatch(page, /ContactForm|EmailShortcut|Email me|Press E/);
+  assert.doesNotMatch(css, /contact-form|contact-submit|email-shortcut/);
   assert.match(theme, /role="switch"/);
   assert.match(theme, /aria-checked/);
   assert.match(theme, /Switch to light mode/);
@@ -203,6 +243,15 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(css, /--frame-bg/);
   assert.match(css, /project-open/);
   assert.match(css, /modal-panel-in/);
+  assert.match(css, /\.project-preview-triptych/);
+  assert.match(css, /\.project\.portrait \.project-visual\.has-media\s*\{\s*aspect-ratio:\s*16\/10/);
+  assert.match(css, /\.project-preview-triptych\s*\{[^}]+repeat\(3, minmax\(0, 1fr\)\)[^}]+padding:\s*0/s);
+  assert.match(css, /\.project-meta-line\s*\{[^}]+grid-template-columns:\s*auto minmax\(0, 1fr\) auto/s);
+  assert.doesNotMatch(css, /project-art-media/);
+  assert.doesNotMatch(css, /background:\s*rgba\(12,12,11,\.74\)/);
+  assert.doesNotMatch(css, /transform:\s*scale\(1\.045\)/);
+  assert.match(css, /\.video-modal-media-portrait\s*\{[^}]+repeat\(3, minmax\(0, 1fr\)\)/s);
+  assert.match(css, /\.video-modal-media video\s*\{[^}]+width:\s*100%/s);
   assert.match(css, /html\[data-theme="dark"\] \.theme-track i \{ transform: translateX\(1\.3125rem\)/);
   assert.doesNotMatch(css, /margin-inline:\s*calc\(var\(--page-gutter\)\s*\*\s*-1\)/);
   assert.match(css, /prefers-reduced-transparency:\s*reduce/);
@@ -228,23 +277,30 @@ test("keeps initial visual assets lightweight", async () => {
   assert.ok(lightLogo.size < 3_000, `light logo is ${lightLogo.size} bytes`);
 });
 
-test("submits contact data to Formspree and handles failures", async () => {
-  assert.equal(contactFormEndpoint, "https://formspree.io/f/xkjwbaoe");
-  const formData = new FormData();
-  formData.set("name", "Test Person");
-  formData.set("email", "test@example.com");
-  formData.set("message", "Test message");
-
-  let captured;
-  const response = await submitContactForm(formData, async (url, options) => {
-    captured = { url, options };
-    return new Response(null, { status: 200 });
-  });
-  assert.equal(response.ok, true);
-  assert.equal(captured.url, contactFormEndpoint);
-  assert.equal(captured.options.method, "POST");
-  assert.equal(captured.options.body, formData);
-  assert.equal(captured.options.headers.Accept, "application/json");
-
-  await assert.rejects(() => submitContactForm(formData, async () => new Response(null, { status: 500 })), /submission failed/);
+test("keeps portfolio media optimized and poster-led", async () => {
+  const videoPaths = [
+    "21st-capital/21st-capital-intro-preview.mp4",
+    "motion/motion-bitcoin-treasuries-preview.mp4",
+    "motion/motion-hashrateup-swan-preview.mp4",
+    "motion/motion-swan-logo-preview.mp4",
+    ...Array.from({ length: 4 }, (_, index) => `roxom/roxom-short-${String(index + 1).padStart(2, "0")}-preview.mp4`),
+    ...Array.from({ length: 10 }, (_, index) => `swan/swan-short-${String(index + 1).padStart(2, "0")}-preview.mp4`),
+  ];
+  const posterPaths = [
+    "21st-capital/21st-capital-intro-poster.webp",
+    "motion/motion-bitcoin-treasuries-poster.webp",
+    "motion/motion-hashrateup-swan-poster.webp",
+    "motion/motion-swan-logo-poster.webp",
+    ...Array.from({ length: 4 }, (_, index) => `roxom/roxom-short-${String(index + 1).padStart(2, "0")}-poster.webp`),
+    ...Array.from({ length: 10 }, (_, index) => `swan/swan-short-${String(index + 1).padStart(2, "0")}-poster.webp`),
+  ];
+  const videoStats = await Promise.all(videoPaths.map((path) => stat(new URL(`../public/work/${path}`, import.meta.url))));
+  const posterStats = await Promise.all(posterPaths.map((path) => stat(new URL(`../public/work/${path}`, import.meta.url))));
+  const totalVideoBytes = videoStats.reduce((total, file) => total + file.size, 0);
+  const totalPosterBytes = posterStats.reduce((total, file) => total + file.size, 0);
+  assert.equal(videoStats.length, 18);
+  assert.equal(posterStats.length, 18);
+  assert.ok(totalVideoBytes < 82_000_000, `portfolio previews total ${totalVideoBytes} bytes`);
+  assert.ok(totalPosterBytes < 550_000, `portfolio posters total ${totalPosterBytes} bytes`);
+  assert.ok(Math.max(...posterStats.map((file) => file.size)) < 50_000, "every portfolio poster stays below 50 KB");
 });

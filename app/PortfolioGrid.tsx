@@ -1,11 +1,54 @@
 "use client";
 
+/* eslint-disable @next/next/no-img-element -- Static WebP posters are pre-sized and optimized for this project. */
+/* eslint-disable jsx-a11y/media-has-caption -- Supplied portfolio previews use their source/open captions; separate timed-text files were not provided. */
+
 import { useEffect, useRef, useState } from "react";
-import { categories, projects, type Project } from "./portfolio-data";
+import { categories, projects, type Project, type ProjectMedia } from "./portfolio-data";
 
 type ViewTransitionDocument = Document & {
   startViewTransition?: (update: () => void) => void;
 };
+
+function PortfolioVideo({ media, projectLabel, ratio }: { media: ProjectMedia; projectLabel: string; ratio: Project["ratio"] }) {
+  const [started, setStarted] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (!started) return;
+    void videoRef.current?.play().catch(() => undefined);
+  }, [started]);
+
+  if (media.externalUrl) {
+    return (
+      <a className={`video-modal-external video-modal-external-${ratio}`} href={media.externalUrl} target="_blank" rel="noopener noreferrer" aria-label={`Watch ${media.title} — ${projectLabel}, opens in a new tab`}>
+        <img src={media.poster} alt={`${media.title} — ${projectLabel}`} width={media.width} height={media.height} loading="lazy" decoding="async" />
+        <span>Watch project <b aria-hidden="true">↗</b></span>
+      </a>
+    );
+  }
+
+  if (!media.videoUrl) {
+    return <img className="video-modal-still" src={media.poster} alt={`${media.title} — ${projectLabel}`} width={media.width} height={media.height} loading="lazy" decoding="async" />;
+  }
+
+  if (!started) {
+    return (
+      <div className={`video-modal-poster video-modal-poster-${ratio}`}>
+        <img src={media.poster} alt="" width={media.width} height={media.height} loading="lazy" decoding="async" />
+        <button type="button" onClick={() => setStarted(true)} aria-label={`Play ${media.title} — ${projectLabel}`}>
+          <span aria-hidden="true" />
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <video ref={videoRef} controls playsInline preload="none" poster={media.poster} aria-label={`${media.title} — ${projectLabel}`}>
+      <source src={media.videoUrl} type="video/mp4" />
+    </video>
+  );
+}
 
 export function PortfolioGrid() {
   const [active, setActive] = useState("All");
@@ -78,41 +121,56 @@ export function PortfolioGrid() {
       </div>
       <p className="sr-only" aria-live="polite">Showing {visible.length} {visible.length === 1 ? "project" : "projects"}.</p>
       <div className="project-grid" id="project-grid">
-        {visible.map((project, index) => (
-          <article className={`project ${project.ratio}${project.featured ? " featured" : ""}`} key={project.id} style={{ viewTransitionName: `project-${project.id}` }}>
-            <div className={`project-visual ${project.tone}`}>
-              {project.thumbnail ? <img src={project.thumbnail} alt={project.thumbnailAlt ?? ""} width="1280" height="720" loading="lazy" decoding="async" /> : null}
-              <div className="project-art" aria-label={`${project.title} visual`}>
-                <span className="project-number">{String(index + 1).padStart(2, "0")}</span>
+        {visible.map((project) => {
+          const featuredMedia = project.media?.filter((media) => media.featured) ?? [];
+          const previewMedia = (featuredMedia.length ? featuredMedia : project.media ?? []).slice(0, 3);
+          const projectNumber = projects.findIndex((item) => item.id === project.id) + 1;
+
+          return (
+            <article className={`project ${project.ratio}${project.featured ? " featured" : ""}${project.layout ? ` layout-${project.layout}` : ""}`} key={project.id} style={{ viewTransitionName: `project-${project.id}` }}>
+              <div className="project-meta-line" aria-label={`Project ${String(projectNumber).padStart(2, "0")}: ${project.category}, ${project.contentType}`}>
+                <span className="project-number">{String(projectNumber).padStart(2, "0")}</span>
                 <span className="project-category">{project.category}</span>
-                <strong>{project.artLabel}</strong>
                 <span className="project-meta">{project.contentType}</span>
               </div>
-              <button className="project-open" type="button" onClick={(event) => openProject(project, event.currentTarget)} aria-label={`View details for ${project.title}`}>
-                <span>{project.videoUrl ? "Play" : "View"} <b aria-hidden="true">↗</b></span>
-              </button>
-            </div>
-            <div className="project-info">
-              <div className="project-copy">
-                <div className="project-eyebrow">
-                  {project.client ? <span>{project.client}</span> : null}
-                  <span>{project.category}</span>
-                  <span>{project.contentType}</span>
-                </div>
-                <h3>{project.title}</h3>
-                <p>{project.description}</p>
-                <div className="project-role">
-                  <span className="project-label">My role</span>
-                  <ul aria-label={`Roles for ${project.title}`}>
-                    {project.roles.map((role) => <li key={role}>{role}</li>)}
-                  </ul>
-                </div>
-                {project.deliverables?.length ? <p className="project-deliverables"><span>Deliverables</span>{project.deliverables.join(" · ")}</p> : null}
+              <div className={`project-visual ${project.tone}${previewMedia.length ? " has-media" : ""}`}>
+                {previewMedia.length ? (
+                  <div className={`project-preview${previewMedia.length > 1 ? " project-preview-triptych" : " project-preview-single"}`}>
+                    {previewMedia.map((media) => (
+                      <figure key={media.id}>
+                        <img src={media.poster} alt={`${media.title} — ${project.client ?? project.title}`} width={media.width} height={media.height} loading="lazy" decoding="async" />
+                      </figure>
+                    ))}
+                  </div>
+                ) : null}
+                {!previewMedia.length ? <div className="project-art" aria-label={`${project.title} visual`}><strong>{project.artLabel}</strong></div> : null}
+                <button className="project-open" type="button" onClick={(event) => openProject(project, event.currentTarget)} aria-label={`View details for ${project.title}`}>
+                  <span>View project <b aria-hidden="true">↗</b></span>
+                </button>
               </div>
-              {project.result ? <div className="project-result"><strong>{project.result.value}</strong><span>{project.result.label}</span></div> : null}
-            </div>
-          </article>
-        ))}
+              <div className="project-info">
+                <div className="project-copy">
+                  <div className="project-eyebrow">
+                    {project.client ? <span>{project.client}</span> : null}
+                    <span>{project.category}</span>
+                    <span>{project.contentType}</span>
+                  </div>
+                  <h3>{project.title}</h3>
+                  <p>{project.description}</p>
+                  <div className="project-role">
+                    <span className="project-label">My role</span>
+                    <ul aria-label={`Roles for ${project.title}`}>
+                      {project.roles.map((role) => <li key={role}>{role}</li>)}
+                    </ul>
+                  </div>
+                  {project.deliverables?.length ? <p className="project-deliverables"><span>Deliverables</span>{project.deliverables.join(" · ")}</p> : null}
+                  {project.externalUrl ? <a className="project-external-link" href={project.externalUrl} target="_blank" rel="noopener noreferrer">Watch project <span aria-hidden="true">↗</span></a> : null}
+                </div>
+                {project.result ? <div className="project-result"><strong>{project.result.value}</strong><span>{project.result.label}</span></div> : null}
+              </div>
+            </article>
+          );
+        })}
       </div>
 
       {selectedProject ? (
@@ -126,10 +184,15 @@ export function PortfolioGrid() {
               </div>
               <button ref={closeButtonRef} type="button" onClick={closeProject} aria-label="Close project details">Close</button>
             </div>
-            {selectedProject.videoUrl ? (
-              <video src={selectedProject.videoUrl} poster={selectedProject.thumbnail} controls autoPlay playsInline preload="metadata" aria-label={selectedProject.title}>
-                <track kind="captions" src={selectedProject.captionsUrl} srcLang="en" label="English" default />
-              </video>
+            {selectedProject.media?.length ? (
+              <div className={`video-modal-media video-modal-media-${selectedProject.ratio}`}>
+                {selectedProject.media.map((media) => (
+                  <figure key={media.id}>
+                    <PortfolioVideo media={media} projectLabel={selectedProject.client ?? selectedProject.title} ratio={selectedProject.ratio} />
+                    <figcaption>{media.title}</figcaption>
+                  </figure>
+                ))}
+              </div>
             ) : (
               <div className={`video-modal-art ${selectedProject.tone}`} aria-hidden="true"><strong>{selectedProject.artLabel}</strong></div>
             )}
@@ -141,7 +204,7 @@ export function PortfolioGrid() {
               {selectedProject.deliverables?.length ? <p className="project-deliverables"><span>Deliverables</span>{selectedProject.deliverables.join(" · ")}</p> : null}
               {selectedProject.result ? <div className="project-result"><strong>{selectedProject.result.value}</strong><span>{selectedProject.result.label}</span></div> : null}
             </div>
-            {selectedProject.externalUrl ? <a className="text-link" href={selectedProject.externalUrl} target="_blank" rel="noopener noreferrer">Watch original <span aria-hidden="true">↗</span></a> : null}
+            {selectedProject.externalUrl ? <a className="text-link" href={selectedProject.externalUrl} target="_blank" rel="noopener noreferrer">Watch project <span aria-hidden="true">↗</span></a> : null}
             {selectedProject.caseStudySlug ? <a className="text-link" href={`/work/${selectedProject.caseStudySlug}`}>View case study <span aria-hidden="true">↗</span></a> : null}
           </div>
         </div>

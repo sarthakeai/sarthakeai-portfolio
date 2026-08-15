@@ -12,98 +12,193 @@ type ProjectBase = {
   tone: string;
   ratio: "portrait" | "wide" | "square";
   featured?: boolean;
-  thumbnail?: string;
-  thumbnailAlt?: string;
+  layout?: "large" | "small" | "centered";
+  media?: ProjectMedia[];
   externalUrl?: string;
   caseStudySlug?: string;
 };
 
-type ProjectMedia =
-  | { videoUrl: string; captionsUrl: string }
-  | { videoUrl?: never; captionsUrl?: never };
+export type ProjectMedia = {
+  id: string;
+  title: string;
+  videoUrl?: string;
+  externalUrl?: string;
+  poster: string;
+  width: number;
+  height: number;
+  featured?: boolean;
+};
 
-export type Project = ProjectBase & ProjectMedia;
+export type Project = ProjectBase;
 
-// Add approved client names, thumbnails, videos, links and verified results here.
-// Empty optional fields stay hidden in the interface.
+// Real portfolio projects. Optimized website copies live under public/work;
+// original masters remain outside the site project.
 export const projects: Project[] = [
   {
-    id: "shorts",
-    title: "Short-form edits",
-    category: "Short-form",
-    contentType: "Shorts / Reels / X",
-    description: "Fast-paced cuts, captions, motion and platform-ready versions for regular publishing.",
-    roles: ["Editing", "Motion", "Captions", "Sound design"],
-    deliverables: ["Shorts", "Reels", "X clips"],
-    artLabel: "Short-form",
-    tone: "coral",
-    ratio: "portrait",
-    featured: true,
-  },
-  {
-    id: "long-form",
-    title: "YouTube & long-form",
-    category: "Long-form",
-    contentType: "YouTube / Long-form",
-    description: "Structure, pacing, sound and clean visual details across longer edits.",
-    roles: ["Editing", "Story structure", "Sound design"],
-    deliverables: ["YouTube videos", "Explainers"],
-    artLabel: "Long-form",
-    tone: "cobalt",
-    ratio: "wide",
-  },
-  {
-    id: "podcasts",
-    title: "Podcasts & clips",
-    category: "Podcasts",
-    contentType: "Episodes / Cutdowns",
-    description: "Full conversations and focused clips built from the strongest moments.",
-    roles: ["Editing", "Audio cleanup", "Cutdowns"],
-    deliverables: ["Full episodes", "Social clips"],
-    artLabel: "Podcasts",
-    tone: "clay",
-    ratio: "square",
-  },
-  {
-    id: "bitcoin-tech",
-    title: "Bitcoin, finance & tech",
-    category: "Social",
-    contentType: "Explainers / Social",
-    description: "Clear edits for detailed topics, from full videos to quick social clips.",
-    roles: ["Editing", "Motion", "Captions"],
-    deliverables: ["Explainers", "Social cutdowns"],
-    artLabel: "Tech / Finance",
-    tone: "acid",
-    ratio: "wide",
-    featured: true,
-  },
-  {
-    id: "motion",
-    title: "Motion & design",
-    category: "Motion",
-    contentType: "Motion graphics",
-    description: "Titles, captions, transitions and light motion systems for recurring content.",
-    roles: ["Motion", "Titles", "Captions"],
-    deliverables: ["Title systems", "Transitions", "Captions"],
-    artLabel: "Motion",
+    id: "swan-bitcoin",
+    title: "Swan Bitcoin short-form",
+    client: "Swan Bitcoin",
+    category: "Short-form / Social",
+    contentType: "10 selected edits",
+    description: "Ten vertical edits cut from interviews and talks, with captions, visual cutaways and tight pacing.",
+    roles: ["Editing", "Captions", "Motion Graphics", "Sound Design"],
+    deliverables: ["10 vertical social edits"],
+    artLabel: "Swan Bitcoin",
     tone: "ink",
     ratio: "portrait",
+    featured: true,
+    media: [
+      { id: "swan-01", title: "China Is Laughing at America", videoUrl: "/work/swan/swan-short-01-preview.mp4", poster: "/work/swan/swan-short-01-poster.webp", width: 540, height: 960 },
+      { id: "swan-02", title: "How Bitcoin Changed Property Forever", videoUrl: "/work/swan/swan-short-02-preview.mp4", poster: "/work/swan/swan-short-02-poster.webp", width: 540, height: 960 },
+      { id: "swan-03", title: "Is Bitcoin Playing the Long Game?", videoUrl: "/work/swan/swan-short-03-preview.mp4", poster: "/work/swan/swan-short-03-poster.webp", width: 540, height: 960 },
+      { id: "swan-04", title: "Bitcoin Is Economic Armor", videoUrl: "/work/swan/swan-short-04-preview.mp4", poster: "/work/swan/swan-short-04-poster.webp", width: 540, height: 960, featured: true },
+      { id: "swan-05", title: "The Only Money They Cannot Take", videoUrl: "/work/swan/swan-short-05-preview.mp4", poster: "/work/swan/swan-short-05-poster.webp", width: 540, height: 960 },
+      { id: "swan-06", title: "The Bitcoin Journey", videoUrl: "/work/swan/swan-short-06-preview.mp4", poster: "/work/swan/swan-short-06-poster.webp", width: 540, height: 960 },
+      { id: "swan-07", title: "The $999 iPhone vs. $2,250 Bitcoin", videoUrl: "/work/swan/swan-short-07-preview.mp4", poster: "/work/swan/swan-short-07-poster.webp", width: 540, height: 960, featured: true },
+      { id: "swan-08", title: "The Pattern Behind Bitcoin Growth", videoUrl: "/work/swan/swan-short-08-preview.mp4", poster: "/work/swan/swan-short-08-poster.webp", width: 540, height: 960, featured: true },
+      { id: "swan-09", title: "When Bitcoin Moves", videoUrl: "/work/swan/swan-short-09-preview.mp4", poster: "/work/swan/swan-short-09-poster.webp", width: 540, height: 960 },
+      { id: "swan-10", title: "Why I Am Still Buying Bitcoin", videoUrl: "/work/swan/swan-short-10-preview.mp4", poster: "/work/swan/swan-short-10-poster.webp", width: 540, height: 960 },
+    ],
   },
   {
-    id: "social",
-    title: "Social content",
-    category: "Social",
-    contentType: "Multi-platform",
-    description: "Repeatable edits and versions made for regular publishing across platforms.",
-    roles: ["Editing", "Versioning", "Finishing"],
-    deliverables: ["Platform versions", "Social exports"],
-    artLabel: "Social",
+    id: "roxom",
+    title: "Roxom social edits",
+    client: "Roxom",
+    category: "Short-form / Social",
+    contentType: "4 selected edits",
+    description: "Four vertical clips built from interviews and event footage, using captions, structured layouts and Bitcoin imagery.",
+    roles: ["Editing", "Captions", "Motion Graphics", "Sound Design"],
+    deliverables: ["4 vertical social edits"],
+    artLabel: "Roxom",
+    tone: "cobalt",
+    ratio: "portrait",
+    layout: "large",
+    media: [
+      { id: "roxom-01", title: "Can Bitcoin Monetize Peace?", videoUrl: "/work/roxom/roxom-short-01-preview.mp4", poster: "/work/roxom/roxom-short-01-poster.webp", width: 540, height: 960, featured: true },
+      { id: "roxom-02", title: "Bitcoin Will Only Get Rarer", videoUrl: "/work/roxom/roxom-short-02-preview.mp4", poster: "/work/roxom/roxom-short-02-poster.webp", width: 540, height: 960 },
+      { id: "roxom-03", title: "Bitcoin Is Perfect Money", videoUrl: "/work/roxom/roxom-short-03-preview.mp4", poster: "/work/roxom/roxom-short-03-poster.webp", width: 540, height: 960, featured: true },
+      { id: "roxom-04", title: "Tether Data Unveiled", videoUrl: "/work/roxom/roxom-short-04-preview.mp4", poster: "/work/roxom/roxom-short-04-poster.webp", width: 540, height: 960, featured: true },
+    ],
+  },
+  {
+    id: "youtube-long-form",
+    title: "Xiaomi 13 Pro review",
+    client: "Sarthak EAI",
+    category: "YouTube Long-Form",
+    contentType: "Long-form review",
+    description: "A hands-on Xiaomi 13 Pro review edited for my own technology channel.",
+    roles: ["Editing", "Story Structure", "Motion Graphics", "Sound Design"],
+    deliverables: ["1 long-form YouTube review"],
+    artLabel: "Xiaomi 13 Pro",
+    tone: "clay",
+    ratio: "wide",
+    layout: "small",
+    externalUrl: "https://youtu.be/5MWtToYnA00?si=C8LS743wbJXIkAWy",
+    media: [
+      {
+        id: "youtube-xiaomi-13-pro",
+        title: "Xiaomi 13 Pro Review: Just Wow! (Hindi)",
+        externalUrl: "https://youtu.be/5MWtToYnA00?si=C8LS743wbJXIkAWy",
+        poster: "https://i.ytimg.com/vi/5MWtToYnA00/hqdefault.jpg",
+        width: 480,
+        height: 360,
+        featured: true,
+      },
+    ],
+  },
+  {
+    id: "21st-capital-introduction",
+    title: "21st Capital introduction",
+    client: "21st Capital",
+    category: "Brand Introduction",
+    contentType: "Company introduction",
+    description: "A one-minute company introduction explaining 21st Capital through presenter-led editing, diagrams and supporting motion.",
+    roles: ["Editing", "Motion Graphics", "Layout Design", "Sound Design"],
+    deliverables: ["1 brand introduction"],
+    artLabel: "21st Capital",
+    tone: "acid",
+    ratio: "wide",
+    layout: "small",
+    media: [
+      { id: "21st-capital-01", title: "Unlock Bitcoin's Potential", videoUrl: "/work/21st-capital/21st-capital-intro-preview.mp4", poster: "/work/21st-capital/21st-capital-intro-poster.webp", width: 1280, height: 720, featured: true },
+    ],
+  },
+  {
+    id: "motion-brand-animation",
+    title: "Motion & Brand Animation",
+    category: "Motion Graphics / Brand Animation",
+    contentType: "3 brand animations",
+    description: "Three short brand animations for Bitcoin Treasuries, HashrateUp × Swan and Swan.",
+    roles: ["Motion Graphics", "2D Animation", "Logo Animation", "Editing", "Sound Design"],
+    deliverables: ["3 brand animations"],
+    artLabel: "Motion & Brand Animation",
     tone: "sand",
-    ratio: "square",
+    ratio: "wide",
+    layout: "large",
+    media: [
+      {
+        id: "motion-bitcoin-treasuries",
+        title: "Bitcoin Treasuries intro",
+        videoUrl: "/work/motion/motion-bitcoin-treasuries-preview.mp4",
+        poster: "/work/motion/motion-bitcoin-treasuries-poster.webp",
+        width: 1280,
+        height: 720,
+        featured: true,
+      },
+      {
+        id: "motion-hashrateup-swan",
+        title: "HashrateUp × Swan animation",
+        videoUrl: "/work/motion/motion-hashrateup-swan-preview.mp4",
+        poster: "/work/motion/motion-hashrateup-swan-poster.webp",
+        width: 1280,
+        height: 720,
+      },
+      {
+        id: "motion-swan-logo",
+        title: "Swan logo animation",
+        videoUrl: "/work/motion/motion-swan-logo-preview.mp4",
+        poster: "/work/motion/motion-swan-logo-poster.webp",
+        width: 1280,
+        height: 720,
+      },
+    ],
+  },
+  {
+    id: "podcast-interview",
+    title: "21st Capital interview",
+    client: "21st Capital",
+    category: "Podcast / Interview",
+    contentType: "Interview episode",
+    description: "A 21st Capital interview edit built around a direct, conversation-led presentation.",
+    roles: ["Editing", "Motion Graphics", "Layout Design", "Captions"],
+    deliverables: ["1 interview episode"],
+    artLabel: "21st Capital interview",
+    tone: "ink",
+    ratio: "wide",
+    layout: "centered",
+    externalUrl: "https://youtu.be/X5Z5VLdJxC4?si=xjztMcaGd1S-CfQH",
+    media: [
+      {
+        id: "podcast-21st-capital",
+        title: "21st Capital Panic is Coming",
+        externalUrl: "https://youtu.be/X5Z5VLdJxC4?si=xjztMcaGd1S-CfQH",
+        poster: "https://i.ytimg.com/vi/X5Z5VLdJxC4/hqdefault.jpg",
+        width: 480,
+        height: 360,
+        featured: true,
+      },
+    ],
   },
 ];
 
-export const categories = ["All", "Short-form", "Long-form", "Podcasts", "Motion", "Social"];
+export const categories = [
+  "All",
+  "Short-form / Social",
+  "YouTube Long-Form",
+  "Brand Introduction",
+  "Motion Graphics / Brand Animation",
+  "Podcast / Interview",
+];
 
 export const services = [
   { number: "01", title: "YouTube & long-form", copy: "YouTube videos, explainers and longer edits with clear structure, clean pacing and sound." },

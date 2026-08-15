@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type MouseEvent } from "react";
+import { BookingTrigger } from "./BookingExperience";
 import { ThemeToggle } from "./ThemeToggle";
 
 const links = [
@@ -148,7 +149,10 @@ export function SiteHeader() {
       </a>
       <nav className="nav nav-desktop" aria-label="Primary navigation" aria-hidden={isMobile ? true : undefined} inert={isMobile ? true : undefined}>
         {links.map((link) => <a key={link.href} href={link.href} onClick={closeMenu}>{link.label}</a>)}
-        <a className="nav-cta" href="#contact" onClick={closeMenu}>Let’s talk <span aria-hidden="true">↗</span></a>
+        <BookingTrigger className="nav-cta availability-cta" aria-label="Available for projects. Book a call with Sarthak">
+          <i className="availability-dot" aria-hidden="true" />
+          <span>Available for projects</span>
+        </BookingTrigger>
       </nav>
       <nav ref={navRef} id="primary-navigation" className="mobile-nav" aria-label="Mobile navigation" aria-hidden={!isMobile || !menuOpen} inert={!isMobile || !menuOpen ? true : undefined}>
         <span className="mobile-nav-label">Menu</span>
@@ -165,7 +169,7 @@ export function SiteHeader() {
         <div className="mobile-nav-utility">
           <div className="mobile-nav-utility-head">
             <span>Elsewhere</span>
-            <span className="mobile-availability"><i aria-hidden="true" />Available for select projects</span>
+            <BookingTrigger className="mobile-availability" aria-label="Available for projects. Book a call with Sarthak"><i aria-hidden="true" />Available for projects</BookingTrigger>
           </div>
           <div className="mobile-nav-socials">
             {mobileSocials.map((social) => <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer">{social.label}<span aria-hidden="true">↗</span></a>)}

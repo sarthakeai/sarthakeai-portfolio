@@ -1,5 +1,4 @@
-import { ContactForm } from "./ContactForm";
-import { EmailShortcut } from "./EmailShortcut";
+import { BookingProvider, BookingTrigger } from "./BookingExperience";
 import { HeroTimeline } from "./HeroTimeline";
 import { MotionController } from "./MotionController";
 import { PortfolioGrid } from "./PortfolioGrid";
@@ -43,6 +42,7 @@ export default function Home() {
   const featuredTestimonial = testimonials[0];
 
   return (
+    <BookingProvider>
     <main>
       <a className="skip-link" href="#content">Skip to content</a>
       <MotionController />
@@ -59,8 +59,7 @@ export default function Home() {
             <p className="hero-intro hero-reveal hero-delay-2">I’m a video editor and creator based in India. I edit YouTube videos, shorts, podcasts and social content for brands and creators around the world.</p>
             <div className="hero-actions hero-reveal hero-delay-2">
               <a className="button button-primary" href="#work">See selected work <span aria-hidden="true">↓</span></a>
-              <a className="text-link" href="mailto:officialsarthakeai@gmail.com">Email me <span aria-hidden="true">↗</span></a>
-              <EmailShortcut />
+              <BookingTrigger className="text-link hero-connect">Connect <span aria-hidden="true">↗</span></BookingTrigger>
             </div>
           </div>
         </section>
@@ -83,7 +82,7 @@ export default function Home() {
         <section className="section work" id="work" data-reveal>
           <div className="section-head">
             <div><p className="kicker">Selected work</p><h2>A look at<br />what I edit.</h2></div>
-            <p>Long-form, short-form, podcasts, motion and social content across YouTube, Instagram and X.</p>
+            <p>Selected edits across short-form, YouTube, company video, motion and interview work.</p>
           </div>
           <PortfolioGrid />
         </section>
@@ -148,10 +147,12 @@ export default function Home() {
           <p className="kicker">Get in touch</p>
           <h2>Have something you want to work on?</h2>
           <div className="contact-bottom">
-            <a href="mailto:officialsarthakeai@gmail.com">officialsarthakeai@gmail.com <span aria-hidden="true">↗</span></a>
-            <p>Send me a note with a little about the project, the format and the timeline.</p>
+            <p>Book a call or send me an email.</p>
+            <div className="contact-actions">
+              <BookingTrigger className="button button-primary contact-connect">Connect <span aria-hidden="true">↗</span></BookingTrigger>
+              <a className="contact-email" href="mailto:officialsarthakeai@gmail.com">officialsarthakeai@gmail.com <span aria-hidden="true">↗</span></a>
+            </div>
           </div>
-          <ContactForm />
         </section>
       </div>
 
@@ -188,5 +189,6 @@ export default function Home() {
         </div>
       </footer>
     </main>
+    </BookingProvider>
   );
 }

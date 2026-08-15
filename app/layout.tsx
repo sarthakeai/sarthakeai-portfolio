@@ -20,7 +20,7 @@ const startupScrollScript = `(() => {
   window.addEventListener('pageshow', resetToTop);
 })();`;
 
-const title = "Sarthak — Video Editor & Creator";
+const title = "Sarthak | Video Editor";
 const description = "Freelance video editor and creator from India, working across YouTube, short-form, podcasts, tech and social content.";
 
 export const metadata: Metadata = {
