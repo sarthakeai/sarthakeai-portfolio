@@ -25,6 +25,12 @@ test("server-renders the complete Sarthak portfolio", async () => {
   assert.match(html, /class="hero-portrait hero-reveal"/);
   assert.match(html, /role="slider"/);
   assert.match(html, /id="work"/);
+  assert.match(html, /Client testimonials/i);
+  assert.match(html, /Don’t take my word for it — hear it from my clients\./);
+  assert.match(html, /He goes above and beyond to deliver an incredible product every time\./);
+  assert.match(html, /MEGAN O MORAN/);
+  assert.match(html, /Co-Founder · Zimo Media/);
+  assert.match(html, /id="work"[\s\S]+Client testimonials[\s\S]+id="about"/i);
   assert.match(html, /id="about"/);
   assert.match(html, /id="services"/);
   assert.match(html, /id="youtube"/);
@@ -92,6 +98,33 @@ test("server-renders the complete Sarthak portfolio", async () => {
   assert.match(html, /https:\/\/www\.instagram\.com\/sarthak\.eai/);
   assert.match(html, /https:\/\/x\.com\/sarthakeai/);
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton|Your site is taking shape|Ready for your video|coming soon|Client names and links can be added/i);
+});
+
+test("keeps the testimonial carousel real, exact, and accessible", async () => {
+  const [component, data, image] = await Promise.all([
+    readFile(new URL("../app/ClientTestimonials.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/testimonials-data.ts", import.meta.url), "utf8"),
+    stat(new URL("../public/testimonials/megan-o-moran.webp", import.meta.url)),
+  ]);
+
+  assert.equal((data.match(/id: "/g) ?? []).length, 2);
+  assert.match(data, /image: \{[\s\S]+\/testimonials\/megan-o-moran\.webp/);
+  assert.match(data, /id: "youtube-client"[\s\S]+image: null/);
+  assert.match(data, /He goes above and beyond to deliver an incredible product every time\./);
+  assert.match(data, /Sarthak is an absolute pleasure to work with\./);
+  assert.match(data, /MEGAN O MORAN/);
+  assert.match(data, /Co-Founder · Zimo Media/);
+  assert.match(data, /Your product is in very good hands as long as he is working on it\./);
+  assert.match(data, /Sarthak is very competent with editing videos as per your requirement\./);
+  assert.match(data, /YOUTUBE CLIENT/);
+  assert.match(data, /YouTube Channel · Video Editing/);
+  assert.doesNotMatch(data, /rating|stars|source|date|company logo/i);
+  assert.match(component, /aria-label="Previous testimonial"/);
+  assert.match(component, /aria-label="Next testimonial"/);
+  assert.match(component, /event\.key === "ArrowLeft"/);
+  assert.match(component, /event\.key === "ArrowRight"/);
+  assert.match(component, /loading="lazy"/);
+  assert.ok(image.size < 100_000, `Megan testimonial image is ${image.size} bytes`);
 });
 
 test("keeps interaction scoped and accessibility preferences explicit", async () => {

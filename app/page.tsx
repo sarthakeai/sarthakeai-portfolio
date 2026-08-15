@@ -1,11 +1,12 @@
 /* eslint-disable @next/next/no-img-element -- This site ships hand-optimized responsive image assets without the Next image runtime. */
 
 import { BookingProvider, BookingTrigger } from "./BookingExperience";
+import { ClientTestimonials } from "./ClientTestimonials";
 import { ContactForm } from "./ContactForm";
 import { HeroTimeline } from "./HeroTimeline";
 import { MotionController } from "./MotionController";
 import { PortfolioGrid } from "./PortfolioGrid";
-import { clients, services, socials, stats, testimonials, youtubeStats, youtubeVideos } from "./portfolio-data";
+import { clients, services, socials, stats, youtubeStats, youtubeVideos } from "./portfolio-data";
 import { SiteHeader } from "./SiteHeader";
 
 const footerLinks = [
@@ -42,8 +43,6 @@ function ClientLogoSet({ duplicate = false }: { duplicate?: boolean }) {
 }
 
 export default function Home() {
-  const featuredTestimonial = testimonials[0];
-
   return (
     <BookingProvider>
     <main>
@@ -89,6 +88,8 @@ export default function Home() {
           </div>
           <PortfolioGrid />
         </section>
+
+        <ClientTestimonials />
 
         <section className="section about" id="about" data-reveal>
           <div className="about-grid">
@@ -151,12 +152,6 @@ export default function Home() {
             </div>
           ) : null}
         </section>
-
-        {featuredTestimonial ? (
-          <section className="section testimonial" aria-label="Client testimonials" data-reveal>
-            <figure><blockquote>“{featuredTestimonial.quote}”</blockquote><figcaption>{featuredTestimonial.name}{featuredTestimonial.role ? ` · ${featuredTestimonial.role}` : ""}{featuredTestimonial.company ? `, ${featuredTestimonial.company}` : ""}</figcaption></figure>
-          </section>
-        ) : null}
 
         <section className="section contact" id="contact" data-reveal>
           <p className="kicker">Get in touch</p>
