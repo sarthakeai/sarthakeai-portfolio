@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState, type MouseEvent } from "react";
-import { BookingTrigger } from "./BookingExperience";
-import { availability } from "./portfolio-data";
+import { useCallback, useEffect, useRef, useState, type MouseEvent } from "react";
+import { BookingTrigger, CALENDLY_BOOKING_COMPLETE_EVENT } from "./BookingExperience";
 import { ThemeToggle } from "./ThemeToggle";
 
 const links = [
@@ -28,8 +27,15 @@ const delhiTimeFormatter = new Intl.DateTimeFormat("en-GB", {
   hour12: false,
 });
 
-function getAvailabilityLabel(slots: number) {
-  return `${slots} ${slots === 1 ? "slot" : "slots"} available`;
+type AvailabilityState =
+  | { status: "loading"; slots: null }
+  | { status: "ready"; slots: number }
+  | { status: "error"; slots: null };
+
+function getAvailabilityLabel(availability: AvailabilityState) {
+  if (availability.status === "loading") return "Checking availability";
+  if (availability.status === "error") return "View availability";
+  return `${availability.slots} ${availability.slots === 1 ? "slot" : "slots"} available`;
 }
 
 export function SiteHeader() {
@@ -38,12 +44,45 @@ export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [delhiTime, setDelhiTime] = useState("--:--:--");
+  const [availability, setAvailability] = useState<AvailabilityState>({ status: "loading", slots: null });
   const headerRef = useRef<HTMLElement>(null);
   const navRef = useRef<HTMLElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const closeTimerRef = useRef<number | null>(null);
   const scrollTimerRef = useRef<number | null>(null);
-  const availabilityLabel = getAvailabilityLabel(availability.slots);
+  const availabilityLabel = getAvailabilityLabel(availability);
+
+  const refreshAvailability = useCallback(async (forceRefresh = false) => {
+    setAvailability({ status: "loading", slots: null });
+
+    try {
+      const response = await fetch(`/api/calendly-availability${forceRefresh ? "?refresh=1" : ""}`, {
+        cache: "no-store",
+        headers: { Accept: "application/json" },
+      });
+      if (!response.ok) throw new Error("Calendly availability request failed");
+
+      const payload = await response.json() as { availableSlots?: unknown };
+      if (!Number.isInteger(payload.availableSlots) || Number(payload.availableSlots) < 0) {
+        throw new Error("Calendly availability response was invalid");
+      }
+
+      setAvailability({ status: "ready", slots: Number(payload.availableSlots) });
+    } catch {
+      setAvailability({ status: "error", slots: null });
+    }
+  }, []);
+
+  useEffect(() => {
+    const initialRequestFrame = window.requestAnimationFrame(() => void refreshAvailability());
+
+    const handleBookingComplete = () => void refreshAvailability(true);
+    window.addEventListener(CALENDLY_BOOKING_COMPLETE_EVENT, handleBookingComplete);
+    return () => {
+      window.cancelAnimationFrame(initialRequestFrame);
+      window.removeEventListener(CALENDLY_BOOKING_COMPLETE_EVENT, handleBookingComplete);
+    };
+  }, [refreshAvailability]);
 
   useEffect(() => {
     const updateClock = () => setDelhiTime(delhiTimeFormatter.format(new Date()));

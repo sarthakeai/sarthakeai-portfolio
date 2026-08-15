@@ -246,10 +246,6 @@ export const clients: Client[] = [
   { name: "Zimo Media", logo: "/collaborators/zimo-media.svg", width: 382, height: 105, type: "brand", theme: "invert" },
 ];
 
-export const availability = {
-  slots: 2,
-};
-
 export const socials = [
   { platform: "instagram", label: "Instagram", href: "https://www.instagram.com/sarthak.eai" },
   { platform: "x", label: "X / Twitter", href: "https://x.com/sarthakeai" },

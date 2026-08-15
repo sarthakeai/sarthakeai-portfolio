@@ -12,6 +12,7 @@ import {
 } from "react";
 
 export const CALENDLY_URL = "https://calendly.com/officialsarthakeai/30min";
+export const CALENDLY_BOOKING_COMPLETE_EVENT = "calendly:booking-complete";
 
 function getCalendlyEmbedUrl(dark: boolean) {
   const colors = dark
@@ -102,6 +103,18 @@ export function BookingProvider({ children }: { children: ReactNode }) {
     const fallbackTimer = window.setTimeout(() => setCalendarSlow(true), 8000);
     return () => window.clearTimeout(fallbackTimer);
   }, [calendarLoaded, open]);
+
+  useEffect(() => {
+    const handleCalendlyMessage = (event: MessageEvent) => {
+      if (event.origin !== new URL(CALENDLY_URL).origin) return;
+      if (!event.data || typeof event.data !== "object") return;
+      if ((event.data as { event?: unknown }).event !== "calendly.event_scheduled") return;
+      window.dispatchEvent(new Event(CALENDLY_BOOKING_COMPLETE_EVENT));
+    };
+
+    window.addEventListener("message", handleCalendlyMessage);
+    return () => window.removeEventListener("message", handleCalendlyMessage);
+  }, []);
 
   return (
     <BookingContext.Provider value={{ openBooking }}>

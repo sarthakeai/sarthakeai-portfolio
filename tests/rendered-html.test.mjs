@@ -77,7 +77,8 @@ test("server-renders the complete Sarthak portfolio", async () => {
   assert.match(html, /brands and creators around the world/);
   assert.match(html, /Book a call or send me an email\./);
   assert.match(html, />Connect <span/);
-  assert.match(html, /2 slots available/i);
+  assert.match(html, /checking availability/i);
+  assert.doesNotMatch(html, /\b2 slots available\b/i);
   assert.match(html, /class="header-location"/);
   assert.match(html, /New Delhi/i);
   assert.match(html, /\/sarthak-about-960\.webp/);
@@ -93,11 +94,12 @@ test("server-renders the complete Sarthak portfolio", async () => {
 });
 
 test("keeps interaction scoped and accessibility preferences explicit", async () => {
-  const [page, layout, header, booking, contactForm, contactSubmit, portfolio, mediaPlayback, data, theme, timeline, css, swanLogo, favicon] = await Promise.all([
+  const [page, layout, header, booking, availabilityRoute, contactForm, contactSubmit, portfolio, mediaPlayback, data, theme, timeline, css, swanLogo, favicon] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/SiteHeader.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/BookingExperience.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/api/calendly-availability/route.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/ContactForm.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/contact-form-submit.mjs", import.meta.url), "utf8"),
     readFile(new URL("../app/PortfolioGrid.tsx", import.meta.url), "utf8"),
@@ -137,8 +139,12 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(header, /scrollIntoView\(\{ behavior: reducedMotion \? "auto" : "smooth"/);
   assert.match(header, /window\.history\.pushState/);
   assert.match(header, /selectedHref === link\.href \? " is-selected"/);
-  assert.match(header, /availability\.slots/);
-  assert.match(header, /slots === 1 \? "slot" : "slots"/);
+  assert.doesNotMatch(header, /from "\.\/portfolio-data"/);
+  assert.match(header, /availability\.slots === 1 \? "slot" : "slots"/);
+  assert.match(header, /Checking availability/);
+  assert.match(header, /View availability/);
+  assert.match(header, /\/api\/calendly-availability/);
+  assert.match(header, /CALENDLY_BOOKING_COMPLETE_EVENT/);
   assert.match(header, /Asia\/Kolkata/);
   assert.match(header, /window\.setInterval\(updateClock, 1000\)/);
   assert.match(header, /window\.clearInterval\(interval\)/);
@@ -213,7 +219,7 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(data, /xiaomi-13-pro-poster\.webp/);
   assert.match(data, /21st-capital-interview-poster\.webp/);
   assert.match(data, /posterFallbacks/);
-  assert.match(data, /export const availability = \{\s*slots: 2,/s);
+  assert.doesNotMatch(data, /export const availability|slots:\s*2/);
   assert.match(data, /type\?: "brand" \| "creator"/);
   assert.match(data, /export const clients: Client\[\] = \[/);
   assert.match(data, /name: "Swan Bitcoin"/);
@@ -242,6 +248,15 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(data, /export const youtubeVideos: YouTubeVideo\[\] = \[\]/);
   assert.match(theme, /localStorage\.setItem\("theme"/);
   assert.match(booking, /https:\/\/calendly\.com\/officialsarthakeai\/30min/);
+  assert.match(booking, /calendly\.event_scheduled/);
+  assert.match(booking, /CALENDLY_BOOKING_COMPLETE_EVENT/);
+  assert.match(availabilityRoute, /CALENDLY_ACCESS_TOKEN/);
+  assert.match(availabilityRoute, /CALENDLY_EVENT_TYPE_URI/);
+  assert.match(availabilityRoute, /\/event_type_available_times/);
+  assert.match(availabilityRoute, /AVAILABILITY_WINDOW_MS = 7 \* 24 \* 60 \* 60 \* 1000/);
+  assert.match(availabilityRoute, /CACHE_TTL_MS = 5 \* 60 \* 1000/);
+  assert.match(availabilityRoute, /availableTimes\.collection\.length/);
+  assert.doesNotMatch(availabilityRoute, /NEXT_PUBLIC_CALENDLY/);
   assert.match(contactSubmit, /https:\/\/formspree\.io\/f\/xkjwbaoe/);
   assert.match(contactSubmit, /Accept: "application\/json"/);
   assert.match(contactForm, /name="name"[^>]+required/);
