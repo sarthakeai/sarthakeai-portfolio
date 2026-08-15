@@ -96,7 +96,7 @@ export default function Home() {
               <img
                 src="/sarthak-about-960.webp"
                 srcSet="/sarthak-about-960.webp 960w, /sarthak-about-1600.webp 1600w"
-                sizes="(max-width: 50rem) 11rem, (max-width: 68rem) 14rem, 17rem"
+                sizes="(max-width: 36rem) calc(100vw - 2.2rem), (max-width: 50rem) 32rem, (max-width: 68rem) 22rem, 24rem"
                 alt="Sarthak beside his motorcycle in the mountains"
                 width="1600"
                 height="2132"
