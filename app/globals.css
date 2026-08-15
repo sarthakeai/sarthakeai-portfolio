@@ -158,17 +158,17 @@ html[data-theme="dark"] .theme-icon-moon { color: #f7f5ef; opacity: 1; transform
 .kicker { font-family: var(--font-geist-mono), monospace; text-transform: uppercase; letter-spacing: .11em; font-size: .625rem; line-height: 1.5; }
 .hero h1 { max-width: 60rem; margin: 0; font-size: clamp(2.8rem, 6vw, 5.35rem); line-height: .98; letter-spacing: clamp(-.055em, -0.25vw, -.035em); font-weight: 590; text-wrap: balance; }
 .hero-intro { max-width: 39rem; margin: 2rem 0 0; color: var(--muted-strong); font-size: clamp(1rem, 1.5vw, 1.1875rem); line-height: 1.68; }
-.hero-actions { display: flex; align-items: center; gap: 1.5rem; margin-top: 2.25rem; }
+.hero-actions { display: flex; align-items: center; gap: 1.125rem; margin-top: 2.25rem; }
 .button { min-height: 3rem; display: inline-flex; align-items: center; justify-content: space-between; gap: 2.5rem; padding: 0 1rem; border: 1px solid var(--line); font-size: .75rem; transition: transform var(--press-speed) ease-out, background-color 180ms ease-out, color 180ms ease-out; }
 .button-primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 .button:hover { transform: translateY(-2px); }
 .button:active { transform: scale(.98); }
 .text-link { min-height: 2.75rem; display: inline-flex; align-items: center; gap: .7rem; border-bottom: 1px solid var(--line); font-size: .75rem; transition: border-color 180ms ease-out, color 180ms ease-out; }
 .text-link:hover { color: var(--accent); border-color: var(--accent); }
-.hero-connect { position: relative; width: clamp(7.5rem, 9vw, 9rem); height: clamp(7.5rem, 9vw, 9rem); min-height: 0; flex: 0 0 auto; display: inline-grid; place-items: center; padding: 0; border: 1px solid var(--accent); border-radius: 50%; background: var(--accent); color: var(--accent-ink); font-size: .75rem; font-weight: 660; letter-spacing: .095em; text-transform: uppercase; cursor: pointer; transition: color 220ms ease-out, border-color 220ms ease-out, background-color 220ms ease-out, transform 240ms var(--ease-out); }
-.hero-connect span { position: absolute; top: 1.45rem; right: 1.55rem; color: currentColor; transition: transform 220ms var(--ease-out); }
-.hero-connect:hover { border-color: var(--ink); background: var(--ink); color: var(--bg); transform: translateY(-2px) scale(1.015); }
-.hero-connect:hover span { transform: translate(.25rem, -.25rem); }
+.hero-connect { width: clamp(7rem, 7.75vw, 8.125rem); height: clamp(7rem, 7.75vw, 8.125rem); min-height: 0; flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; gap: .55rem; padding: 0; border: 1px solid color-mix(in srgb, var(--ink) 48%, var(--line)); border-radius: 50%; background: color-mix(in srgb, var(--surface) 52%, transparent); color: var(--ink); font-size: .6875rem; font-weight: 650; letter-spacing: .09em; text-transform: uppercase; cursor: pointer; transition: color 260ms cubic-bezier(.22, 1, .36, 1), border-color 260ms cubic-bezier(.22, 1, .36, 1), background-color 260ms cubic-bezier(.22, 1, .36, 1), transform 260ms cubic-bezier(.22, 1, .36, 1); }
+.hero-connect span { color: var(--accent); transition: color 240ms cubic-bezier(.22, 1, .36, 1), transform 240ms cubic-bezier(.22, 1, .36, 1); }
+.hero-connect:hover { border-color: var(--accent); background: var(--accent); color: var(--accent-ink); transform: translateY(-1px) scale(1.02); }
+.hero-connect:hover span { color: currentColor; transform: translate(.2rem, -.2rem); }
 .hero-reveal { animation: hero-reveal 620ms both var(--ease-out); }
 .hero-delay-1 { animation-delay: 70ms; }
 .hero-delay-2 { animation-delay: 140ms; }
