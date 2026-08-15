@@ -81,8 +81,11 @@ test("server-renders the complete Sarthak portfolio", async () => {
   assert.match(html, /class="header-location"/);
   assert.match(html, /New Delhi/i);
   assert.match(html, /\/sarthak-about-960\.webp/);
-  assert.doesNotMatch(html, /Press|to copy email|Send message/);
-  assert.doesNotMatch(html, /formspree|name="name"|name="message"|name="_gotcha"/);
+  assert.doesNotMatch(html, /Press|to copy email/);
+  assert.match(html, /https:\/\/formspree\.io\/f\/xkjwbaoe/);
+  assert.match(html, /name="name"/);
+  assert.match(html, /name="email"/);
+  assert.match(html, /name="message"/);
   assert.match(html, /https:\/\/www\.youtube\.com\/@sarthakeai/);
   assert.match(html, /https:\/\/www\.instagram\.com\/sarthak\.eai/);
   assert.match(html, /https:\/\/x\.com\/sarthakeai/);
@@ -90,11 +93,13 @@ test("server-renders the complete Sarthak portfolio", async () => {
 });
 
 test("keeps interaction scoped and accessibility preferences explicit", async () => {
-  const [page, layout, header, booking, portfolio, mediaPlayback, data, theme, timeline, css, swanLogo, favicon] = await Promise.all([
+  const [page, layout, header, booking, contactForm, contactSubmit, portfolio, mediaPlayback, data, theme, timeline, css, swanLogo, favicon] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/SiteHeader.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/BookingExperience.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/ContactForm.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/contact-form-submit.mjs", import.meta.url), "utf8"),
     readFile(new URL("../app/PortfolioGrid.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/media-playback.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/portfolio-data.ts", import.meta.url), "utf8"),
@@ -237,6 +242,15 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(data, /export const youtubeVideos: YouTubeVideo\[\] = \[\]/);
   assert.match(theme, /localStorage\.setItem\("theme"/);
   assert.match(booking, /https:\/\/calendly\.com\/officialsarthakeai\/30min/);
+  assert.match(contactSubmit, /https:\/\/formspree\.io\/f\/xkjwbaoe/);
+  assert.match(contactSubmit, /Accept: "application\/json"/);
+  assert.match(contactForm, /name="name"[^>]+required/);
+  assert.match(contactForm, /type="email" name="email"[^>]+required/);
+  assert.match(contactForm, /textarea name="message"[^>]+required/);
+  assert.match(contactForm, /event\.ctrlKey && !event\.metaKey/);
+  assert.match(contactForm, /requestSubmit\(\)/);
+  assert.match(contactForm, /Message sent\. I’ll get back to you soon\./);
+  assert.match(contactForm, /Something went wrong\. Please try again or email me directly\./);
   assert.match(booking, /role="dialog"/);
   assert.match(booking, /aria-modal="true"/);
   assert.match(booking, /<iframe/);
@@ -248,8 +262,11 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(booking, /BookingTrigger must be used within BookingProvider/);
   assert.match(page, /<BookingProvider>/);
   assert.equal((page.match(/<BookingTrigger/g) ?? []).length, 2);
-  assert.doesNotMatch(page, /ContactForm|EmailShortcut|Email me|Press E/);
-  assert.doesNotMatch(css, /contact-form|contact-submit|email-shortcut/);
+  assert.match(page, /<ContactForm \/>/);
+  assert.doesNotMatch(page, /EmailShortcut|Press E/);
+  assert.match(css, /\.contact-form\s*\{/);
+  assert.match(css, /\.contact-submit/);
+  assert.doesNotMatch(css, /email-shortcut/);
   assert.match(theme, /role="switch"/);
   assert.match(theme, /aria-checked/);
   assert.match(theme, /Switch to light mode/);

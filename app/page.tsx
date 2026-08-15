@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element -- This site ships hand-optimized responsive image assets without the Next image runtime. */
 
 import { BookingProvider, BookingTrigger } from "./BookingExperience";
+import { ContactForm } from "./ContactForm";
 import { HeroTimeline } from "./HeroTimeline";
 import { MotionController } from "./MotionController";
 import { PortfolioGrid } from "./PortfolioGrid";
@@ -161,12 +162,20 @@ export default function Home() {
           <p className="kicker">Get in touch</p>
           <h2>Have something you want to work on?</h2>
           <div className="contact-bottom">
-            <p>Book a call or send me an email.</p>
+            <div className="contact-route-copy">
+              <p className="contact-route-label">Prefer a call?</p>
+              <p>Book a call or send me an email.</p>
+            </div>
             <div className="contact-actions">
               <BookingTrigger className="button button-primary contact-connect">Connect <span aria-hidden="true">↗</span></BookingTrigger>
               <a className="contact-email" href="mailto:officialsarthakeai@gmail.com">officialsarthakeai@gmail.com <span aria-hidden="true">↗</span></a>
             </div>
           </div>
+          <div className="contact-form-intro">
+            <p className="contact-route-label">Prefer to write?</p>
+            <p>Send me a project message below.</p>
+          </div>
+          <ContactForm />
         </section>
       </div>
 
