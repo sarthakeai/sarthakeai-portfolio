@@ -35,7 +35,16 @@ type AvailabilityState =
 function getAvailabilityLabel(availability: AvailabilityState) {
   if (availability.status === "loading") return "Checking availability";
   if (availability.status === "error") return "View availability";
-  return `${availability.slots} ${availability.slots === 1 ? "slot" : "slots"} available`;
+  if (availability.slots === 0) return "Today’s slots filled";
+  return `${availability.slots} ${availability.slots === 1 ? "slot" : "slots"} left today`;
+}
+
+function getVisitorTimeZone() {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
+  } catch {
+    return "UTC";
+  }
 }
 
 export function SiteHeader() {
@@ -56,7 +65,9 @@ export function SiteHeader() {
     setAvailability({ status: "loading", slots: null });
 
     try {
-      const response = await fetch(`/api/calendly-availability${forceRefresh ? "?refresh=1" : ""}`, {
+      const query = new URLSearchParams({ timeZone: getVisitorTimeZone() });
+      if (forceRefresh) query.set("refresh", "1");
+      const response = await fetch(`/api/calendly-availability?${query}`, {
         cache: "no-store",
         headers: { Accept: "application/json" },
       });

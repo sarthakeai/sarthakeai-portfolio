@@ -1,7 +1,9 @@
+import { countSlotsForLocalToday, resolveValidTimeZone } from "../../calendly-day.mjs";
+
 const CALENDLY_API_BASE = "https://api.calendly.com";
 const CALENDLY_SCHEDULING_URL = "https://calendly.com/officialsarthakeai/30min";
 const CACHE_TTL_MS = 5 * 60 * 1000;
-const AVAILABILITY_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
+const AVAILABILITY_LOOKAHEAD_MS = 48 * 60 * 60 * 1000;
 
 type CalendlyUserResponse = {
   resource?: { uri?: string };
@@ -24,13 +26,13 @@ type CalendlyAvailableTimesResponse = {
 };
 
 type AvailabilityCache = {
-  availableSlots: number;
+  startTimes: string[];
   expiresAt: number;
 };
 
 let availabilityCache: AvailabilityCache | null = null;
 let cachedEventTypeUri: string | null = null;
-let inFlightAvailability: Promise<number> | null = null;
+let inFlightAvailability: Promise<string[]> | null = null;
 
 function getServerEnvironment(name: string) {
   return typeof process !== "undefined" ? process.env[name]?.trim() : undefined;
@@ -87,10 +89,10 @@ async function resolveEventTypeUri(token: string) {
   return match.uri;
 }
 
-async function requestAvailableSlotCount(token: string) {
+async function requestAvailableStartTimes(token: string) {
   const eventTypeUri = await resolveEventTypeUri(token);
-  const startTime = new Date(Date.now() + 60_000);
-  const endTime = new Date(startTime.getTime() + AVAILABILITY_WINDOW_MS);
+  const startTime = new Date(Date.now() + 5_000);
+  const endTime = new Date(startTime.getTime() + AVAILABILITY_LOOKAHEAD_MS);
   const query = new URLSearchParams({
     event_type: eventTypeUri,
     start_time: startTime.toISOString(),
@@ -100,20 +102,22 @@ async function requestAvailableSlotCount(token: string) {
   if (!Array.isArray(availableTimes.collection)) {
     throw new Error("Calendly availability response did not include a collection");
   }
-  return availableTimes.collection.length;
+  return availableTimes.collection
+    .map((slot) => slot.start_time)
+    .filter((startTime): startTime is string => typeof startTime === "string");
 }
 
-async function getAvailableSlotCount(token: string, forceRefresh: boolean) {
+async function getAvailableStartTimes(token: string, forceRefresh: boolean) {
   const now = Date.now();
   if (!forceRefresh && availabilityCache && availabilityCache.expiresAt > now) {
-    return availabilityCache.availableSlots;
+    return availabilityCache.startTimes;
   }
   if (!forceRefresh && inFlightAvailability) return inFlightAvailability;
 
-  inFlightAvailability = requestAvailableSlotCount(token)
-    .then((availableSlots) => {
-      availabilityCache = { availableSlots, expiresAt: Date.now() + CACHE_TTL_MS };
-      return availableSlots;
+  inFlightAvailability = requestAvailableStartTimes(token)
+    .then((startTimes) => {
+      availabilityCache = { startTimes, expiresAt: Date.now() + CACHE_TTL_MS };
+      return startTimes;
     })
     .finally(() => {
       inFlightAvailability = null;
@@ -125,6 +129,15 @@ async function getAvailableSlotCount(token: string, forceRefresh: boolean) {
 export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
+  const requestUrl = new URL(request.url);
+  const timeZone = resolveValidTimeZone(requestUrl.searchParams.get("timeZone"));
+  if (!timeZone) {
+    return Response.json(
+      { availableSlots: null },
+      { status: 400, headers: { "Cache-Control": "private, no-store" } },
+    );
+  }
+
   const token = getServerEnvironment("CALENDLY_ACCESS_TOKEN");
   if (!token) {
     console.error("[calendly-availability] CALENDLY_ACCESS_TOKEN is not configured");
@@ -134,10 +147,11 @@ export async function GET(request: Request) {
     );
   }
 
-  const forceRefresh = new URL(request.url).searchParams.get("refresh") === "1";
+  const forceRefresh = requestUrl.searchParams.get("refresh") === "1";
 
   try {
-    const availableSlots = await getAvailableSlotCount(token, forceRefresh);
+    const startTimes = await getAvailableStartTimes(token, forceRefresh);
+    const availableSlots = countSlotsForLocalToday(startTimes, timeZone);
     return Response.json(
       { availableSlots },
       { headers: { "Cache-Control": "private, no-store" } },

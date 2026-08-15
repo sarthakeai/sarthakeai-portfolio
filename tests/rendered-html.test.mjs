@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { readFile, stat } from "node:fs/promises";
 import test from "node:test";
+import { countSlotsForLocalToday, getLocalDateKey, resolveValidTimeZone } from "../app/calendly-day.mjs";
 
 async function render() {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
@@ -143,6 +144,10 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(header, /availability\.slots === 1 \? "slot" : "slots"/);
   assert.match(header, /Checking availability/);
   assert.match(header, /View availability/);
+  assert.match(header, /Today’s slots filled/);
+  assert.match(header, /left today/);
+  assert.match(header, /Intl\.DateTimeFormat\(\)\.resolvedOptions\(\)\.timeZone/);
+  assert.match(header, /timeZone: getVisitorTimeZone\(\)/);
   assert.match(header, /\/api\/calendly-availability/);
   assert.match(header, /CALENDLY_BOOKING_COMPLETE_EVENT/);
   assert.match(header, /Asia\/Kolkata/);
@@ -253,9 +258,10 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(availabilityRoute, /CALENDLY_ACCESS_TOKEN/);
   assert.match(availabilityRoute, /CALENDLY_EVENT_TYPE_URI/);
   assert.match(availabilityRoute, /\/event_type_available_times/);
-  assert.match(availabilityRoute, /AVAILABILITY_WINDOW_MS = 7 \* 24 \* 60 \* 60 \* 1000/);
+  assert.match(availabilityRoute, /AVAILABILITY_LOOKAHEAD_MS = 48 \* 60 \* 60 \* 1000/);
   assert.match(availabilityRoute, /CACHE_TTL_MS = 5 \* 60 \* 1000/);
-  assert.match(availabilityRoute, /availableTimes\.collection\.length/);
+  assert.match(availabilityRoute, /resolveValidTimeZone/);
+  assert.match(availabilityRoute, /countSlotsForLocalToday/);
   assert.doesNotMatch(availabilityRoute, /NEXT_PUBLIC_CALENDLY/);
   assert.match(contactSubmit, /https:\/\/formspree\.io\/f\/xkjwbaoe/);
   assert.match(contactSubmit, /Accept: "application\/json"/);
@@ -324,6 +330,24 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.footer-copyright[^}]+order:\s*3/);
   assert.doesNotMatch(css, /footer-lower|footer-back/);
   assert.doesNotMatch(css, /footer-nav-row|footer-nav-index|footer-social-links|social-icon/);
+});
+
+test("counts only future Calendly starts on the visitor's local calendar day", () => {
+  const now = Date.parse("2026-01-01T01:00:00.000Z");
+  const startTimes = [
+    "2025-12-31T23:00:00.000Z",
+    "2026-01-01T02:00:00.000Z",
+    "2026-01-01T06:00:00.000Z",
+    "2026-01-02T02:00:00.000Z",
+  ];
+
+  assert.equal(getLocalDateKey(new Date(now), "America/New_York"), "2025-12-31");
+  assert.equal(getLocalDateKey(new Date(now), "Asia/Kolkata"), "2026-01-01");
+  assert.equal(countSlotsForLocalToday(startTimes, "America/New_York", now), 1);
+  assert.equal(countSlotsForLocalToday(startTimes, "Europe/London", now), 2);
+  assert.equal(countSlotsForLocalToday(startTimes, "Asia/Kolkata", now), 2);
+  assert.equal(resolveValidTimeZone("America/Los_Angeles"), "America/Los_Angeles");
+  assert.equal(resolveValidTimeZone("Not/A_Time_Zone"), null);
 });
 
 test("keeps initial visual assets lightweight", async () => {
