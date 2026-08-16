@@ -31,6 +31,10 @@ test("server-renders the complete Sarthak portfolio", async () => {
   assert.match(html, /He goes above and beyond to deliver an incredible product every time\./);
   assert.match(html, /MEGAN O MORAN/);
   assert.match(html, /Co-Founder · Zimo Media/);
+  assert.match(html, /Your product is in very good hands as long as he is working on it\./);
+  assert.match(html, /PRADEEP CHINTAPALLI/);
+  assert.match(html, /YouTube Channel · Video Editing/);
+  assert.doesNotMatch(html, /Testimonial navigation|Previous testimonial|Next testimonial/);
   assert.match(html, /id="work"[\s\S]+Client testimonials[\s\S]+id="about"/i);
   assert.match(html, /id="about"/);
   assert.match(html, /id="services"/);
@@ -63,7 +67,7 @@ test("server-renders the complete Sarthak portfolio", async () => {
   assert.match(html, /© 2026 Sarthak Sharma/);
   assert.match(html, /All Rights Reserved\./);
   assert.match(html, /aria-label="Back to top"/);
-  assert.match(html, /class="footer-back-to-top"/);
+  assert.match(html, /class="footer-back-to-top" href="#top" aria-label="Back to top">↑<\/a>/);
   assert.doesNotMatch(html, /footer-accordion/);
   assert.doesNotMatch(html, /hero-meta/);
   assert.doesNotMatch(html, /aria-label="At a glance"/);
@@ -103,7 +107,7 @@ test("server-renders the complete Sarthak portfolio", async () => {
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton|Your site is taking shape|Ready for your video|coming soon|Client names and links can be added/i);
 });
 
-test("keeps the testimonial carousel real, exact, and accessible", async () => {
+test("keeps both testimonials real, stacked, exact, and accessible", async () => {
   const [component, data, image] = await Promise.all([
     readFile(new URL("../app/ClientTestimonials.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/testimonials-data.ts", import.meta.url), "utf8"),
@@ -122,12 +126,10 @@ test("keeps the testimonial carousel real, exact, and accessible", async () => {
   assert.match(data, /PRADEEP CHINTAPALLI/);
   assert.match(data, /YouTube Channel · Video Editing/);
   assert.doesNotMatch(data, /rating|stars|source|date|company logo/i);
-  assert.match(component, /aria-label="Previous testimonial"/);
-  assert.match(component, /aria-label="Next testimonial"/);
-  assert.match(component, /event\.key === "ArrowLeft"/);
-  assert.match(component, /event\.key === "ArrowRight"/);
-  assert.match(component, /tabIndex=\{0\}/);
-  assert.match(component, /onKeyDown=\{handleKeyDown\}/);
+  assert.match(component, /clientTestimonials\.map/);
+  assert.match(component, /testimonials-list/);
+  assert.match(component, /testimonial-entry/);
+  assert.doesNotMatch(component, /useState|Previous testimonial|Next testimonial|ArrowLeft|ArrowRight|carousel|testimonial-controls/i);
   assert.match(component, /loading="lazy"/);
   assert.ok(image.size < 100_000, `Megan testimonial image is ${image.size} bytes`);
 });
@@ -361,6 +363,9 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(css, /\.video-modal-media video\s*\{[^}]+width:\s*100%/s);
   assert.match(css, /\.video-modal-youtube/);
   assert.match(css, /\.button\s*\{[^}]+border-radius:\s*var\(--control-radius\)/s);
+  assert.match(css, /\.button\s*\{[^}]+min-height:\s*3\.5rem[^}]+font-size:\s*1rem[^}]+font-weight:\s*600/s);
+  assert.match(page, /className="button button-secondary" href="#work"/);
+  assert.match(page, /className="button button-primary hero-connect"/);
   assert.doesNotMatch(css, /\.hero-connect\s*\{[^}]+text-transform:\s*uppercase/s);
   assert.match(css, /\.about-portrait/);
   assert.match(css, /\.booking-calendar\s*\{[^}]+justify-content:\s*center/s);
@@ -368,10 +373,10 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.doesNotMatch(css, /margin-inline:\s*calc\(var\(--page-gutter\)\s*\*\s*-1\)/);
   assert.match(css, /prefers-reduced-transparency:\s*reduce/);
   assert.match(css, /prefers-contrast:\s*more/);
-  assert.match(css, /\.footer-upper[^}]+grid-template-columns:\s*minmax\(0, 1\.5fr\) minmax\(27rem, \.9fr\)/s);
+  assert.match(css, /\.footer-upper[^}]+grid-template-columns:\s*minmax\(0, 1fr\) auto/s);
   assert.match(css, /\.footer-directory[^}]+grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/s);
-  assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.footer-upper[^}]+display:\s*contents/);
-  assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.footer-directory[^}]+order:\s*1[^}]+grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/);
+  assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.footer-upper[^}]+order:\s*1[^}]+grid-template-columns:\s*minmax\(0, 1fr\) auto/);
+  assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.footer-directory[^}]+grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/);
   assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.footer-divider[^}]+order:\s*2/);
   assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.footer-copyright[^}]+order:\s*3/);
   assert.match(css, /\.footer-back-to-top/);

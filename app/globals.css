@@ -22,8 +22,8 @@
   --surface: #f1f1ef;
   --surface-strong: #dededb;
   --ink: #191917;
-  --muted: #6d6a63;
-  --muted-strong: #4e4c47;
+  --muted: #666055;
+  --muted-strong: #514d46;
   --line: rgba(25, 25, 23, .17);
   --accent: #ec3d2f;
   --accent-ink: #ffffff;
@@ -58,8 +58,8 @@ html[data-theme="dark"] {
   --surface: #1e1e1b;
   --surface-strong: #292822;
   --ink: #f2efe7;
-  --muted: #a5a198;
-  --muted-strong: #c8c4ba;
+  --muted: #aaa398;
+  --muted-strong: #d0cac0;
   --line: rgba(242, 239, 231, .16);
   --accent: #ff0000;
   --accent-ink: #151513;
@@ -162,16 +162,18 @@ html[data-theme="dark"] .theme-icon-moon { color: #f7f5ef; opacity: 1; transform
 .hero h1 { max-width: 60rem; margin: 0; font-size: clamp(2.8rem, 6vw, 5.35rem); line-height: .98; letter-spacing: clamp(-.055em, -0.25vw, -.035em); font-weight: 590; text-wrap: balance; }
 .hero-intro { max-width: 39rem; margin: 2rem 0 0; color: var(--muted-strong); font-size: clamp(1rem, 1.5vw, 1.1875rem); line-height: 1.68; }
 .hero-actions { display: flex; align-items: center; gap: clamp(1rem, 2vw, 1.5rem); margin-top: 2.25rem; }
-.button { width: fit-content; min-height: 3rem; display: inline-flex; align-items: center; justify-content: center; gap: clamp(1rem, 2vw, 1.35rem); padding: 0 1.1rem; border: 1px solid var(--line); border-radius: var(--control-radius); font-size: .8125rem; font-weight: 560; transition: transform var(--press-speed) ease-out, border-color 200ms ease-out, background-color 200ms ease-out, color 200ms ease-out; }
+.button { width: fit-content; min-height: 3.5rem; display: inline-flex; align-items: center; justify-content: center; gap: clamp(1rem, 1.6vw, 1.35rem); padding: 0 1.35rem; border: 1px solid var(--line); border-radius: var(--control-radius); font-size: 1rem; font-weight: 600; line-height: 1; transition: transform var(--press-speed) ease-out, border-color 200ms ease-out, background-color 200ms ease-out, color 200ms ease-out; }
 .button-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
-.button-secondary { background: color-mix(in srgb, var(--surface) 52%, var(--bg)); color: var(--ink); border-color: var(--line); }
+.button-secondary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 .button:hover { transform: translateY(-2px); }
 .button:active { transform: scale(.98); }
+.button-primary:hover { border-color: color-mix(in srgb, var(--accent) 82%, #000); background: color-mix(in srgb, var(--accent) 88%, #000); }
+.button-secondary:hover { border-color: color-mix(in srgb, var(--ink) 84%, var(--bg)); background: color-mix(in srgb, var(--ink) 90%, var(--bg)); }
 .text-link { min-height: 2.75rem; display: inline-flex; align-items: center; gap: .7rem; border-bottom: 1px solid var(--line); font-size: .75rem; transition: border-color 180ms ease-out, color 180ms ease-out; }
 .text-link:hover { color: var(--accent); border-color: var(--accent); }
 .hero-connect { flex: 0 0 auto; cursor: pointer; }
 .hero-connect span { color: currentColor; transition: transform 220ms cubic-bezier(.22, 1, .36, 1); }
-.hero-connect:hover { border-color: color-mix(in srgb, var(--accent) 58%, var(--line)); background: color-mix(in srgb, var(--accent) 8%, var(--bg)); color: var(--ink); transform: translateY(-2px); }
+.hero-connect:hover { transform: translateY(-2px); }
 .hero-connect:hover span { transform: translate(.2rem, -.2rem); }
 .hero-reveal { animation: hero-reveal 620ms both var(--ease-out); }
 .hero-delay-1 { animation-delay: 70ms; }
@@ -217,7 +219,7 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
 .project.layout-centered { grid-column: span 6; }
 .project-grid.is-filtered .project { grid-column: span 6; }
 .project-meta-line { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: .65rem 1rem; align-items: baseline; margin-bottom: .7rem; padding-top: .7rem; border-top: 1px solid var(--line); }
-.project-number, .project-category, .project-meta { color: var(--muted); font-family: var(--font-geist-mono), monospace; font-size: .6875rem; line-height: 1.45; letter-spacing: .09em; text-transform: uppercase; }
+.project-number, .project-category, .project-meta { color: var(--muted); font-family: var(--font-geist-mono), monospace; font-size: .75rem; font-weight: 520; line-height: 1.45; letter-spacing: .085em; text-transform: uppercase; }
 .project-number { color: var(--accent); font-weight: 650; }
 .project-meta-line .project-category { min-width: 0; overflow-wrap: anywhere; }
 .project-meta-line .project-meta { justify-self: end; text-align: right; }
@@ -254,20 +256,20 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
 .project-open:focus-visible { outline: 2px solid var(--accent); outline-offset: -4px; }
 .project-open:focus-visible > span { opacity: 1; transform: none; }
 .project-info { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--line); margin-top: .7rem; }
-.project-eyebrow { display: flex; flex-wrap: wrap; gap: .45rem 1rem; color: var(--muted); font: .5625rem/1.5 var(--font-geist-mono), monospace; letter-spacing: .08em; text-transform: uppercase; }
+.project-eyebrow { display: flex; flex-wrap: wrap; gap: .45rem 1rem; color: var(--muted); font: 520 .6875rem/1.5 var(--font-geist-mono), monospace; letter-spacing: .08em; text-transform: uppercase; }
 .project-info h3 { margin: .7rem 0 0; font-size: clamp(1.15rem, 2vw, 1.75rem); line-height: 1.08; letter-spacing: -.03em; font-weight: 570; transition: transform 360ms var(--ease-spring); }
-.project-info .project-copy > p { max-width: 31rem; margin: .65rem 0 0; color: var(--muted); font-size: .75rem; line-height: 1.6; }
+.project-info .project-copy > p { max-width: 31rem; margin: .65rem 0 0; color: var(--muted); font-size: .8125rem; line-height: 1.62; }
 .project-role { margin-top: 1.25rem; display: grid; gap: .55rem; }
-.project-label, .project-deliverables span { color: var(--muted); font: .5625rem/1.4 var(--font-geist-mono), monospace; letter-spacing: .09em; text-transform: uppercase; }
+.project-label, .project-deliverables span { color: var(--muted); font: 540 .625rem/1.4 var(--font-geist-mono), monospace; letter-spacing: .09em; text-transform: uppercase; }
 .project-role ul { display: flex; flex-wrap: wrap; gap: .45rem .9rem; list-style: none; padding: 0; margin: 0; }
-.project-role li { padding-bottom: .28rem; border-bottom: 1px solid var(--line); color: var(--muted-strong); font-size: .625rem; letter-spacing: .035em; }
+.project-role li { padding-bottom: .28rem; border-bottom: 1px solid var(--line); color: var(--muted-strong); font-size: .6875rem; letter-spacing: .03em; }
 .project-info .project-deliverables { margin-top: 1.2rem; }
 .project-deliverables span { display: block; margin-bottom: .35rem; }
 .project-external-link { width: fit-content; display: inline-flex; align-items: center; gap: .45rem; margin-top: 1.2rem; padding-bottom: .35rem; border-bottom: 1px solid var(--line); color: var(--ink); font-size: .6875rem; }
 .project-external-link span { color: var(--accent); transition: transform 220ms var(--ease-out); }
 .project-result { min-width: 7rem; align-self: end; padding-top: .8rem; border-top: 1px solid var(--line); }
 .project-result strong { display: block; font-size: clamp(1.7rem, 3vw, 2.75rem); line-height: 1; letter-spacing: -.05em; font-weight: 580; }
-.project-result span { display: block; max-width: 8rem; margin-top: .35rem; color: var(--muted); font-size: .5625rem; line-height: 1.45; text-transform: uppercase; letter-spacing: .07em; }
+.project-result span { display: block; max-width: 8rem; margin-top: .35rem; color: var(--muted); font-size: .625rem; font-weight: 520; line-height: 1.45; text-transform: uppercase; letter-spacing: .07em; }
 .video-modal { position: fixed; inset: 0; z-index: 90; display: grid; place-items: center; padding: clamp(1rem, 4vw, 3rem); background: rgba(10,10,9,.78); animation: modal-backdrop-in 220ms both ease-out; }
 .video-modal-inner { width: min(100%, 66rem); max-height: 94dvh; overflow: auto; padding: clamp(1rem, 2.5vw, 1.75rem); background: var(--bg); color: var(--ink); border: 1px solid var(--line); animation: modal-panel-in 300ms both var(--ease-out); }
 .video-modal-head { display: flex; align-items: start; justify-content: space-between; gap: 2rem; margin-bottom: 1rem; }
@@ -312,7 +314,7 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
 
 .about-grid { display: grid; grid-template-columns: minmax(20rem, .72fr) minmax(0, 1.2fr); grid-template-areas: "label ." "portrait copy"; column-gap: clamp(3.5rem, 6vw, 6rem); row-gap: clamp(1.25rem, 2vw, 1.75rem); align-items: start; }
 .about-grid > .kicker { grid-area: label; padding-top: .45rem; }
-.about-portrait { grid-area: portrait; width: min(100%, 24rem); aspect-ratio: 3/4; align-self: start; justify-self: start; margin: 0; overflow: hidden; background: var(--surface); }
+.about-portrait { grid-area: portrait; width: min(100%, 27rem); aspect-ratio: 3/4; align-self: start; justify-self: start; margin: 0; overflow: hidden; background: var(--surface); }
 .about-portrait img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
 .about-copy { grid-area: copy; }
 .about-copy h2 { max-width: 43rem; margin-top: 0; }
@@ -323,12 +325,14 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
 .stats strong { font-size: clamp(2.15rem, 4vw, 3.75rem); line-height: 1; letter-spacing: -.05em; font-weight: 580; }
 .stats p { color: var(--muted); font-size: .6875rem; line-height: 1.5; }
 
+.services-intro { display: grid; gap: var(--label-gap); margin-bottom: clamp(2.5rem, 4vw, 3.5rem); }
+.services-intro > p:last-child { max-width: 42rem; margin: 0; color: var(--muted-strong); font-size: clamp(1rem, 1.4vw, 1.125rem); line-height: 1.68; }
 .service-list { border-top: 1px solid var(--line); }
 .service { position: relative; overflow: hidden; display: grid; grid-template-columns: .22fr 1.15fr 1fr .1fr; gap: 1.5rem; align-items: center; border-bottom: 1px solid var(--line); padding: 1.8rem 0; transition: padding 300ms var(--ease-out); }
 .service::after { content: ""; position: absolute; inset: auto 0 -1px; height: 1px; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform 460ms var(--ease-spring); }
 .service > span { color: var(--accent); font: .625rem/1 var(--font-geist-mono); }
 .service h3 { font-size: clamp(1.2rem, 2.1vw, 1.65rem); letter-spacing: -.025em; font-weight: 560; margin: 0; transition: transform 360ms var(--ease-spring); }
-.service p { color: var(--muted); line-height: 1.58; font-size: .8125rem; max-width: 29rem; }
+.service p { color: var(--muted); line-height: 1.62; font-size: .875rem; max-width: 29rem; }
 .service i { color: var(--muted); opacity: .45; font-style: normal; justify-self: end; transition: transform 260ms var(--ease-out), color 180ms ease-out, opacity 180ms ease-out; }
 
 .youtube { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(18rem, .65fr); grid-template-areas: "copy panel" "cta panel" "videos videos"; column-gap: clamp(3.5rem, 9vw, 9rem); row-gap: clamp(1.5rem, 2.6vw, 2.5rem); align-items: start; }
@@ -351,46 +355,26 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
 .youtube-video-copy strong { font-size: .875rem; line-height: 1.35; font-weight: 560; }
 .youtube-video-copy small { color: var(--muted); font: .5625rem/1.4 var(--font-geist-mono), monospace; letter-spacing: .05em; text-transform: uppercase; }
 
-.client-testimonials { overflow: clip; padding-block: clamp(4rem, 6vw, 5.5rem); }
+.client-testimonials { padding-block: clamp(4rem, 6vw, 5.5rem); }
 .testimonials-intro { display: grid; gap: var(--label-gap); margin-bottom: clamp(2.5rem, 4vw, 3.5rem); }
 .testimonials-intro h2 { max-width: 16ch; margin: 0; font-size: clamp(2.45rem, 4.8vw, 4.5rem); font-weight: 570; line-height: 1; letter-spacing: clamp(-.05em, -.2vw, -.03em); text-wrap: balance; }
-.testimonials-carousel { position: relative; min-width: 0; }
-.testimonials-carousel:focus-visible { outline-offset: .75rem; }
-.testimonials-stage { min-width: 0; transition: height 400ms cubic-bezier(.22, 1, .36, 1); }
-.testimonials-stage.is-transitioning { position: relative; overflow: hidden; }
-.testimonials-stage.is-transitioning .testimonial-slide { position: absolute; inset: 0; width: 100%; }
-.testimonial-slide { min-width: 0; display: grid; grid-template-columns: minmax(17rem, 2fr) minmax(0, 3fr); gap: clamp(2.5rem, 5vw, 5rem); align-items: stretch; }
+.testimonials-list { min-width: 0; }
+.testimonial-entry { min-width: 0; display: grid; grid-template-columns: minmax(17rem, 2fr) minmax(0, 3fr); gap: clamp(2.5rem, 5vw, 5rem); align-items: center; }
+.testimonial-entry + .testimonial-entry { margin-top: clamp(3.75rem, 7vw, 6.5rem); padding-top: clamp(3.75rem, 7vw, 6.5rem); border-top: 1px solid var(--line); }
 .testimonial-portrait { width: min(100%, 27.5rem); aspect-ratio: 4/5; margin: 0; overflow: hidden; background: var(--surface); }
 .testimonial-portrait img { width: 100%; height: 100%; display: block; object-fit: cover; object-position: center; }
-.testimonial-copy { min-width: 0; min-height: clamp(29rem, 35vw, 34.375rem); display: flex; flex-direction: column; }
+.testimonial-copy { min-width: 0; display: flex; flex-direction: column; }
 .testimonial-copy blockquote { margin: 0; }
-.testimonial-pull { max-width: 18ch; margin: 0; font-size: clamp(2.5rem, 3.6vw, 3.75rem); font-weight: 540; line-height: 1.03; letter-spacing: clamp(-.05em, -.18vw, -.035em); text-wrap: balance; }
+.testimonial-pull { max-width: 18ch; margin: 0; font-size: clamp(2.375rem, 3.35vw, 3.375rem); font-style: italic; font-weight: 470; line-height: 1.06; letter-spacing: clamp(-.045em, -.16vw, -.025em); text-wrap: balance; }
 .testimonial-body { max-width: 46rem; margin: clamp(1.75rem, 2.5vw, 2.5rem) 0 0; color: var(--muted-strong); font-size: clamp(1rem, 1.15vw, 1.125rem); line-height: 1.68; }
-.testimonial-footer { min-height: 4.4rem; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1.5rem; align-items: end; margin-top: auto; padding-top: 1.25rem; border-top: 1px solid var(--line); }
+.testimonial-footer { margin-top: clamp(2rem, 3vw, 2.75rem); padding-top: 1.25rem; border-top: 1px solid var(--line); }
 .testimonial-attribution { display: grid; gap: .38rem; }
-.testimonial-attribution cite { color: var(--ink); font: 630 1rem/1.25 var(--font-geist-mono), monospace; font-style: normal; letter-spacing: .075em; text-transform: uppercase; }
+.testimonial-attribution cite { color: var(--ink); font: 660 1rem/1.25 var(--font-geist-mono), monospace; font-style: normal; letter-spacing: .075em; text-transform: uppercase; }
 .testimonial-attribution span { color: var(--muted); font: .8125rem/1.45 var(--font-geist-mono), monospace; letter-spacing: .045em; }
-.testimonial-slide.is-text-only { display: block; }
-.testimonial-slide.is-text-only .testimonial-copy { width: min(100%, 72rem); min-height: clamp(23rem, 30vw, 29rem); margin-left: auto; }
-.testimonial-slide.is-text-only .testimonial-pull { max-width: 22ch; font-size: clamp(2.5rem, 3.6vw, 3.75rem); }
-.testimonial-slide.is-text-only .testimonial-body { max-width: 53rem; }
-.testimonial-controls { display: flex; gap: .65rem; }
-.testimonial-controls button { width: 3rem; height: 3rem; min-width: 3rem; min-height: 3rem; display: inline-grid; place-items: center; border: 1px solid var(--accent); border-radius: 50%; background: var(--accent); color: #fff; font: 500 1rem/1 var(--font-geist-sans), Arial, sans-serif; cursor: pointer; transition: color 220ms var(--ease-out), border-color 220ms var(--ease-out), background-color 220ms var(--ease-out), transform 220ms var(--ease-out); }
-.testimonial-controls button span { display: inline-block; transition: transform 220ms var(--ease-out); }
-.testimonial-controls button:hover { border-color: var(--ink); background: var(--ink); transform: translateY(-2px); }
-.testimonial-controls button:first-child:hover span { transform: translateX(-.18rem); }
-.testimonial-controls button:last-child:hover span { transform: translateX(.18rem); }
-.testimonial-controls button:disabled { cursor: wait; opacity: .68; transform: none; }
-.testimonial-slide.is-exiting-left { animation: testimonial-exit-left 400ms both cubic-bezier(.22, 1, .36, 1); }
-.testimonial-slide.is-entering-right { animation: testimonial-enter-right 400ms both cubic-bezier(.22, 1, .36, 1); }
-.testimonial-slide.is-exiting-right { animation: testimonial-exit-right 400ms both cubic-bezier(.22, 1, .36, 1); }
-.testimonial-slide.is-entering-left { animation: testimonial-enter-left 400ms both cubic-bezier(.22, 1, .36, 1); }
-@keyframes testimonial-exit-left { to { opacity: 0; transform: translateX(-1.1rem); } }
-@keyframes testimonial-enter-right { from { opacity: 0; transform: translateX(1.1rem); } }
-@keyframes testimonial-exit-right { to { opacity: 0; transform: translateX(1.1rem); } }
-@keyframes testimonial-enter-left { from { opacity: 0; transform: translateX(-1.1rem); } }
-@keyframes testimonial-fade-out { to { opacity: 0; } }
-@keyframes testimonial-fade-in { from { opacity: 0; } }
+.testimonial-entry.is-text-only { display: block; }
+.testimonial-entry.is-text-only .testimonial-copy { width: min(100%, 68rem); margin-left: auto; }
+.testimonial-entry.is-text-only .testimonial-pull { max-width: 22ch; }
+.testimonial-entry.is-text-only .testimonial-body { max-width: 53rem; }
 
 .contact { border-top: 1px solid var(--line); padding-bottom: clamp(4rem, 7vw, 6rem); }
 .contact h2 { max-width: 60rem; margin: var(--label-gap) 0 clamp(2.5rem, 6vw, 4rem); font-size: clamp(2.75rem, 6vw, 5.5rem); letter-spacing: clamp(-.06em, -0.25vw, -.035em); line-height: .96; font-weight: 580; }
@@ -400,7 +384,7 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
 .contact-route-label { margin: 0; color: var(--ink) !important; font: 560 .8125rem/1.5 var(--font-geist-mono), monospace !important; letter-spacing: .11em; text-transform: uppercase; }
 .contact-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 1rem 1.5rem; }
 .contact-connect { min-width: 9.5rem; cursor: pointer; }
-.contact-connect span { color: var(--accent); transition: transform 220ms var(--ease-out); }
+.contact-connect span { color: currentColor; transition: transform 220ms var(--ease-out); }
 .contact-connect:hover span { transform: translate(.25rem, -.25rem); }
 .contact-write-copy { display: grid; justify-items: start; gap: 1rem; }
 .contact-write-copy > p { margin: 0; color: var(--muted); font-size: .8125rem; line-height: 1.6; }
@@ -423,7 +407,7 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
 .contact-form input:disabled, .contact-form textarea:disabled { cursor: wait; opacity: .68; }
 .contact-form-actions { min-height: 3.5rem; display: flex; align-items: center; justify-content: space-between; gap: 2rem; }
 .contact-submit { min-width: 10rem; cursor: pointer; }
-.contact-submit span { color: var(--accent); }
+.contact-submit span { color: currentColor; }
 .contact-submit:disabled { cursor: wait; opacity: .64; transform: none; }
 .contact-form-hint { margin: 0; color: var(--muted); font: .5625rem/1.4 var(--font-geist-mono), monospace; letter-spacing: .04em; }
 .contact-form-hint kbd { min-width: 1.45rem; min-height: 1.45rem; display: inline-grid; place-items: center; padding-inline: .3rem; border: 1px solid var(--line); border-radius: .2rem; background: var(--surface); color: var(--muted-strong); font: inherit; }
@@ -449,24 +433,21 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
 
 .site-footer { padding: 0 var(--page-gutter); border-top: 1px solid var(--footer-line); background: var(--footer-bg); color: var(--footer-ink); font-size: .75rem; transition: background-color 280ms var(--ease-out), color 280ms var(--ease-out); }
 .footer-inner { width: min(100%, calc(var(--content-width) - (2 * var(--page-gutter)))); margin: 0 auto; }
-.footer-upper { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(27rem, .9fr); gap: clamp(4rem, 8vw, 9rem); align-items: start; padding: clamp(4.25rem, 6.5vw, 6.25rem) 0 clamp(3.75rem, 5.5vw, 5rem); }
-.footer-copyright { margin: 0; font-size: clamp(2.15rem, 3.4vw, 4.75rem); font-weight: 550; line-height: .94; letter-spacing: -.06em; }
+.footer-upper { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: clamp(3rem, 7vw, 8rem); align-items: start; padding: clamp(4.25rem, 6.5vw, 6.25rem) 0 clamp(3.75rem, 5.5vw, 5rem); }
+.footer-copyright { margin: 0; padding: clamp(2.5rem, 4.5vw, 4rem) 0 clamp(3.5rem, 6vw, 5.5rem); font-size: clamp(2rem, 3.1vw, 2.5rem); font-weight: 620; line-height: .98; letter-spacing: -.055em; }
 .footer-copyright span { display: block; white-space: nowrap; }
-.footer-copyright span + span { color: var(--footer-muted); font-weight: 500; }
-.footer-directory { min-width: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(2.25rem, 4vw, 4.5rem); }
+.footer-copyright span + span { color: inherit; font-weight: inherit; }
+.footer-directory { width: min(100%, 34rem); min-width: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(2.25rem, 4vw, 4.5rem); }
 .footer-column { min-width: 0; }
-.footer-label { margin: 0 0 clamp(1.15rem, 1.8vw, 1.6rem); color: var(--footer-muted); font: 500 .5625rem/1.4 var(--font-geist-sans), Arial, sans-serif; letter-spacing: .13em; text-transform: uppercase; }
+.footer-label { margin: 0 0 clamp(1.15rem, 1.8vw, 1.6rem); color: var(--footer-muted); font: 560 .6875rem/1.4 var(--font-geist-sans), Arial, sans-serif; letter-spacing: .13em; text-transform: uppercase; }
 .footer-link-list { display: grid; justify-items: start; gap: .2rem; }
 .footer-directory-link { width: fit-content; min-height: 2.5rem; display: inline-flex; align-items: center; gap: .65rem; color: color-mix(in srgb, var(--footer-ink) 88%, var(--footer-bg)); transition: color 200ms ease-out, opacity 200ms ease-out; }
 .footer-link-title { font-size: clamp(1.05rem, 1.4vw, 1.3rem); font-weight: 520; line-height: 1.2; letter-spacing: -.025em; transition: transform 220ms var(--ease-out); }
 .footer-link-arrow { color: var(--footer-muted); font-size: .7rem; transition: color 180ms ease-out, transform 220ms var(--ease-out); }
 .footer-link-contact .footer-link-arrow { color: var(--accent); }
 .footer-divider { height: 1px; background: var(--footer-line); }
-.footer-bottom { min-height: 4.75rem; display: flex; align-items: center; justify-content: flex-end; }
-.footer-back-to-top { min-height: 2.75rem; display: inline-flex; align-items: center; gap: .65rem; color: var(--footer-muted); font-size: .8125rem; transition: color 200ms ease-out, transform 200ms var(--ease-out); }
-.footer-back-to-top span { color: var(--accent); transition: transform 200ms var(--ease-out); }
-.footer-back-to-top:hover { color: var(--footer-ink); transform: translateY(-1px); }
-.footer-back-to-top:hover span { transform: translateY(-.2rem); }
+.footer-back-to-top { min-width: 2.75rem; min-height: 2.75rem; display: inline-grid; place-items: center; align-self: start; color: var(--footer-ink); font-size: clamp(2.125rem, 3.2vw, 2.75rem); font-weight: 450; line-height: 1; transition: color 200ms ease-out, transform 200ms var(--ease-out); }
+.footer-back-to-top:hover { color: var(--accent); transform: translateY(-.2rem); }
 .site-footer a:active { opacity: .7; }
 
 .reveal-pending { opacity: 0; transform: translateY(1rem); }
@@ -512,7 +493,7 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
   .header-location { gap: .45rem; margin-left: 0; font-size: .5rem; }
   .nav { gap: .75rem; }
   .availability-cta { padding-inline: .7rem; font-size: .625rem; }
-  .section-head, .testimonials-intro { grid-template-columns: minmax(0, 1.3fr) minmax(15rem, .75fr); }
+  .section-head { grid-template-columns: minmax(0, 1.3fr) minmax(15rem, .75fr); }
   .about-grid { column-gap: 4rem; }
   .youtube { grid-template-columns: minmax(0, 1.15fr) minmax(17rem, .85fr); column-gap: clamp(2.5rem, 6vw, 4.5rem); }
 }
@@ -574,7 +555,8 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
   .hero-copy { padding-top: 6.1rem; }
   .hero-portrait { top: 0; width: clamp(7.5rem, 32vw, 9.375rem); margin-bottom: 1.65rem; }
   .hero h1 { font-size: clamp(2.7rem, 11vw, 4.5rem); }
-  .section-head, .testimonials-intro, .about-grid { grid-template-columns: 1fr; }
+  .button { min-height: 3.25rem; font-size: .9375rem; }
+  .section-head, .about-grid { grid-template-columns: 1fr; }
   .selected-clients { padding-block: 2.5rem; }
   .client-strip { width: calc(100% + (2 * var(--page-gutter))); margin-left: calc(-1 * var(--page-gutter)); }
   .client-logo-set { --client-logo-gap: clamp(2.5rem, 12vw, 3.5rem); }
@@ -587,12 +569,13 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
   .section-head { gap: 1.75rem; }
   .kicker { font-size: .75rem; }
   .testimonials-intro { gap: .8rem; }
-  .testimonial-slide { grid-template-columns: 1fr; gap: 2rem; }
+  .testimonial-entry { grid-template-columns: 1fr; gap: 2rem; }
+  .testimonial-entry + .testimonial-entry { margin-top: 3.5rem; padding-top: 3.5rem; }
   .testimonial-portrait { width: min(100%, 32rem); }
-  .testimonial-copy, .testimonial-slide.is-text-only .testimonial-copy { min-height: 0; }
-  .testimonial-pull, .testimonial-slide.is-text-only .testimonial-pull { max-width: 20ch; font-size: clamp(2.125rem, 9vw, 3rem); }
+  .testimonial-entry.is-text-only .testimonial-copy { width: 100%; margin-left: 0; }
+  .testimonial-pull, .testimonial-entry.is-text-only .testimonial-pull { max-width: 20ch; font-size: clamp(2rem, 8.6vw, 2.625rem); }
   .testimonial-body { margin-top: 1.75rem; font-size: 1.0625rem; line-height: 1.68; }
-  .testimonial-footer { min-height: 4.2rem; margin-top: 2.5rem; }
+  .testimonial-footer { margin-top: 2.25rem; }
   .testimonial-attribution cite { font-size: clamp(.875rem, 3.8vw, 1rem); }
   .testimonial-attribution span { font-size: .75rem; }
   .filters { overflow-x: auto; overflow-y: hidden; flex-wrap: nowrap; padding: .2rem max(.9rem, var(--page-gutter)) .65rem 0; scroll-padding-inline: max(.9rem, var(--page-gutter)); scrollbar-width: none; scroll-snap-type: x proximity; overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch; }
@@ -648,7 +631,7 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
 }
 
 @media (max-width: 56rem) {
-  .footer-upper { grid-template-columns: 1fr; gap: 3.5rem; }
+  .footer-upper { grid-template-columns: minmax(0, 1fr) auto; gap: 2rem; }
   .footer-directory { width: min(100%, 32rem); }
 }
 
@@ -657,22 +640,22 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
   .video-modal-media-portrait { grid-template-columns: 1fr; }
   .video-modal-media-portrait figure { width: min(100%, 20rem); margin-inline: auto; }
   .footer-inner { width: 100%; display: grid; }
-  .footer-upper { display: contents; }
-  .footer-directory { order: 1; width: 100%; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(1rem, 5vw, 1.5rem); padding: 3.75rem 0 3.25rem; }
+  .footer-upper { order: 1; grid-template-columns: minmax(0, 1fr) auto; gap: 1rem; padding: 3.75rem 0 3.25rem; }
+  .footer-directory { width: 100%; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(1rem, 5vw, 1.5rem); }
   .footer-link-list { gap: .15rem; }
   .footer-directory-link { min-height: 2.5rem; gap: .4rem; }
   .footer-link-title { font-size: clamp(1.15rem, 5.2vw, 1.4rem); }
   .footer-divider { order: 2; }
-  .footer-copyright { order: 3; padding: 2.25rem 0 2.5rem; font-size: clamp(1.75rem, 7.7vw, 2.25rem); line-height: .96; letter-spacing: -.055em; }
+  .footer-copyright { order: 3; padding: 2.25rem 0 2.75rem; font-size: clamp(1.5rem, 7vw, 1.875rem); line-height: .98; letter-spacing: -.05em; }
   .footer-copyright span { white-space: normal; }
-  .footer-bottom { order: 4; min-height: 4.5rem; }
+  .footer-back-to-top { font-size: clamp(1.75rem, 8vw, 2.125rem); }
 }
 
 @media (max-width: 28rem) {
   :root { --page-gutter: 1.1rem; }
   .hero-actions { align-items: flex-start; flex-wrap: wrap; gap: .8rem; }
   .button { width: fit-content; }
-  .hero-connect { width: fit-content; min-width: 0; height: 3rem; }
+  .hero-connect { width: fit-content; min-width: 0; min-height: 3.25rem; }
   .section-head h2, .about h2, .youtube h2 { font-size: clamp(2.35rem, 12vw, 3.5rem); }
   .project-art strong { max-width: 88%; }
   .stats { gap: 2rem 1rem; }
@@ -708,10 +691,6 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
   .timeline-clip, .timeline-playhead, .availability-dot::after { animation: none; }
   .video-modal, .video-modal-inner, .booking-overlay, .booking-dialog { animation: none; }
   .reveal-pending, .reveal-pending.is-visible { opacity: 1; transform: none; transition: opacity 140ms ease-out; }
-  .testimonials-stage { transition-duration: 80ms; }
-  .testimonial-slide.is-exiting-left, .testimonial-slide.is-exiting-right { animation-name: testimonial-fade-out; animation-duration: 80ms; animation-timing-function: ease-out; }
-  .testimonial-slide.is-entering-left, .testimonial-slide.is-entering-right { animation-name: testimonial-fade-in; animation-duration: 80ms; animation-timing-function: ease-out; }
-  .testimonial-controls button, .testimonial-controls button span { transition-duration: 80ms; }
   .nav, .availability-cta, .hero-connect, .contact-connect, .contact-email, .booking-close, .mobile-nav, .mobile-nav-item, .mobile-nav-text, .mobile-nav-arrow, .menu span, .theme-track, .theme-track i, .theme-icon, .client-logo-set img, .project-art, .project-visual::before, .project-visual > img, .project-preview img, .project-info h3, .project-external-link span, .hero-portrait img, .service, .service::after, .service h3, .service i, .youtube-thumbnail img, .footer-directory-link, .footer-link-title, .footer-link-arrow { transition-duration: 80ms; transition-delay: 0ms; transition-timing-function: ease-out; }
   .client-strip { overflow-x: auto; overscroll-behavior-inline: contain; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
   .client-marquee-track { animation: none; transform: none; will-change: auto; }

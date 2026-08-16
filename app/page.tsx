@@ -60,8 +60,8 @@ export default function Home() {
             <h1 className="hero-reveal hero-delay-1">Hi, I’m Sarthak.</h1>
             <p className="hero-intro hero-reveal hero-delay-2">I’m a video editor and creator based in India. I edit YouTube videos, shorts, podcasts and social content for brands and creators around the world.</p>
             <div className="hero-actions hero-reveal hero-delay-2">
-              <a className="button button-primary" href="#work">See selected work <span aria-hidden="true">↓</span></a>
-              <BookingTrigger className="button button-secondary hero-connect">Connect <span aria-hidden="true">↗</span></BookingTrigger>
+              <a className="button button-secondary" href="#work">See selected work <span aria-hidden="true">↓</span></a>
+              <BookingTrigger className="button button-primary hero-connect">Connect <span aria-hidden="true">↗</span></BookingTrigger>
             </div>
           </div>
         </section>
@@ -119,8 +119,8 @@ export default function Home() {
         </section>
 
         <section className="section services" id="services" data-reveal>
-          <div className="section-head">
-            <div><p className="kicker">What I do</p><h2>What I edit.</h2></div>
+          <div className="services-intro">
+            <p className="kicker">What I do</p>
             <p>I can handle the full edit from the first assembly to final exports, or work inside an existing team and workflow.</p>
           </div>
           <div className="service-list">
@@ -179,7 +179,6 @@ export default function Home() {
       <footer className="site-footer">
         <div className="footer-inner">
           <div className="footer-upper">
-            <p className="footer-copyright"><span>© 2026 Sarthak Sharma</span><span>All Rights Reserved.</span></p>
             <div className="footer-directory">
               <nav className="footer-column" aria-label="Footer navigation">
                 <p className="footer-label">Navigation</p>
@@ -204,11 +203,10 @@ export default function Home() {
                 </div>
               </div>
             </div>
+            <a className="footer-back-to-top" href="#top" aria-label="Back to top">↑</a>
           </div>
           <div className="footer-divider" aria-hidden="true" />
-          <div className="footer-bottom">
-            <a className="footer-back-to-top" href="#top" aria-label="Back to top">Back to top <span aria-hidden="true">↑</span></a>
-          </div>
+          <p className="footer-copyright"><span>© 2026 Sarthak Sharma</span><span>All Rights Reserved.</span></p>
         </div>
       </footer>
     </main>
