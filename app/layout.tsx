@@ -24,14 +24,19 @@ const title = "Sarthak | Video Editor";
 const description = "Freelance video editor and creator from India, working across YouTube, short-form, podcasts, tech and social content.";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://sarthak-sharma-editor.sarthaklamborghini.chatgpt.site"),
+  metadataBase: new URL("https://sarthakeai.com"),
   title,
   description,
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true },
+  },
   icons: { icon: "/favicon.svg", shortcut: "/favicon.svg", apple: "/eai-mark.png" },
-  openGraph: { title, description, type: "website", images: [{ url: "/og-white.png", width: 1200, height: 630, alt: title }] },
+  openGraph: { title, description, type: "website", url: "https://sarthakeai.com/", images: [{ url: "/og-white.png", width: 1200, height: 630, alt: title }] },
   twitter: { card: "summary_large_image", title, description, images: ["/og-white.png"] },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en" suppressHydrationWarning><head><link rel="preload" href="/fonts/geist-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" /><link rel="preload" href="/eai-logo-dark.svg" as="image" type="image/svg+xml" /><link rel="preload" href="/eai-logo-light.svg" as="image" type="image/svg+xml" /><script dangerouslySetInnerHTML={{ __html: themeScript }} /><script dangerouslySetInnerHTML={{ __html: startupScrollScript }} /></head><body>{children}</body></html>;
+  return <html lang="en" suppressHydrationWarning><head><link rel="canonical" href="https://sarthakeai.com/" /><link rel="preload" href="/fonts/geist-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" /><link rel="preload" href="/eai-logo-dark.svg" as="image" type="image/svg+xml" /><link rel="preload" href="/eai-logo-light.svg" as="image" type="image/svg+xml" /><script dangerouslySetInnerHTML={{ __html: themeScript }} /><script dangerouslySetInnerHTML={{ __html: startupScrollScript }} /></head><body>{children}</body></html>;
 }
