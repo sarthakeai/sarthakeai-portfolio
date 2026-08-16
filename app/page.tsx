@@ -1,103 +1,215 @@
-"use client";
+/* eslint-disable @next/next/no-img-element -- This site ships hand-optimized responsive image assets without the Next image runtime. */
 
-import { useState } from "react";
+import { BookingProvider, BookingTrigger } from "./BookingExperience";
+import { ClientTestimonials } from "./ClientTestimonials";
+import { ContactForm } from "./ContactForm";
+import { HeroTimeline } from "./HeroTimeline";
+import { MotionController } from "./MotionController";
+import { PortfolioGrid } from "./PortfolioGrid";
+import { clients, services, socials, stats, youtubeStats, youtubeVideos } from "./portfolio-data";
+import { SiteHeader } from "./SiteHeader";
 
-const projects = [
-  { title: "The 30-Day Reset", client: "Creator campaign", category: "YouTube Shorts", metric: "18M views", tone: "ember", ratio: "portrait" },
-  { title: "No Shortcut Home", client: "YouTube documentary", category: "Long-form", metric: "12:48", tone: "blue", ratio: "wide" },
-  { title: "The Quiet Part", client: "Founder conversations", category: "Podcast Clips", metric: "Series of 24", tone: "silver", ratio: "square" },
-  { title: "Signal / Noise", client: "Brand identity film", category: "Motion Graphics", metric: "01:06", tone: "red", ratio: "wide" },
-  { title: "Built in Public", client: "Social campaign", category: "Social Content", metric: "32 assets", tone: "violet", ratio: "portrait" },
-  { title: "After the Launch", client: "Creator profile", category: "Long-form", metric: "09:22", tone: "green", ratio: "square" },
+const footerLinks = [
+  { href: "#work", label: "Work" },
+  { href: "#about", label: "About" },
+  { href: "#services", label: "What I do" },
+  { href: "#youtube", label: "YouTube" },
+  { href: "#contact", label: "Contact" },
 ];
 
-const categories = ["All", "YouTube Shorts", "Long-form", "Podcast Clips", "Motion Graphics", "Social Content"];
+function ClientLogoSet({ duplicate = false }: { duplicate?: boolean }) {
+  return (
+    <div className="client-logo-set" aria-hidden={duplicate ? true : undefined}>
+      {clients.map((client) => {
+        const logo = (
+          <img
+            src={client.logo}
+            alt={duplicate ? "" : client.name}
+            width={client.width}
+            height={client.height}
+            loading="eager"
+            decoding="async"
+            data-theme-treatment={client.theme ?? "invert"}
+            data-logo-size={client.size ?? "standard"}
+            data-logo-presence={client.presence ?? "balanced"}
+          />
+        );
+
+        if (duplicate || !client.url) return <span key={client.name}>{logo}</span>;
+        return <a key={client.name} href={client.url} target="_blank" rel="noopener noreferrer" aria-label={`${client.name}, opens in a new tab`}>{logo}</a>;
+      })}
+    </div>
+  );
+}
 
 export default function Home() {
-  const [active, setActive] = useState("All");
-  const [menuOpen, setMenuOpen] = useState(false);
-  const visible = active === "All" ? projects : projects.filter((project) => project.category === active);
-
   return (
+    <BookingProvider>
     <main>
-      <header className="site-header">
-        <a className="wordmark" href="#top" aria-label="Sarthak Sharma, home">SS<span>.</span></a>
-        <nav className={menuOpen ? "nav open" : "nav"} aria-label="Primary navigation">
-          <a href="#work" onClick={() => setMenuOpen(false)}>Work</a>
-          <a href="#about" onClick={() => setMenuOpen(false)}>About</a>
-          <a href="#services" onClick={() => setMenuOpen(false)}>Services</a>
-          <a className="nav-cta" href="#contact" onClick={() => setMenuOpen(false)}>Start a project <span>↗</span></a>
-        </nav>
-        <button className="menu" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle navigation" aria-expanded={menuOpen}>
-          <span /><span />
-        </button>
-      </header>
+      <a className="skip-link" href="#content">Skip to content</a>
+      <MotionController />
+      <SiteHeader />
 
-      <section className="hero" id="top">
-        <div className="grain" />
-        <p className="eyebrow reveal"><span /> Freelance video editor · India / Worldwide</p>
-        <h1 className="hero-title reveal delay-1">I edit stories<br />people <em>feel.</em></h1>
-        <div className="hero-bottom reveal delay-2">
-          <p>Sharp cuts, honest rhythm, and visuals that stay with you. I help creators and brands turn raw footage into work worth watching.</p>
-          <a className="circle-link" href="#work" aria-label="See selected work"><span>View<br />work</span><b>↓</b></a>
-        </div>
-        <div className="frame-marks" aria-hidden="true"><i>REC</i><i>00:00:01:12</i></div>
-      </section>
+      <div id="content">
+        <section className="hero" id="top">
+          <HeroTimeline />
+          <div className="hero-copy">
+            <figure className="hero-portrait hero-reveal">
+              <img src="/sarthak-sharma.webp" alt="Sarthak" width="320" height="320" fetchPriority="high" />
+            </figure>
+            <h1 className="hero-reveal hero-delay-1">Hi, I’m Sarthak.</h1>
+            <p className="hero-intro hero-reveal hero-delay-2">I’m a video editor and creator based in India. I edit YouTube videos, shorts, podcasts and social content for brands and creators around the world.</p>
+            <div className="hero-actions hero-reveal hero-delay-2">
+              <a className="button button-secondary" href="#work">See selected work <span aria-hidden="true">↓</span></a>
+              <BookingTrigger className="button button-primary hero-connect">Connect <span aria-hidden="true">↗</span></BookingTrigger>
+            </div>
+          </div>
+        </section>
 
-      <div className="ticker" aria-label="Specialties"><div>STORY FIRST <span>✦</span> CLEAN CUTS <span>✦</span> HUMAN RHYTHM <span>✦</span> STORY FIRST <span>✦</span> CLEAN CUTS <span>✦</span> HUMAN RHYTHM <span>✦</span></div></div>
-
-      <section className="section work" id="work">
-        <div className="section-head">
-          <div><p className="kicker">01 / Selected work</p><h2>Recent cuts.</h2></div>
-          <p>A selection of stories shaped for screens big, small, and held in one hand.</p>
-        </div>
-        <div className="filters" role="group" aria-label="Filter projects">
-          {categories.map((category) => <button key={category} className={active === category ? "active" : ""} onClick={() => setActive(category)}>{category}</button>)}
-        </div>
-        <div className="project-grid">
-          {visible.map((project, index) => (
-            <article className={`project ${project.ratio}`} key={project.title}>
-              <div className={`project-visual ${project.tone}`}>
-                <div className="timecode">0{index + 1}:2{index}:4{index}</div>
-                <div className="visual-type">{project.title.split(" ").map((word) => <span key={word}>{word}</span>)}</div>
-                <button className="play" aria-label={`Play ${project.title} preview`}>▶</button>
+        {clients.length > 0 ? (
+          <section className="section selected-clients" aria-labelledby="selected-clients-title" data-reveal>
+            <div className="clients-intro">
+              <p className="kicker" id="selected-clients-title">Selected brands &amp; creators</p>
+            </div>
+            <div className="client-strip" aria-label="Selected brands and creators Sarthak has worked with">
+              <div className="client-marquee-track">
+                <ClientLogoSet />
+                <ClientLogoSet duplicate />
               </div>
-              <div className="project-info"><div><h3>{project.title}</h3><p>{project.client}</p></div><div><span>{project.category}</span><span>{project.metric}</span></div></div>
-            </article>
-          ))}
+            </div>
+            <p className="clients-note">Across YouTube, short-form, podcasts and social content.</p>
+          </section>
+        ) : null}
+
+        <section className="section work" id="work">
+          <div className="section-head">
+            <div><p className="kicker">Selected work</p><h2>A look at<br />what I edit.</h2></div>
+            <p>Selected edits across short-form, YouTube, company video, motion and interview work.</p>
+          </div>
+          <PortfolioGrid />
+        </section>
+
+        <ClientTestimonials />
+
+        <section className="section about" id="about" data-reveal>
+          <div className="about-grid">
+            <p className="kicker">About</p>
+            <figure className="about-portrait">
+              <img
+                src="/sarthak-about-960.webp"
+                srcSet="/sarthak-about-960.webp 960w, /sarthak-about-1600.webp 1600w"
+                sizes="(max-width: 36rem) calc(100vw - 2.2rem), (max-width: 50rem) 32rem, (max-width: 68rem) 22rem, 24rem"
+                alt="Sarthak beside his motorcycle in the mountains"
+                width="1600"
+                height="2132"
+                loading="lazy"
+                decoding="async"
+              />
+            </figure>
+            <div className="about-copy">
+              <h2>I know the edit from both sides of the timeline.</h2>
+              <p>I’ve been editing professionally for around five years, mostly for creators working across YouTube, podcasts, tech, finance and social.</p>
+              <p>I also run a technology YouTube channel of my own. That means I’m not only thinking about clean cuts—I’m thinking about the idea, the audience and whether the video actually holds up once it’s published.</p>
+              <p className="personal-note">Away from the timeline: photography, films, music, travel, cars and motorcycles.</p>
+            </div>
+          </div>
+          <div className="stats" aria-label="Experience in numbers">
+            {stats.map((stat) => <div key={stat.value}><strong>{stat.value}</strong><p>{stat.label}</p></div>)}
+          </div>
+        </section>
+
+        <section className="section services" id="services" data-reveal>
+          <div className="services-intro">
+            <p className="kicker">What I do</p>
+            <p>I can handle the full edit from the first assembly to final exports, or work inside an existing team and workflow.</p>
+          </div>
+          <div className="service-list">
+            {services.map((service) => <article className="service" key={service.number}><span>{service.number}</span><h3>{service.title}</h3><p>{service.copy}</p><i aria-hidden="true">↗</i></article>)}
+          </div>
+        </section>
+
+        <section className="section youtube" id="youtube" data-reveal>
+          <div className="youtube-copy">
+            <p className="kicker">Personal project / YouTube</p>
+            <h2>I make videos too.</h2>
+            <p>I’ve created and published more than 350 long-form videos on my technology channel, which now has over 24,000 subscribers. Running the channel has taught me what works after a video leaves the timeline and reaches a real audience.</p>
+          </div>
+          <div className="youtube-panel" aria-label="YouTube channel in numbers">
+            <div className="youtube-mark"><span className="sr-only">EAI</span></div>
+            <div className="youtube-stats">
+              {youtubeStats.map((stat) => <div className="youtube-stat" key={stat.label}><strong>{stat.value}</strong><span>{stat.label}</span></div>)}
+            </div>
+          </div>
+          <a className="text-link youtube-cta" href="https://www.youtube.com/@sarthakeai" target="_blank" rel="noopener noreferrer" aria-label="Visit my YouTube channel, opens in a new tab">Visit my YouTube channel <span aria-hidden="true">↗</span></a>
+          {youtubeVideos.length > 0 ? (
+            <div className="youtube-videos" aria-label="Selected YouTube videos">
+              {youtubeVideos.map((video) => (
+                <a key={video.url} href={video.url} target="_blank" rel="noopener noreferrer">
+                  <span className="youtube-thumbnail"><img src={video.thumbnail} alt={`${video.title} thumbnail`} width="640" height="360" loading="lazy" decoding="async" /></span>
+                  <span className="youtube-video-copy"><strong>{video.title}</strong>{video.date || video.views || video.duration ? <small>{[video.date, video.views, video.duration].filter(Boolean).join(" · ")}</small> : null}</span>
+                </a>
+              ))}
+            </div>
+          ) : null}
+        </section>
+
+        <section className="section contact" id="contact" data-reveal>
+          <p className="kicker">Get in touch</p>
+          <h2>Have something you want to work on?</h2>
+          <div className="contact-bottom">
+            <div className="contact-route-copy">
+              <p className="contact-route-label">Prefer a call?</p>
+              <p>Book a 30-minute call.</p>
+            </div>
+            <div className="contact-actions">
+              <BookingTrigger className="button button-primary contact-connect">Connect <span aria-hidden="true">↗</span></BookingTrigger>
+            </div>
+          </div>
+          <div className="contact-form-intro">
+            <p className="contact-route-label">Prefer to write?</p>
+            <div className="contact-write-copy">
+              <p>Send me a project message.</p>
+              <a className="contact-email" href="mailto:officialsarthakeai@gmail.com">officialsarthakeai@gmail.com <span aria-hidden="true">↗</span></a>
+            </div>
+          </div>
+          <ContactForm />
+        </section>
+      </div>
+
+      <footer className="site-footer">
+        <div className="footer-inner">
+          <div className="footer-upper">
+            <div className="footer-directory">
+              <nav className="footer-column" aria-label="Footer navigation">
+                <p className="footer-label">Navigation</p>
+                <div className="footer-link-list">
+                  {footerLinks.map((link) => (
+                    <a className={`footer-directory-link${link.href === "#contact" ? " footer-link-contact" : ""}`} key={link.href} href={link.href}>
+                      <span className="footer-link-title">{link.label}</span>
+                      <span className="footer-link-arrow" aria-hidden="true">↗</span>
+                    </a>
+                  ))}
+                </div>
+              </nav>
+              <div className="footer-column" aria-label="Social profiles">
+                <p className="footer-label">Elsewhere</p>
+                <div className="footer-link-list">
+                  {socials.map((social) => (
+                    <a className="footer-directory-link" key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" aria-label={`${social.label}, opens in a new tab`}>
+                      <span className="footer-link-title">{social.platform === "x" ? "X / Twitter" : social.label}</span>
+                      <span className="footer-link-arrow" aria-hidden="true">↗</span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <a className="footer-back-to-top" href="#top" aria-label="Back to top">↑</a>
+          </div>
+          <div className="footer-divider" aria-hidden="true" />
+          <p className="footer-copyright"><span>© 2026 Sarthak Sharma</span><span>All Rights Reserved.</span></p>
         </div>
-      </section>
-
-      <section className="about section" id="about">
-        <div className="about-intro"><p className="kicker">02 / About</p><p className="statement">Good editing disappears.<br /><span>The feeling doesn’t.</span></p></div>
-        <div className="about-body">
-          <div className="portrait" aria-label="Portrait placeholder for Sarthak Sharma"><div className="portrait-initial">S</div><span>YOUR FRAME HERE</span></div>
-          <div className="bio"><h2>I’m Sarthak.</h2><p>I’m a freelance editor and creative based in India, working with creators, founders, and teams who care about the details.</p><p>My job is more than making footage shorter. It’s finding the heartbeat of a story—the pause before a line lands, the frame that says enough, the cut nobody notices but everyone feels.</p><a href="#contact">More about how I work <span>↗</span></a></div>
-        </div>
-        <div className="stats"><div><strong>4<span>+</span></strong><p>Years shaping<br />stories</p></div><div><strong>350<span>+</span></strong><p>Videos edited<br />and delivered</p></div><div><strong>80<span>M+</span></strong><p>Organic views<br />across platforms</p></div><div><strong>12<span>+</span></strong><p>Countries reached<br />through the work</p></div></div>
-      </section>
-
-      <section className="services section" id="services">
-        <div className="section-head"><div><p className="kicker">03 / Services</p><h2>From raw to<br /><em>ready.</em></h2></div><p>Bring the footage, the brief, or just the beginnings of an idea. I’ll help shape the rest.</p></div>
-        <div className="service-list">
-          {[['01','YouTube & long-form','Narrative structure, pacing, sound design, colour, and a finish built for retention.'],['02','Short-form & social','Platform-native edits with hooks that earn attention—without losing the human voice.'],['03','Podcasts & conversations','Full episodes and sharp social cutdowns that make the strongest moments travel.'],['04','Motion & visual systems','Titles, typography, transitions, and repeatable visual language for every series.']].map(([num,title,copy]) => <div className="service" key={num}><span>{num}</span><h3>{title}</h3><p>{copy}</p><b>↗</b></div>)}
-        </div>
-      </section>
-
-      <section className="clients section">
-        <p className="kicker">04 / Experience</p><div className="client-row"><span>Creators</span><span>Founders</span><span>Podcasts</span><span>Brands</span><span>Studios</span></div>
-        <div className="experience"><h2>Built for long-term<br />creative partnerships.</h2><p>From daily social systems to carefully paced documentaries, I slot into your workflow, communicate clearly, and treat every deadline like it’s mine.</p></div>
-      </section>
-
-      <section className="quote section">
-        <p className="kicker">05 / Kind words</p><blockquote>“Sarthak doesn’t just edit the footage. He finds the version of the story we were trying to tell.”</blockquote><div className="quote-by"><span>Client name</span><span>Creator / Brand</span><small>Testimonial placeholder</small></div>
-      </section>
-
-      <section className="contact section" id="contact">
-        <p className="kicker">06 / Let’s make something</p><h2>Have footage.<br />Need <em>a story?</em></h2><div className="contact-bottom"><a href="mailto:hello@sarthaksharma.work">hello@sarthaksharma.work <span>↗</span></a><p>Available for select freelance projects and ongoing creative partnerships.</p></div>
-      </section>
-
-      <footer><a className="wordmark" href="#top">SS<span>.</span></a><div className="socials"><a href="#" aria-label="Instagram">Instagram ↗</a><a href="#" aria-label="YouTube">YouTube ↗</a><a href="#" aria-label="LinkedIn">LinkedIn ↗</a></div><p>© {new Date().getFullYear()} Sarthak Sharma</p><a href="#top">Back to top ↑</a></footer>
+      </footer>
     </main>
+    </BookingProvider>
   );
 }

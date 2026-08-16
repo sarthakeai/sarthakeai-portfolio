@@ -31,10 +31,25 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
+# explicit private/local build exclusions
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+node_modules
+.next
+dist
+build
+
 # vercel
 .vercel
 
 /dist/
+/.sites-artifacts/
 /.wrangler/
 /outputs/
 /work/
+/Portfolio/
+/.sites-source/
+*.tsbuildinfo

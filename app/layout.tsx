@@ -1,26 +1,37 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import { headers } from "next/headers";
 import "./globals.css";
 
-const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
-const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
-
-export async function generateMetadata(): Promise<Metadata> {
-  const requestHeaders = await headers();
-  const host = requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host") ?? "localhost:3000";
-  const protocol = requestHeaders.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https");
-  const image = `${protocol}://${host}/og.png`;
-  const title = "Sarthak Sharma — Video Editor & Creative";
-  const description = "Freelance video editor shaping cinematic stories for creators, founders, podcasts, and brands.";
-  return {
-    title, description,
-    icons: { icon: "/favicon.svg", shortcut: "/favicon.svg" },
-    openGraph: { title, description, type: "website", images: [{ url: image, width: 1200, height: 630, alt: "Sarthak Sharma — Video Editor & Creative" }] },
-    twitter: { card: "summary_large_image", title, description, images: [image] },
+const themeScript = `(() => { try { const stored = localStorage.getItem('theme'); const theme = stored === 'dark' ? 'dark' : 'light'; document.documentElement.dataset.theme = theme; document.documentElement.style.colorScheme = theme; document.documentElement.style.backgroundColor = theme === 'dark' ? '#0f0f0e' : '#ffffff'; } catch (_) { document.documentElement.dataset.theme = 'light'; document.documentElement.style.colorScheme = 'light'; document.documentElement.style.backgroundColor = '#ffffff'; } })();`;
+const startupScrollScript = `(() => {
+  const resetToTop = () => {
+    const root = document.documentElement;
+    const previous = root.style.scrollBehavior;
+    root.style.scrollBehavior = 'auto';
+    window.scrollTo(0, 0);
+    root.style.scrollBehavior = previous;
   };
-}
+  try {
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+  } catch (_) {}
+  resetToTop();
+  document.addEventListener('DOMContentLoaded', resetToTop, { once: true });
+  window.addEventListener('load', () => requestAnimationFrame(resetToTop), { once: true });
+  window.addEventListener('pageshow', resetToTop);
+})();`;
+
+const title = "Sarthak | Video Editor";
+const description = "Freelance video editor and creator from India, working across YouTube, short-form, podcasts, tech and social content.";
+
+export const metadata: Metadata = {
+  metadataBase: new URL("https://sarthak-sharma-editor.sarthaklamborghini.chatgpt.site"),
+  title,
+  description,
+  icons: { icon: "/favicon.svg", shortcut: "/favicon.svg", apple: "/eai-mark.png" },
+  openGraph: { title, description, type: "website", images: [{ url: "/og-white.png", width: 1200, height: 630, alt: title }] },
+  twitter: { card: "summary_large_image", title, description, images: ["/og-white.png"] },
+};
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en"><body className={`${geistSans.variable} ${geistMono.variable}`}>{children}</body></html>;
+  return <html lang="en" suppressHydrationWarning><head><link rel="preload" href="/fonts/geist-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" /><link rel="preload" href="/eai-logo-dark.svg" as="image" type="image/svg+xml" /><link rel="preload" href="/eai-logo-light.svg" as="image" type="image/svg+xml" /><script dangerouslySetInnerHTML={{ __html: themeScript }} /><script dangerouslySetInnerHTML={{ __html: startupScrollScript }} /></head><body>{children}</body></html>;
 }
