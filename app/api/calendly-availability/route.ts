@@ -1,3 +1,4 @@
+import { env } from "cloudflare:workers";
 import { countSlotsForLocalToday, resolveValidTimeZone } from "../../calendly-day.mjs";
 
 const CALENDLY_API_BASE = "https://api.calendly.com";
@@ -34,8 +35,9 @@ let availabilityCache: AvailabilityCache | null = null;
 let cachedEventTypeUri: string | null = null;
 let inFlightAvailability: Promise<string[]> | null = null;
 
-function getServerEnvironment(name: string) {
-  return typeof process !== "undefined" ? process.env[name]?.trim() : undefined;
+function getServerEnvironment(name: "CALENDLY_ACCESS_TOKEN" | "CALENDLY_EVENT_TYPE_URI") {
+  const value = env[name];
+  return typeof value === "string" ? value.trim() : undefined;
 }
 
 async function calendlyGet<T>(path: string, token: string): Promise<T> {
