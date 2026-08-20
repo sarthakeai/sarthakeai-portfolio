@@ -60,10 +60,10 @@ export function ContactForm() {
       </label>
 
       <div className="contact-form-actions">
+        <p className="contact-form-hint"><kbd>Ctrl</kbd> / <kbd>⌘</kbd> + <kbd>Enter</kbd> to send</p>
         <button className="button button-primary contact-submit" type="submit" disabled={sending}>
           {sending ? "Sending…" : "Send message"}<span aria-hidden="true">↗</span>
         </button>
-        <p className="contact-form-hint"><kbd>Ctrl</kbd> / <kbd>⌘</kbd> + <kbd>Enter</kbd> to send</p>
       </div>
 
       <div className="contact-form-status" aria-live="polite" aria-atomic="true">

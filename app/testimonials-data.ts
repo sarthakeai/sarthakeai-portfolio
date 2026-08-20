@@ -31,7 +31,12 @@ export const clientTestimonials: ClientTestimonial[] = [
     pullQuote: "Your product is in very good hands as long as he is working on it.",
     fullQuote: "Sarthak is very competent with editing videos as per your requirement. His skills and creativity are really good. Most importantly for me, he can also improvise and use his creativity to make your project even better. I would suggest hiring him all day long. Your product is in very good hands as long as he is working on it.",
     name: "PRADEEP CHINTAPALLI",
-    role: "YouTube Channel · Video Editing",
-    image: null,
+    role: "Upwork Client · Video Editing",
+    image: {
+      src: "/testimonials/pradeep-chintapalli.webp",
+      alt: "Pradeep Chintapalli",
+      width: 1080,
+      height: 1350,
+    },
   },
 ];

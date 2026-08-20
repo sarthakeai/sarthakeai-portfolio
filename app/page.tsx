@@ -1,6 +1,12 @@
 /* eslint-disable @next/next/no-img-element -- This site ships hand-optimized responsive image assets without the Next image runtime. */
 
 import { BookingProvider, BookingTrigger } from "./BookingExperience";
+import { CalendarBlank } from "@phosphor-icons/react/dist/ssr/CalendarBlank";
+import { ChatText } from "@phosphor-icons/react/dist/ssr/ChatText";
+import { EnvelopeSimple } from "@phosphor-icons/react/dist/ssr/EnvelopeSimple";
+import { InstagramLogo } from "@phosphor-icons/react/dist/ssr/InstagramLogo";
+import { XLogo } from "@phosphor-icons/react/dist/ssr/XLogo";
+import { YoutubeLogo } from "@phosphor-icons/react/dist/ssr/YoutubeLogo";
 import { ClientTestimonials } from "./ClientTestimonials";
 import { ContactForm } from "./ContactForm";
 import { HeroTimeline } from "./HeroTimeline";
@@ -16,6 +22,18 @@ const footerLinks = [
   { href: "#youtube", label: "YouTube" },
   { href: "#contact", label: "Contact" },
 ];
+
+const footerSocials = [
+  ...socials,
+  { platform: "email", label: "Email", href: "mailto:work@sarthakeai.com" },
+];
+
+const footerSocialIcons = {
+  instagram: InstagramLogo,
+  x: XLogo,
+  youtube: YoutubeLogo,
+  email: EnvelopeSimple,
+};
 
 function ClientLogoSet({ duplicate = false }: { duplicate?: boolean }) {
   return (
@@ -57,6 +75,10 @@ export default function Home() {
             <figure className="hero-portrait hero-reveal">
               <img src="/sarthak-sharma.webp" alt="Sarthak" width="320" height="320" fetchPriority="high" />
             </figure>
+            <div className="hero-availability hero-reveal hero-delay-1" aria-label="Available for work">
+              <span className="hero-availability-dot" aria-hidden="true" />
+              <span>Available for work</span>
+            </div>
             <h1 className="hero-reveal hero-delay-1">Hi, I’m Sarthak.</h1>
             <p className="hero-intro hero-reveal hero-delay-2">I’m a video editor and creator based in India. I edit YouTube videos, shorts, podcasts and social content for brands and creators around the world.</p>
             <div className="hero-actions hero-reveal hero-delay-2">
@@ -108,9 +130,8 @@ export default function Home() {
             </figure>
             <div className="about-copy">
               <h2>I know the edit from both sides of the timeline.</h2>
-              <p>I’ve been editing professionally for around five years, mostly for creators working across YouTube, podcasts, tech, finance and social.</p>
-              <p>I also run a technology YouTube channel of my own. That means I’m not only thinking about clean cuts—I’m thinking about the idea, the audience and whether the video actually holds up once it’s published.</p>
-              <p className="personal-note">Away from the timeline: photography, films, music, travel, cars and motorcycles.</p>
+              <p>I’ve been editing professionally for around five years, working with brands and creators across YouTube, podcasts, tech, finance and social.</p>
+              <p>I also run a technology YouTube channel of my own. That means I’m not only thinking about clean cuts - I’m thinking about the idea, the audience and whether the video actually holds up once it’s published.</p>
             </div>
           </div>
           <div className="stats" aria-label="Experience in numbers">
@@ -158,7 +179,10 @@ export default function Home() {
           <h2>Have something you want to work on?</h2>
           <div className="contact-bottom">
             <div className="contact-route-copy">
-              <p className="contact-route-label">Prefer a call?</p>
+              <div className="contact-route-heading">
+                <CalendarBlank className="contact-route-icon" aria-hidden="true" weight="regular" />
+                <p className="contact-route-label">Prefer a call?</p>
+              </div>
               <p>Book a 30-minute call.</p>
             </div>
             <div className="contact-actions">
@@ -166,11 +190,14 @@ export default function Home() {
             </div>
           </div>
           <div className="contact-form-intro">
-            <p className="contact-route-label">Prefer to write?</p>
             <div className="contact-write-copy">
+              <div className="contact-route-heading">
+                <ChatText className="contact-route-icon" aria-hidden="true" weight="regular" />
+                <p className="contact-route-label">Prefer to write?</p>
+              </div>
               <p>Send me a project message.</p>
-              <a className="contact-email" href="mailto:officialsarthakeai@gmail.com">officialsarthakeai@gmail.com <span aria-hidden="true">↗</span></a>
             </div>
+            <a className="contact-email" href="mailto:work@sarthakeai.com"><EnvelopeSimple aria-hidden="true" weight="regular" />work@sarthakeai.com <span aria-hidden="true">↗</span></a>
           </div>
           <ContactForm />
         </section>
@@ -194,12 +221,17 @@ export default function Home() {
               <div className="footer-column" aria-label="Social profiles">
                 <p className="footer-label">Elsewhere</p>
                 <div className="footer-link-list">
-                  {socials.map((social) => (
-                    <a className="footer-directory-link" key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" aria-label={`${social.label}, opens in a new tab`}>
+                  {footerSocials.map((social) => {
+                    const SocialIcon = footerSocialIcons[social.platform as keyof typeof footerSocialIcons];
+                    const isEmail = social.platform === "email";
+                    return (
+                    <a className="footer-directory-link footer-social-link" data-platform={social.platform} key={social.label} href={social.href} target={isEmail ? undefined : "_blank"} rel={isEmail ? undefined : "noopener noreferrer"} aria-label={isEmail ? "Email Sarthak at work@sarthakeai.com" : `${social.label}, opens in a new tab`}>
+                      <SocialIcon className="footer-link-icon" aria-hidden="true" weight="regular" />
                       <span className="footer-link-title">{social.platform === "x" ? "X / Twitter" : social.label}</span>
                       <span className="footer-link-arrow" aria-hidden="true">↗</span>
                     </a>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             </div>

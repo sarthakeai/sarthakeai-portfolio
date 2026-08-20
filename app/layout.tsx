@@ -32,7 +32,10 @@ export const metadata: Metadata = {
     follow: true,
     googleBot: { index: true, follow: true },
   },
-  icons: { icon: "/favicon.svg", shortcut: "/favicon.svg", apple: "/eai-mark.png" },
+  icons: {
+    icon: { url: "/favicon.svg?v=safe-white-red-v2", type: "image/svg+xml" },
+    apple: [{ url: "/apple-touch-icon.png?v=safe-white-red-v2", sizes: "180x180", type: "image/png" }],
+  },
   openGraph: { title, description, type: "website", url: "https://sarthakeai.com/", images: [{ url: "/og-white.png", width: 1200, height: 630, alt: title }] },
   twitter: { card: "summary_large_image", title, description, images: ["/og-white.png"] },
 };
