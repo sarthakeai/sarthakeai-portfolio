@@ -3,21 +3,15 @@ import "./globals.css";
 
 const themeScript = `(() => { try { const stored = localStorage.getItem('theme'); const theme = stored === 'dark' ? 'dark' : 'light'; document.documentElement.dataset.theme = theme; document.documentElement.style.colorScheme = theme; document.documentElement.style.backgroundColor = theme === 'dark' ? '#0f0f0e' : '#ffffff'; } catch (_) { document.documentElement.dataset.theme = 'light'; document.documentElement.style.colorScheme = 'light'; document.documentElement.style.backgroundColor = '#ffffff'; } })();`;
 const startupScrollScript = `(() => {
-  const resetToTop = () => {
+  try {
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    if (location.hash) history.replaceState(null, '', location.pathname + location.search);
     const root = document.documentElement;
     const previous = root.style.scrollBehavior;
     root.style.scrollBehavior = 'auto';
     window.scrollTo(0, 0);
     root.style.scrollBehavior = previous;
-  };
-  try {
-    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
-    if (location.hash) history.replaceState(null, '', location.pathname + location.search);
   } catch (_) {}
-  resetToTop();
-  document.addEventListener('DOMContentLoaded', resetToTop, { once: true });
-  window.addEventListener('load', () => requestAnimationFrame(resetToTop), { once: true });
-  window.addEventListener('pageshow', resetToTop);
 })();`;
 
 const title = "Sarthak | Video Editor";

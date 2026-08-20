@@ -182,7 +182,7 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(layout, /history\.scrollRestoration = 'manual'/);
   assert.match(layout, /history\.replaceState/);
   assert.match(layout, /window\.scrollTo\(0, 0\)/);
-  assert.match(layout, /window\.addEventListener\('pageshow'/);
+  assert.doesNotMatch(layout, /DOMContentLoaded|addEventListener\('load'|addEventListener\('pageshow'/);
   assert.match(page, /className="hero-portrait hero-reveal"/);
   assert.match(page, /<HeroTimeline \/>/);
   assert.match(timeline, /^"use client"/);
@@ -447,7 +447,7 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(css, /@media \(min-width: 42\.0625rem\) and \(max-width: 64rem\)[\s\S]+\.shorts-grid > \.short-card\s*\{[^}]+grid-column:\s*span 2/);
   assert.match(css, /@media \(min-width: 42\.0625rem\) and \(max-width: 64rem\)[\s\S]+\.shorts-grid > \.short-card:nth-child\(4\)\s*\{[^}]+grid-column:\s*2 \/ span 2/);
   assert.match(css, /@media \(min-width: 42\.0625rem\) and \(max-width: 64rem\)[\s\S]+\.shorts-expanded-grid\s*\{[^}]+repeat\(3, minmax\(0, 1fr\)\)/);
-  assert.match(css, /@media \(max-width: 42rem\)[\s\S]+--portfolio-mobile-category-title-size:\s*clamp\(2\.5rem, 11vw, 2\.75rem\)/);
+  assert.match(css, /@media \(max-width: 42rem\)[\s\S]+--portfolio-mobile-category-title-size:\s*clamp\(2\.25rem, 10vw, 2\.5rem\)/);
   assert.match(css, /@media \(max-width: 42rem\)[\s\S]+--portfolio-mobile-category-gap:\s*3\.875rem/);
   assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.short-form-section \+ \.nonshort-category-grid\s*\{\s*margin-top:\s*0/);
   assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.nonshort-category-grid\s*\{\s*gap:\s*var\(--portfolio-mobile-category-gap\)/);
@@ -485,7 +485,8 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(page, /href:\s*"mailto:work@sarthakeai\.com"/);
   assert.doesNotMatch(page, /<small>work@sarthakeai\.com<\/small>/);
   assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.footer-upper[^}]+order:\s*1[^}]+grid-template-columns:\s*minmax\(0, 1fr\) auto/);
-  assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.footer-directory[^}]+grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/);
+  assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.footer-directory[^}]+grid-template-columns:\s*minmax\(0, \.85fr\) minmax\(0, 1\.15fr\)/);
+  assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.footer-social-link \.footer-link-title[^}]+white-space:\s*nowrap/);
   assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.footer-divider[^}]+order:\s*2/);
   assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.footer-copyright[^}]+order:\s*3/);
   assert.match(css, /\.footer-back-to-top/);

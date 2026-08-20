@@ -666,7 +666,7 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
   .contact-form-row { grid-template-columns: 1fr; }
   .contact-form-actions { align-items: stretch; flex-direction: column; gap: .85rem; }
   .contact-submit { width: fit-content; }
-  .contact-form-hint { display: block; }
+  .contact-form-hint { display: none; }
   .booking-overlay { align-items: center; padding: .35rem; }
   .booking-dialog { width: 100%; height: calc(100dvh - .7rem); min-height: 0; border-radius: .75rem; }
   .booking-head { min-height: 5.5rem; justify-content: flex-start; padding: 1rem 4.5rem 1rem 1.15rem; text-align: left; }
@@ -698,7 +698,7 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
 
 @media (max-width: 42rem) {
   .portfolio-sections {
-    --portfolio-mobile-category-title-size: clamp(2.5rem, 11vw, 2.75rem);
+    --portfolio-mobile-category-title-size: clamp(2.25rem, 10vw, 2.5rem);
     --portfolio-mobile-category-gap: 3.875rem;
     gap: var(--portfolio-mobile-category-gap);
   }
@@ -717,10 +717,11 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
   .video-modal-short-form .video-modal-media-portrait figure { width: 100%; margin-inline: 0; }
   .footer-inner { width: 100%; display: grid; }
   .footer-upper { order: 1; grid-template-columns: minmax(0, 1fr) auto; gap: 1rem; padding: 3.75rem 0 3.25rem; }
-  .footer-directory { width: 100%; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(1rem, 5vw, 1.5rem); }
+  .footer-directory { width: 100%; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); gap: clamp(.75rem, 3vw, 1rem); }
   .footer-link-list { gap: .15rem; }
   .footer-directory-link { min-height: 2.5rem; gap: .4rem; }
   .footer-social-link { column-gap: .5rem; }
+  .footer-social-link .footer-link-title { white-space: nowrap; }
   .footer-link-title { font-size: clamp(1.15rem, 5.2vw, 1.4rem); }
   .footer-divider { order: 2; }
   .footer-copyright { order: 3; padding: 2.25rem 0 2.75rem; font-size: clamp(1.5rem, 7vw, 1.875rem); line-height: .98; letter-spacing: -.05em; }
