@@ -90,6 +90,7 @@ export const projects: Project[] = [
     tone: "clay",
     ratio: "wide",
     layout: "small",
+    caseStudySlug: "xiaomi-13-pro-review",
     externalUrl: "https://youtu.be/5MWtToYnA00?si=C8LS743wbJXIkAWy",
     media: [
       {
@@ -119,6 +120,7 @@ export const projects: Project[] = [
     tone: "acid",
     ratio: "wide",
     layout: "large",
+    caseStudySlug: "21st-capital-introduction",
     media: [
       { id: "21st-capital-01", title: "Unlock Bitcoin's Potential", videoUrl: "/work/21st-capital/21st-capital-intro-preview.mp4", poster: "/work/21st-capital/21st-capital-intro-poster.webp", width: 1280, height: 720, featured: true },
     ],
@@ -174,6 +176,7 @@ export const projects: Project[] = [
     tone: "ink",
     ratio: "wide",
     layout: "small",
+    caseStudySlug: "21st-capital-interview",
     externalUrl: "https://youtu.be/X5Z5VLdJxC4?si=xjztMcaGd1S-CfQH",
     media: [
       {

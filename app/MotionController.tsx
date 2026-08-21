@@ -6,6 +6,7 @@ export function MotionController() {
   useEffect(() => {
     const elements = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]"));
     if (!elements.length) return;
+    const revealPendingClass = (element: HTMLElement) => element.tagName === "SECTION" ? "reveal-pending-section-content" : "reveal-pending";
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || !("IntersectionObserver" in window)) {
       elements.forEach((element) => element.classList.add("is-visible"));
       return;
@@ -15,7 +16,7 @@ export function MotionController() {
         element.classList.add("is-visible");
         return false;
       }
-      element.classList.add("reveal-pending");
+      element.classList.add(revealPendingClass(element));
       return true;
     });
     const observer = new IntersectionObserver((entries) => {

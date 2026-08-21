@@ -3,14 +3,45 @@ import { readFile, stat } from "node:fs/promises";
 import test from "node:test";
 import { countSlotsForLocalToday, getLocalDateKey, resolveValidTimeZone } from "../app/calendly-day.mjs";
 
-async function render() {
+async function render(path = "/") {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
   const { default: worker } = await import(workerUrl.href);
-  return worker.fetch(new Request("http://localhost/", { headers: { accept: "text/html" } }), {
+  return worker.fetch(new Request(`http://localhost${path}`, { headers: { accept: "text/html" } }), {
     ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) },
   }, { waitUntil() {}, passThroughOnException() {} });
 }
+
+test("serves the standalone portfolio routes with unique indexable metadata", async () => {
+  const routes = [
+    ["/about", "About Sarthak Sharma | Video Editor & Creator", "Learn about Sarthak Sharma, a video editor and creator from India working across YouTube, short-form content, podcasts, tech and finance."],
+    ["/work", "Video Editing Work | Sarthak Sharma", "Selected video editing work by Sarthak Sharma across YouTube, short-form content, podcasts, brand videos and motion graphics."],
+    ["/work/short-form-video", "Short-Form Video Editing for Swan Bitcoin & Roxom | Sarthak Sharma", "Short-form video editing by Sarthak Sharma for Swan Bitcoin and Roxom, featuring interview-driven edits, captions, visual cutaways, motion graphics and sound design."],
+    ["/work/21st-capital-introduction", "21st Capital Brand Video Editing | Sarthak Sharma", "A company introduction video edited by Sarthak Sharma for 21st Capital using presenter-led editing, diagrams, motion graphics and sound design."],
+    ["/work/xiaomi-13-pro-review", "Xiaomi 13 Pro Review Video Editing | Sarthak Sharma", "A hands-on Xiaomi 13 Pro review created and edited by Sarthak Sharma for his technology YouTube channel."],
+    ["/work/21st-capital-interview", "Podcast & Interview Video Editing | Sarthak Sharma", "Interview video editing by Sarthak Sharma for 21st Capital, including editing, captions, motion graphics and layout design."],
+  ];
+
+  for (const [path, title, description] of routes) {
+    const response = await render(path);
+    assert.equal(response.status, 200, path);
+    const html = await response.text();
+    const encodedTitle = title.replaceAll("&", "&amp;");
+    assert.match(html, new RegExp(`<title>${encodedTitle.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}<\\/title>`), path);
+    assert.match(html, new RegExp(`<meta name="description" content="${description.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}"\\/>`), path);
+    assert.match(html, new RegExp(`<link rel="canonical" href="https://sarthakeai\\.com${path.replaceAll("/", "\\/")}"\\/>`), path);
+    assert.equal((html.match(/rel="canonical"/g) ?? []).length, 1, path);
+    assert.doesNotMatch(html, /noindex|localhost|chatgpt\.site/, path);
+  }
+
+  const sitemapResponse = await render("/sitemap.xml");
+  assert.equal(sitemapResponse.status, 200);
+  const sitemap = await sitemapResponse.text();
+  for (const [path] of [["/"], ...routes]) {
+    assert.match(sitemap, new RegExp(`https://sarthakeai\\.com${path === "/" ? "/" : path.replaceAll("/", "\\/")}`));
+  }
+  assert.doesNotMatch(sitemap, /work\/swan-bitcoin|work\/roxom/);
+});
 
 test("server-renders the complete Sarthak portfolio", async () => {
   const response = await render();
@@ -18,6 +49,8 @@ test("server-renders the complete Sarthak portfolio", async () => {
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
   const html = await response.text();
   assert.match(html, /<title>Sarthak \| Video Editor<\/title>/);
+  assert.match(html, /<link rel="icon" href="\/favicon\.ico" sizes="any" type="image\/x-icon"\/>/);
+  assert.match(html, /<link rel="icon" href="\/favicon-48\.png" sizes="48x48" type="image\/png"\/>/);
   assert.match(html, /Sarthak/);
   assert.doesNotMatch(html, />Sarthak Sharma</);
   assert.match(html, /class="brand-signature brand-logo-only"/);
@@ -64,7 +97,7 @@ test("server-renders the complete Sarthak portfolio", async () => {
   assert.match(html, /\/work\/motion\/motion-bitcoin-treasuries-poster\.webp/);
   assert.match(html, /\/work\/youtube\/21st-capital-interview-poster\.webp/);
   assert.doesNotMatch(html, /\.mp4/);
-  assert.equal((html.match(/class="footer-directory-link/g) ?? []).length, 9);
+  assert.equal((html.match(/class="footer-directory-link/g) ?? []).length, 10);
   assert.match(html, /class="footer-upper"/);
   assert.match(html, /class="footer-directory"/);
   assert.match(html, /class="footer-divider"/);
@@ -75,6 +108,7 @@ test("server-renders the complete Sarthak portfolio", async () => {
   assert.match(html, /Email Sarthak at work@sarthakeai\.com/);
   assert.doesNotMatch(html, /class="footer-link-copy"/);
   assert.match(html, />YouTube</);
+  assert.match(html, />Upwork</);
   assert.doesNotMatch(html, /footer-nav-index/);
   assert.match(html, /© 2026 Sarthak Sharma/);
   assert.match(html, /All Rights Reserved\./);
@@ -151,8 +185,10 @@ test("keeps both testimonials real, stacked, exact, and accessible", async () =>
 });
 
 test("keeps interaction scoped and accessibility preferences explicit", async () => {
-  const [page, layout, header, booking, availabilityRoute, contactForm, contactSubmit, portfolio, mediaPlayback, data, theme, timeline, css, swanLogo, favicon] = await Promise.all([
+  const [page, pageFrame, siteFooter, layout, header, booking, availabilityRoute, contactForm, contactSubmit, portfolio, mediaPlayback, data, theme, timeline, css, swanLogo, favicon] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/PageFrame.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/SiteFooter.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/SiteHeader.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/BookingExperience.tsx", import.meta.url), "utf8"),
@@ -172,8 +208,7 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.doesNotMatch(layout, /next\/headers|generateMetadata/);
   assert.match(layout, /metadataBase/);
   assert.match(layout, /const title = "Sarthak \| Video Editor"/);
-  assert.match(layout, /icon:\s*\{ url: "\/favicon\.svg\?v=safe-white-red-v2", type: "image\/svg\+xml" \}/);
-  assert.doesNotMatch(layout, /favicon-(?:16|32|48|192|512)\.png|shortcut:\s*"\/favicon|favicon\.ico/);
+  assert.match(layout, /icon:\s*\[[\s\S]*?\/favicon\.ico[\s\S]*?favicon-48\.png[\s\S]*?favicon-192\.png[\s\S]*?favicon-512\.png/);
   assert.match(layout, /apple-touch-icon\.png/);
   assert.match(favicon, /viewBox="0 0 32 32"/);
   assert.match(favicon, /<g fill="#ffffff"/);
@@ -184,16 +219,50 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(layout, /window\.scrollTo\(0, 0\)/);
   assert.doesNotMatch(layout, /DOMContentLoaded|addEventListener\('load'|addEventListener\('pageshow'/);
   assert.match(page, /className="hero-portrait hero-reveal"/);
+  assert.match(page, /className="timeline-scroll-region"/);
+  assert.match(page, /className="timeline-sticky-track"/);
   assert.match(page, /<HeroTimeline \/>/);
   assert.match(timeline, /^"use client"/);
   assert.match(timeline, /setPointerCapture/);
   assert.match(timeline, /role="slider"/);
+  assert.match(timeline, /window\.addEventListener\("scroll", scheduleScrollUpdate, \{ passive: true \}\)/);
+  assert.match(timeline, /window\.requestAnimationFrame\(updateFromScroll\)/);
+  assert.match(timeline, /style\.transform = `translate3d\(\$\{pixelOffset\}px, 0, 0\)`/);
+  assert.match(timeline, /type InteractionPhase = "idle" \| "dragging" \| "navigating"/);
+  assert.match(timeline, /navigationFrameRef/);
+  assert.match(timeline, /premiumEase/);
+  assert.match(timeline, /--timeline-scroll-offset/);
+  assert.match(timeline, /timeline-marker-notch/);
+  assert.match(timeline, /const rulerTickCount = 37/);
+  assert.match(timeline, /major: index % 3 === 0/);
+  assert.match(timeline, /marker: rulerStart \+ index \* destinationTickInterval \* rulerStep/);
+  assert.doesNotMatch(timeline, /timeline-marker-axis/);
+  assert.match(timeline, /timeline-navigation-active/);
+  assert.match(timeline, /TIMELINE_NAVIGATE_EVENT/);
+  assert.match(timeline, /setAttribute\("inert", ""\)/);
+  assert.match(timeline, /className="timeline-playhead-hit"/);
+  assert.doesNotMatch(timeline, /setPosition/);
+  assert.match(css, /\.timeline-sticky-track\s*\{[^}]+position:\s*absolute[^}]+bottom:\s*clamp\(18rem, 45vh, 26rem\)/s);
+  assert.match(css, /\.hero-timeline\s*\{[^}]+position:\s*sticky[^}]+top:\s*var\(--timeline-header-offset, 4\.5rem\)/s);
+  assert.match(css, /\.timeline-playhead\s*\{[^}]+left:\s*5%[^}]+width:\s*0[^}]+transform:\s*translate3d\(0, 0, 0\)[^}]+will-change:\s*transform/s);
+  assert.match(css, /\.timeline-playhead::before\s*\{[^}]+width:\s*1\.125rem[^}]+height:\s*\.9rem/s);
+  assert.match(css, /\.timeline-playhead::after\s*\{[^}]+width:\s*1px[^}]+height:\s*5rem/s);
+  assert.match(css, /\.timeline-marker-notch\s*\{[^}]+clip-path:\s*polygon\(0 0, 100% 0, 50% 100%\)/s);
+  assert.match(css, /\.timeline-ruler i\s*\{[^}]+position:\s*absolute[^}]+bottom:\s*0[^}]+transform:\s*translateX\(-50%\)/s);
+  assert.match(css, /html\.timeline-navigation-active \.site-header:not\(\.menu-open\)\s*\{[^}]+opacity:\s*0[^}]+translate3d\(0, -\.75rem, 0\)/s);
+  assert.match(css, /\.hero-timeline::before\s*\{[^}]+z-index:\s*-1[^}]+background:\s*color-mix\(in srgb, var\(--bg\) 99%, transparent\)[^}]+backdrop-filter:\s*blur\(\.65rem\)/s);
+  assert.match(css, /\.hero-timeline\.is-stuck::before\s*\{[^}]+opacity:\s*1/s);
+  assert.doesNotMatch(css, /\.hero-timeline\.is-stuck\s*\{[^}]+box-shadow/s);
+  assert.doesNotMatch(css, /\.hero-timeline\.is-stuck\s*\{[^}]+border/s);
+  assert.doesNotMatch(css, /\.timeline-playhead\s*\{[^}]+contain:\s*layout paint/s);
+  assert.doesNotMatch(css, /\.timeline-marker-notch\s*\{[^}]+border-radius:\s*50%/s);
   assert.doesNotMatch(page, /className="portrait"/);
   assert.match(header, /^"use client"/);
   assert.match(header, /brand-logo-only/);
   assert.match(css, /\.brand-logo-only\s*\{[^}]+height:\s*1\.35rem/);
   assert.match(css, /@media \(max-width: 50rem\)[\s\S]+\.brand-logo-only\s*\{\s*height:\s*1\.35rem/);
   assert.match(header, /site-header-inner/);
+  assert.match(header, /window\.dispatchEvent\(new CustomEvent\(TIMELINE_NAVIGATE_EVENT/);
   assert.doesNotMatch(header, /brand-name/);
   assert.match(header, /nav-desktop/);
   assert.match(header, /mobile-nav-label">Menu/);
@@ -243,18 +312,25 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(css, /opacity 340ms var\(--ease-out\) var\(--row-open-delay\)/);
   assert.match(css, /--row-open-delay:\s*245ms/);
   assert.match(css, /\.mobile-nav-item\.is-selected/);
-  assert.match(css, /scroll-margin-top:\s*calc\(5\.5rem \+ env\(safe-area-inset-top\)\)/);
+  assert.match(css, /--timeline-sticky-height:\s*8\.25rem/);
+  assert.match(css, /--timeline-sticky-gap:\s*12px/);
+  assert.match(css, /scroll-margin-top:\s*var\(--timeline-scroll-offset, calc\(var\(--timeline-sticky-height\) \+ var\(--timeline-sticky-gap\)\)\)/);
   assert.match(css, /min-height:\s*100dvh/);
   assert.match(css, /env\(safe-area-inset-top\)/);
   assert.match(css, /env\(safe-area-inset-bottom\)/);
   assert.match(portfolio, /aria-pressed/);
-  assert.match(portfolio, /scrollIntoView\(\{ behavior: reducedMotion \? "auto" : "smooth", block: "nearest", inline: "center" \}\)/);
+  assert.doesNotMatch(portfolio, /button\.scrollIntoView/);
+  assert.match(portfolio, /filters\.scrollTo\(\{ left: Math\.max\(0, left\), behavior: reducedMotion \? "auto" : "smooth" \}\)/);
   assert.match(portfolio, /fetchPriority=\{priority \? "high" : "auto"\}/);
   assert.match(portfolio, /aria-live="polite"/);
   assert.match(portfolio, /aria-modal="true"/);
   assert.match(portfolio, /View details for/);
   assert.match(portfolio, /project-open-media-only/);
+  assert.match(portfolio, /const showMobileProjectCta = project\.id === "short-form-video" \|\| isXiaomiProject;/);
+  assert.match(portfolio, /const hideProjectOverlay = mediaOnly && !showMobileProjectCta;/);
   assert.match(portfolio, /!hideProjectOverlay \? <span>View project/);
+  assert.match(css, /\.portfolio-category-heading\s*\{[^}]+font:\s*620 clamp\(2rem, 3\.4vw, 3\.5rem\)\/\.98/s);
+  assert.doesNotMatch(css, /\.nonshort-category-section \.portfolio-category-heading\s*\{[^}]+font-size:/s);
   assert.match(portfolio, /const hideCardProjectLink = project\.id === "youtube-long-form" \|\| project\.id === "podcast-interview"/);
   assert.match(portfolio, /!hideCardProjectLink && project\.externalUrl/);
   assert.match(portfolio, /project-eyebrow-separator/);
@@ -270,7 +346,9 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(portfolio, /shortMedia\.slice\(shortInitialCount, 14\)/);
   assert.match(portfolio, /const mobileShortMedia = shortMedia/);
   assert.match(portfolio, /shortMedia = shortProjects\.flatMap/);
-  assert.match(portfolio, /isTwoColumnShortLayout && mobileShortFormProject \? \([\s\S]*?<EditorialProjectCard/);
+  assert.doesNotMatch(portfolio, /isTwoColumnShortLayout|syncShortLayout/);
+  assert.match(portfolio, /className="short-form-mobile-content"[\s\S]*?<EditorialProjectCard/);
+  assert.match(portfolio, /className="short-form-desktop-content"[\s\S]*?shortMedia\.slice\(0, shortInitialCount\)/);
   assert.match(portfolio, /previewCount=\{3\}/);
   assert.match(portfolio, /eyebrowText="Swan Bitcoin \+ Roxom · Short-form social video"/);
   assert.match(portfolio, /A selection of short-form edits across Swan Bitcoin and Roxom, cut from interviews and talks with captions, visual cutaways, motion graphics and tight pacing\./);
@@ -393,7 +471,8 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(booking, /setCalendarSlow/);
   assert.match(booking, /Open Calendly/);
   assert.match(booking, /BookingTrigger must be used within BookingProvider/);
-  assert.match(page, /<BookingProvider>/);
+  assert.match(page, /<PageFrame>/);
+  assert.match(pageFrame, /<BookingProvider>/);
   assert.equal((page.match(/<BookingTrigger/g) ?? []).length, 2);
   assert.match(page, /<ContactForm \/>/);
   assert.match(page, /<div className="contact-form-intro">[\s\S]*?<p className="contact-route-label">Prefer to write\?<\/p>[\s\S]*?Send me a project message\.[\s\S]*?<a className="contact-email" href="mailto:work@sarthakeai\.com"><EnvelopeSimple[\s\S]*?work@sarthakeai\.com/);
@@ -442,12 +521,15 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(css, /@media \(hover: none\), \(pointer: coarse\)[\s\S]+\.short-card\.is-playing \.short-card-control\s*\{[^}]+opacity:\s*1[^}]+pointer-events:\s*auto/s);
   assert.doesNotMatch(css, /\.short-sound-prompt/);
   assert.doesNotMatch(css, /short-card-extra|shorts-grid\.is-collapsing/);
-  assert.match(css, /\.short-form-section\s*\{\s*overflow-anchor:\s*none/);
+  assert.doesNotMatch(css, /\.short-form-section\s*\{\s*overflow-anchor:\s*none/);
+  assert.match(css, /\.short-form-mobile-content\s*\{\s*display:\s*none/);
+  assert.match(css, /\.short-form-desktop-content\s*\{\s*display:\s*contents/);
+  assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.short-form-mobile-content\s*\{\s*display:\s*contents[\s\S]+?\.short-form-desktop-content\s*\{\s*display:\s*none/);
   assert.match(css, /@media \(min-width: 42\.0625rem\) and \(max-width: 64rem\)[\s\S]+\.shorts-grid\s*\{[^}]+repeat\(6, minmax\(0, 1fr\)\)/);
   assert.match(css, /@media \(min-width: 42\.0625rem\) and \(max-width: 64rem\)[\s\S]+\.shorts-grid > \.short-card\s*\{[^}]+grid-column:\s*span 2/);
   assert.match(css, /@media \(min-width: 42\.0625rem\) and \(max-width: 64rem\)[\s\S]+\.shorts-grid > \.short-card:nth-child\(4\)\s*\{[^}]+grid-column:\s*2 \/ span 2/);
   assert.match(css, /@media \(min-width: 42\.0625rem\) and \(max-width: 64rem\)[\s\S]+\.shorts-expanded-grid\s*\{[^}]+repeat\(3, minmax\(0, 1fr\)\)/);
-  assert.match(css, /@media \(max-width: 42rem\)[\s\S]+--portfolio-mobile-category-title-size:\s*clamp\(2\.25rem, 10vw, 2\.5rem\)/);
+  assert.match(css, /@media \(max-width: 42rem\)[\s\S]+--portfolio-mobile-category-title-size:\s*clamp\(1\.875rem, 9vw, 2\.5rem\)/);
   assert.match(css, /@media \(max-width: 42rem\)[\s\S]+--portfolio-mobile-category-gap:\s*3\.875rem/);
   assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.short-form-section \+ \.nonshort-category-grid\s*\{\s*margin-top:\s*0/);
   assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.nonshort-category-grid\s*\{\s*gap:\s*var\(--portfolio-mobile-category-gap\)/);
@@ -482,7 +564,7 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(css, /\.footer-upper[^}]+grid-template-columns:\s*minmax\(0, 1fr\) auto/s);
   assert.match(css, /\.footer-directory[^}]+grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/s);
   assert.match(css, /\.footer-link-icon\s*\{[^}]+width:\s*1\.3125rem[^}]+height:\s*1\.3125rem/s);
-  assert.match(page, /href:\s*"mailto:work@sarthakeai\.com"/);
+  assert.match(siteFooter, /href:\s*"mailto:work@sarthakeai\.com"/);
   assert.doesNotMatch(page, /<small>work@sarthakeai\.com<\/small>/);
   assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.footer-upper[^}]+order:\s*1[^}]+grid-template-columns:\s*minmax\(0, 1fr\) auto/);
   assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.footer-directory[^}]+grid-template-columns:\s*minmax\(0, \.85fr\) minmax\(0, 1\.15fr\)/);

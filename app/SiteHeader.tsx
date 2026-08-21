@@ -1,17 +1,19 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, type MouseEvent } from "react";
+import Link from "next/link";
 import { BookingTrigger, CALENDLY_BOOKING_COMPLETE_EVENT } from "./BookingExperience";
+import { TIMELINE_NAVIGATE_EVENT } from "./HeroTimeline";
 import { ThemeToggle } from "./ThemeToggle";
 
 const links = [
-  { href: "#work", label: "Work" },
-  { href: "#about", label: "About" },
-  { href: "#services", label: "What I do" },
-  { href: "#youtube", label: "YouTube" },
+  { href: "/work", label: "Work" },
+  { href: "/about", label: "About" },
+  { href: "/#services", label: "What I do" },
+  { href: "/#youtube", label: "YouTube" },
 ];
 
-const mobileLinks = [...links, { href: "#contact", label: "Connect" }];
+const mobileLinks = [...links, { href: "/#contact", label: "Connect" }];
 
 const mobileSocials = [
   { href: "https://www.instagram.com/sarthak.eai", label: "Instagram" },
@@ -191,6 +193,23 @@ export function SiteHeader() {
     setMenuOpen((open) => !open);
   };
 
+  const navigateFromHeader = (event: MouseEvent<HTMLAnchorElement>, href: string) => {
+    closeMenu();
+    if (
+      event.defaultPrevented
+      || event.button !== 0
+      || event.metaKey
+      || event.ctrlKey
+      || event.shiftKey
+      || event.altKey
+      || !href.startsWith("/#")
+      || window.location.pathname !== "/"
+    ) return;
+
+    event.preventDefault();
+    window.dispatchEvent(new CustomEvent(TIMELINE_NAVIGATE_EVENT, { detail: { id: href.slice(2) } }));
+  };
+
   const navigateFromMenu = (event: MouseEvent<HTMLAnchorElement>, href: string) => {
     event.preventDefault();
     if (selectedHref !== null) return;
@@ -204,9 +223,15 @@ export function SiteHeader() {
     }, reducedMotion ? 0 : 80);
 
     scrollTimerRef.current = window.setTimeout(() => {
-      const destination = document.querySelector<HTMLElement>(href);
+      const isHomepageAnchor = href.startsWith("/#");
+      if (!isHomepageAnchor || window.location.pathname !== "/") {
+        window.location.assign(href);
+        return;
+      }
+      const hash = href.slice(1);
+      const destination = document.querySelector<HTMLElement>(hash);
       if (destination) {
-        if (window.location.hash !== href) window.history.pushState(null, "", href);
+        if (window.location.hash !== hash) window.history.pushState(null, "", hash);
         destination.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" });
       }
       setSelectedHref(null);
@@ -217,14 +242,14 @@ export function SiteHeader() {
   return (
     <header ref={headerRef} className={`site-header${scrolled ? " is-scrolled" : ""}${menuOpen ? " menu-open" : ""}`}>
       <div className="site-header-inner">
-      <a className="brand" href="#top" aria-label="Sarthak, home" onClick={closeMenu}>
+      <Link className="brand" href="/" aria-label="Sarthak, home" onClick={closeMenu}>
         <span className="brand-signature brand-logo-only" aria-hidden="true" />
-      </a>
+      </Link>
       <div className="header-location" aria-label={`New Delhi local time ${delhiTime}`}>
         <span>New Delhi</span><i aria-hidden="true">──</i><time>{delhiTime}</time>
       </div>
       <nav className="nav nav-desktop" aria-label="Primary navigation" aria-hidden={isMobile ? true : undefined} inert={isMobile ? true : undefined}>
-        {links.map((link) => <a key={link.href} href={link.href} onClick={closeMenu}>{link.label}</a>)}
+        {links.map((link) => <a key={link.href} href={link.href} onClick={(event) => navigateFromHeader(event, link.href)}>{link.label}</a>)}
         <BookingTrigger className="nav-cta availability-cta" aria-label={`${availabilityLabel}. Book a call with Sarthak`}>
           <i className="availability-dot" aria-hidden="true" />
           <span>{availabilityLabel}</span>
@@ -234,7 +259,7 @@ export function SiteHeader() {
         <span className="mobile-nav-label">Menu</span>
         <div className="mobile-nav-list">
           {mobileLinks.map((link, index) => (
-            <a className={`mobile-nav-item${link.href === "#contact" ? " mobile-nav-cta" : ""}${selectedHref === link.href ? " is-selected" : ""}`} key={link.href} href={link.href} onClick={(event) => navigateFromMenu(event, link.href)}>
+            <a className={`mobile-nav-item${link.href === "/#contact" ? " mobile-nav-cta" : ""}${selectedHref === link.href ? " is-selected" : ""}`} key={link.href} href={link.href} onClick={(event) => navigateFromMenu(event, link.href)}>
               <span className="mobile-nav-index">{String(index + 1).padStart(2, "0")}</span>
               <span className="mobile-nav-text">{link.label}</span>
               <span className="mobile-nav-arrow" aria-hidden="true">↗</span>

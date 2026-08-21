@@ -248,8 +248,9 @@ function EditorialProjectCard({
   const previewMedia = (project.media ?? []).slice(0, previewCount);
   const hasPreviewMedia = previewMedia.length > 0;
   const isXiaomiProject = project.id === "youtube-long-form";
+  const showMobileProjectCta = project.id === "short-form-video" || isXiaomiProject;
   const hideCardProjectLink = project.id === "youtube-long-form" || project.id === "podcast-interview";
-  const hideProjectOverlay = isXiaomiProject || mediaOnly;
+  const hideProjectOverlay = mediaOnly && !showMobileProjectCta;
 
   return (
     <article data-project-id={project.id} className={`project editorial-project-card${className ? ` ${className}` : ""}`} style={{ viewTransitionName: `project-${project.id}` }}>
@@ -263,14 +264,14 @@ function EditorialProjectCard({
             ))}
           </div>
         ) : <div className="project-art" aria-label={`${project.title} visual`}><strong>{project.artLabel}</strong></div>}
-        <button className={`project-open${hideProjectOverlay ? " project-open-media-only" : ""}`} type="button" onClick={(event) => onOpen(event.currentTarget)} aria-label={`View details for ${project.title}`}>
+        <button className={`project-open${showMobileProjectCta ? " project-open-mobile-cta" : ""}${hideProjectOverlay ? " project-open-media-only" : ""}`} type="button" onClick={(event) => onOpen(event.currentTarget)} aria-label={`View details for ${project.title}`}>
           {!hideProjectOverlay ? <span>View project <b aria-hidden="true">↗</b></span> : null}
         </button>
       </div>
       <div className="project-info">
         <div className="project-copy">
           {eyebrowText ? <div className="project-eyebrow"><span>{eyebrowText}</span></div> : project.client || project.contentType ? <div className="project-eyebrow">{project.client ? <span>{project.client}</span> : null}{project.contentType ? <span>{project.contentType}</span> : null}</div> : null}
-          <h3>{project.title}</h3>
+          <h3>{project.caseStudySlug ? <a href={`/work/${project.caseStudySlug}`}>{project.title}</a> : project.title}</h3>
           <p>{project.description}</p>
           <div className="project-role">
             <span className="project-label">My role</span>
@@ -288,11 +289,11 @@ export function PortfolioGrid() {
   const [active, setActive] = useState("All");
   const [shortExpansionPhase, setShortExpansionPhase] = useState<"collapsed" | "opening" | "expanded" | "collapsing">("collapsed");
   const [shortExtrasHeight, setShortExtrasHeight] = useState<number | null>(null);
-  const [isTwoColumnShortLayout, setIsTwoColumnShortLayout] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const returnFocusRef = useRef<HTMLElement | null>(null);
+  const filtersRef = useRef<HTMLDivElement>(null);
   const filterButtonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const filterReadyRef = useRef(false);
   const shortExtrasRef = useRef<HTMLDivElement>(null);
@@ -310,6 +311,7 @@ export function PortfolioGrid() {
     description: shortProjects.map((project) => project.description).join(" "),
     roles: [...new Set(shortProjects.flatMap((project) => project.roles))],
     media: shortMedia,
+    caseStudySlug: "short-form-video",
   } : null;
   const mobileShortMedia = shortMedia;
   const mobileShortFormProject: Project | null = shortFormProject ? {
@@ -331,18 +333,12 @@ export function PortfolioGrid() {
       return;
     }
     const button = filterButtonRefs.current[active];
-    if (!button) return;
+    const filters = filtersRef.current;
+    if (!button || !filters) return;
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    button.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "nearest", inline: "center" });
+    const left = button.offsetLeft - (filters.clientWidth - button.offsetWidth) / 2;
+    filters.scrollTo({ left: Math.max(0, left), behavior: reducedMotion ? "auto" : "smooth" });
   }, [active]);
-
-  useLayoutEffect(() => {
-    const mediaQuery = window.matchMedia("(max-width: 42rem)");
-    const syncShortLayout = () => setIsTwoColumnShortLayout(mediaQuery.matches);
-    syncShortLayout();
-    mediaQuery.addEventListener("change", syncShortLayout);
-    return () => mediaQuery.removeEventListener("change", syncShortLayout);
-  }, []);
 
   useEffect(() => () => {
     if (shortExpansionFrameRef.current !== null) window.cancelAnimationFrame(shortExpansionFrameRef.current);
@@ -480,7 +476,7 @@ export function PortfolioGrid() {
 
   return (
     <>
-      <div className="filters" role="group" aria-label="Filter selected work">
+      <div ref={filtersRef} className="filters" role="group" aria-label="Filter selected work">
         {categories.map((category) => (
           <button ref={(button) => { filterButtonRefs.current[category] = button; }} key={category} type="button" aria-pressed={active === category} aria-controls="project-grid" className={active === category ? "active" : ""} onClick={() => selectCategory(category)}>
             {category}
@@ -491,19 +487,21 @@ export function PortfolioGrid() {
       <div className="portfolio-sections" id="project-grid">
         {showShortForm && shortFormProject ? (
           <section className="portfolio-category-section short-form-section" id="short-form-section" aria-labelledby="short-form-heading">
-            <h3 className="portfolio-category-heading" id="short-form-heading">{categoryHeadings["Short-form video"]}</h3>
-            {isTwoColumnShortLayout && mobileShortFormProject ? (
-              <EditorialProjectCard
-                project={mobileShortFormProject}
-                priority
-                previewCount={3}
-                mediaOnly
-                eyebrowText="Swan Bitcoin + Roxom · Short-form social video"
-                className="mobile-short-project-card"
-                onOpen={(trigger) => openProject(mobileShortFormProject, trigger)}
-              />
-            ) : (
-              <>
+            <h3 className="portfolio-category-heading" id="short-form-heading"><a href="/work/short-form-video">{categoryHeadings["Short-form video"]}</a></h3>
+            {mobileShortFormProject ? (
+              <div className="short-form-mobile-content">
+                <EditorialProjectCard
+                  project={mobileShortFormProject}
+                  priority
+                  previewCount={3}
+                  mediaOnly
+                  eyebrowText="Swan Bitcoin + Roxom · Short-form social video"
+                  className="mobile-short-project-card"
+                  onOpen={(trigger) => openProject(mobileShortFormProject, trigger)}
+                />
+              </div>
+            ) : null}
+            <div className="short-form-desktop-content">
                 <div className="shorts-grid" id="short-form-grid" aria-label="Short-form video gallery">
                   {shortMedia.slice(0, shortInitialCount).map((media) => (
                     <ShortPreviewCard key={media.id} media={media} reveal project={shortFormProject} onOpen={(trigger) => openProject(shortFormProject, trigger)} />
@@ -523,8 +521,7 @@ export function PortfolioGrid() {
                     {shortExpanded ? "See less" : "See more"}
                   </button>
                 ) : null}
-              </>
-            )}
+            </div>
           </section>
         ) : null}
         {visibleNonShort.length ? (

@@ -1,39 +1,15 @@
 /* eslint-disable @next/next/no-img-element -- This site ships hand-optimized responsive image assets without the Next image runtime. */
 
-import { BookingProvider, BookingTrigger } from "./BookingExperience";
+import { BookingTrigger } from "./BookingExperience";
 import { CalendarBlank } from "@phosphor-icons/react/dist/ssr/CalendarBlank";
 import { ChatText } from "@phosphor-icons/react/dist/ssr/ChatText";
 import { EnvelopeSimple } from "@phosphor-icons/react/dist/ssr/EnvelopeSimple";
-import { InstagramLogo } from "@phosphor-icons/react/dist/ssr/InstagramLogo";
-import { XLogo } from "@phosphor-icons/react/dist/ssr/XLogo";
-import { YoutubeLogo } from "@phosphor-icons/react/dist/ssr/YoutubeLogo";
 import { ClientTestimonials } from "./ClientTestimonials";
 import { ContactForm } from "./ContactForm";
 import { HeroTimeline } from "./HeroTimeline";
-import { MotionController } from "./MotionController";
+import { PageFrame } from "./PageFrame";
 import { PortfolioGrid } from "./PortfolioGrid";
-import { clients, services, socials, stats, youtubeStats, youtubeVideos } from "./portfolio-data";
-import { SiteHeader } from "./SiteHeader";
-
-const footerLinks = [
-  { href: "#work", label: "Work" },
-  { href: "#about", label: "About" },
-  { href: "#services", label: "What I do" },
-  { href: "#youtube", label: "YouTube" },
-  { href: "#contact", label: "Contact" },
-];
-
-const footerSocials = [
-  ...socials,
-  { platform: "email", label: "Email", href: "mailto:work@sarthakeai.com" },
-];
-
-const footerSocialIcons = {
-  instagram: InstagramLogo,
-  x: XLogo,
-  youtube: YoutubeLogo,
-  email: EnvelopeSimple,
-};
+import { clients, services, stats, youtubeStats, youtubeVideos } from "./portfolio-data";
 
 function ClientLogoSet({ duplicate = false }: { duplicate?: boolean }) {
   return (
@@ -61,16 +37,26 @@ function ClientLogoSet({ duplicate = false }: { duplicate?: boolean }) {
 }
 
 export default function Home() {
+  const structuredData = [
+    { "@context": "https://schema.org", "@type": "WebSite", name: "Sarthak Sharma", url: "https://sarthakeai.com/" },
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      name: "Sarthak Sharma",
+      url: "https://sarthakeai.com/",
+      jobTitle: "Video Editor & Creator",
+      address: { "@type": "PostalAddress", addressLocality: "New Delhi", addressCountry: "IN" },
+      sameAs: ["https://www.instagram.com/sarthak.eai", "https://x.com/sarthakeai", "https://www.youtube.com/@sarthakeai"],
+    },
+  ];
   return (
-    <BookingProvider>
-    <main>
-      <a className="skip-link" href="#content">Skip to content</a>
-      <MotionController />
-      <SiteHeader />
-
-      <div id="content">
+    <PageFrame>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
+        <div className="timeline-scroll-region">
+          <div className="timeline-sticky-track">
+            <HeroTimeline />
+          </div>
         <section className="hero" id="top">
-          <HeroTimeline />
           <div className="hero-copy">
             <figure className="hero-portrait hero-reveal">
               <img src="/sarthak-sharma.webp" alt="Sarthak" width="320" height="320" fetchPriority="high" />
@@ -201,47 +187,7 @@ export default function Home() {
           </div>
           <ContactForm />
         </section>
-      </div>
-
-      <footer className="site-footer">
-        <div className="footer-inner">
-          <div className="footer-upper">
-            <div className="footer-directory">
-              <nav className="footer-column" aria-label="Footer navigation">
-                <p className="footer-label">Navigation</p>
-                <div className="footer-link-list">
-                  {footerLinks.map((link) => (
-                    <a className={`footer-directory-link${link.href === "#contact" ? " footer-link-contact" : ""}`} key={link.href} href={link.href}>
-                      <span className="footer-link-title">{link.label}</span>
-                      <span className="footer-link-arrow" aria-hidden="true">↗</span>
-                    </a>
-                  ))}
-                </div>
-              </nav>
-              <div className="footer-column" aria-label="Social profiles">
-                <p className="footer-label">Elsewhere</p>
-                <div className="footer-link-list">
-                  {footerSocials.map((social) => {
-                    const SocialIcon = footerSocialIcons[social.platform as keyof typeof footerSocialIcons];
-                    const isEmail = social.platform === "email";
-                    return (
-                    <a className="footer-directory-link footer-social-link" data-platform={social.platform} key={social.label} href={social.href} target={isEmail ? undefined : "_blank"} rel={isEmail ? undefined : "noopener noreferrer"} aria-label={isEmail ? "Email Sarthak at work@sarthakeai.com" : `${social.label}, opens in a new tab`}>
-                      <SocialIcon className="footer-link-icon" aria-hidden="true" weight="regular" />
-                      <span className="footer-link-title">{social.platform === "x" ? "X / Twitter" : social.label}</span>
-                      <span className="footer-link-arrow" aria-hidden="true">↗</span>
-                    </a>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-            <a className="footer-back-to-top" href="#top" aria-label="Back to top">↑</a>
-          </div>
-          <div className="footer-divider" aria-hidden="true" />
-          <p className="footer-copyright"><span>© 2026 Sarthak Sharma</span><span>All Rights Reserved.</span></p>
         </div>
-      </footer>
-    </main>
-    </BookingProvider>
+    </PageFrame>
   );
 }
