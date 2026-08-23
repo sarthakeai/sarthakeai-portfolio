@@ -196,6 +196,36 @@ export const projects: Project[] = [
   },
 ];
 
+const selectedShortFormOrder = [
+  "swan-01",
+  "swan-02",
+  "swan-04",
+  "roxom-04",
+  "swan-03",
+  "swan-05",
+  "roxom-01",
+  "swan-06",
+  "swan-07",
+  "roxom-02",
+  "swan-08",
+  "swan-09",
+  "roxom-03",
+  "swan-10",
+] as const;
+
+const shortFormMediaById = new Map(
+  projects
+    .filter((project) => project.category === "Short-form video")
+    .flatMap((project) => project.media ?? [])
+    .map((media) => [media.id, media] as const),
+);
+
+export const selectedShortFormMedia: ProjectMedia[] = selectedShortFormOrder.map((id) => {
+  const media = shortFormMediaById.get(id);
+  if (!media) throw new Error(`Missing selected short-form media: ${id}`);
+  return media;
+});
+
 export const categories = [
   "All",
   "Short-form video",

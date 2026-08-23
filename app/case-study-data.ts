@@ -1,4 +1,4 @@
-import { projects, type Project } from "./portfolio-data";
+import { projects, selectedShortFormMedia, type Project } from "./portfolio-data";
 
 export type CaseStudy = {
   slug: string;
@@ -20,8 +20,6 @@ const projectById = (id: string) => {
   return project;
 };
 
-const swan = projectById("swan-bitcoin");
-const roxom = projectById("roxom");
 const xiaomi = projectById("youtube-long-form");
 const introduction = projectById("21st-capital-introduction");
 const interview = projectById("podcast-interview");
@@ -37,7 +35,7 @@ export const caseStudies: CaseStudy[] = [
     supportingCopy: "The source material comes from interviews and talks, shaped into focused social edits through tighter pacing, clear captions, visual cutaways, supporting motion graphics and sound design.",
     roles: ["Editing", "Captions", "Motion Graphics", "Sound Design"],
     ratio: "portrait",
-    media: [...(swan.media ?? []), ...(roxom.media ?? [])],
+    media: selectedShortFormMedia,
   },
   {
     slug: "21st-capital-introduction",

@@ -2,6 +2,11 @@
 
 import { useCallback, useEffect, useRef, useState, type MouseEvent } from "react";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { Briefcase } from "@phosphor-icons/react/dist/csr/Briefcase";
+import { InstagramLogo } from "@phosphor-icons/react/dist/csr/InstagramLogo";
+import { XLogo } from "@phosphor-icons/react/dist/csr/XLogo";
+import { YoutubeLogo } from "@phosphor-icons/react/dist/csr/YoutubeLogo";
 import { BookingTrigger, CALENDLY_BOOKING_COMPLETE_EVENT } from "./BookingExperience";
 import { ThemeToggle } from "./ThemeToggle";
 
@@ -15,10 +20,10 @@ const links = [
 const mobileLinks = [...links, { href: "/#contact", label: "Connect" }];
 
 const mobileSocials = [
-  { href: "https://www.instagram.com/sarthak.eai", label: "Instagram" },
-  { href: "https://x.com/sarthakeai", label: "X / Twitter" },
-  { href: "https://www.youtube.com/@sarthakeai", label: "YouTube" },
-  { href: "https://www.upwork.com/freelancers/~01a047caaf8c8ed5b6", label: "Upwork" },
+  { href: "https://www.instagram.com/sarthak.eai", label: "Instagram", icon: InstagramLogo },
+  { href: "https://x.com/sarthakeai", label: "X", icon: XLogo },
+  { href: "https://www.youtube.com/@sarthakeai", label: "YouTube", icon: YoutubeLogo },
+  { href: "https://www.upwork.com/freelancers/~01a047caaf8c8ed5b6", label: "Upwork", icon: Briefcase },
 ];
 
 const delhiTimeFormatter = new Intl.DateTimeFormat("en-GB", {
@@ -50,8 +55,11 @@ function getVisitorTimeZone() {
 }
 
 export function SiteHeader() {
+  const pathname = usePathname();
+  const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedHref, setSelectedHref] = useState<string | null>(null);
+  const [pendingMobileNavigation, setPendingMobileNavigation] = useState<{ hash: string; reducedMotion: boolean } | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [delhiTime, setDelhiTime] = useState("--:--:--");
@@ -61,8 +69,7 @@ export function SiteHeader() {
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const closeTimerRef = useRef<number | null>(null);
   const scrollTimerRef = useRef<number | null>(null);
-  const serviceScrollFrameRef = useRef<number | null>(null);
-  const pendingServiceNavigationRef = useRef<{ hash: string; reducedMotion: boolean } | null>(null);
+  const navigationFrameRef = useRef<number | null>(null);
   const availabilityLabel = getAvailabilityLabel(availability);
 
   const refreshAvailability = useCallback(async (forceRefresh = false) => {
@@ -172,47 +179,42 @@ export function SiteHeader() {
   }, [isMobile, menuOpen]);
 
   useEffect(() => {
-    const pendingNavigation = pendingServiceNavigationRef.current;
-    if (menuOpen || !pendingNavigation) return;
+    if (menuOpen || !pendingMobileNavigation || pathname !== "/") return;
 
-    serviceScrollFrameRef.current = window.requestAnimationFrame(() => {
-      serviceScrollFrameRef.current = window.requestAnimationFrame(() => {
-        if (pendingServiceNavigationRef.current !== pendingNavigation) return;
-
-        const destination = document.querySelector<HTMLElement>(pendingNavigation.hash);
+    navigationFrameRef.current = window.requestAnimationFrame(() => {
+      navigationFrameRef.current = window.requestAnimationFrame(() => {
+        const destination = document.querySelector<HTMLElement>(pendingMobileNavigation.hash);
         if (destination) {
-          const scrollMargin = Number.parseFloat(window.getComputedStyle(destination).scrollMarginTop) || 0;
-          const targetTop = window.scrollY + destination.getBoundingClientRect().top - scrollMargin;
-          if (window.location.hash !== pendingNavigation.hash) window.history.pushState(null, "", pendingNavigation.hash);
-          window.scrollTo({ top: Math.max(0, targetTop), behavior: pendingNavigation.reducedMotion ? "auto" : "smooth" });
+          if (window.location.hash !== pendingMobileNavigation.hash) window.history.pushState(null, "", pendingMobileNavigation.hash);
+          destination.scrollIntoView({ behavior: pendingMobileNavigation.reducedMotion ? "auto" : "smooth", block: "start" });
         }
 
-        pendingServiceNavigationRef.current = null;
-        serviceScrollFrameRef.current = null;
+        navigationFrameRef.current = null;
+        setPendingMobileNavigation(null);
         setSelectedHref(null);
       });
     });
 
     return () => {
-      if (serviceScrollFrameRef.current !== null) window.cancelAnimationFrame(serviceScrollFrameRef.current);
-      serviceScrollFrameRef.current = null;
+      if (navigationFrameRef.current !== null) window.cancelAnimationFrame(navigationFrameRef.current);
+      navigationFrameRef.current = null;
     };
-  }, [menuOpen]);
+  }, [menuOpen, pathname, pendingMobileNavigation]);
 
   useEffect(() => () => {
     if (closeTimerRef.current !== null) window.clearTimeout(closeTimerRef.current);
     if (scrollTimerRef.current !== null) window.clearTimeout(scrollTimerRef.current);
-    if (serviceScrollFrameRef.current !== null) window.cancelAnimationFrame(serviceScrollFrameRef.current);
+    if (navigationFrameRef.current !== null) window.cancelAnimationFrame(navigationFrameRef.current);
   }, []);
 
   const clearNavigationTimers = () => {
     if (closeTimerRef.current !== null) window.clearTimeout(closeTimerRef.current);
     if (scrollTimerRef.current !== null) window.clearTimeout(scrollTimerRef.current);
-    if (serviceScrollFrameRef.current !== null) window.cancelAnimationFrame(serviceScrollFrameRef.current);
+    if (navigationFrameRef.current !== null) window.cancelAnimationFrame(navigationFrameRef.current);
     closeTimerRef.current = null;
     scrollTimerRef.current = null;
-    serviceScrollFrameRef.current = null;
-    pendingServiceNavigationRef.current = null;
+    navigationFrameRef.current = null;
+    setPendingMobileNavigation(null);
   };
 
   const closeMenu = () => {
@@ -239,9 +241,10 @@ export function SiteHeader() {
     clearNavigationTimers();
     setSelectedHref(href);
 
-    if (href === "/#services" && window.location.pathname === "/") {
-      pendingServiceNavigationRef.current = { hash: "#services", reducedMotion };
+    if (href === "/#services") {
+      setPendingMobileNavigation({ hash: "#services", reducedMotion });
       setMenuOpen(false);
+      if (pathname !== "/") router.push("/#services", { scroll: false });
       return;
     }
 
@@ -297,9 +300,12 @@ export function SiteHeader() {
         <div className="mobile-nav-spacer" aria-hidden="true" />
         <div className="mobile-nav-utility">
           <div className="mobile-local-time" aria-label={`New Delhi local time ${delhiTime}`}>New Delhi · <time>{delhiTime}</time></div>
-          <BookingTrigger className="mobile-availability" aria-label={`${availabilityLabel}. Book a call with Sarthak`}><i aria-hidden="true" /><span>View availability</span></BookingTrigger>
+          <BookingTrigger className="mobile-availability" aria-label={`${availabilityLabel}. Book a call with Sarthak`}><i aria-hidden="true" /><span>{availabilityLabel}</span></BookingTrigger>
           <div className="mobile-nav-socials">
-            {mobileSocials.map((social) => <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer">{social.label}<span aria-hidden="true">↗</span></a>)}
+            {mobileSocials.map((social) => {
+              const SocialIcon = social.icon;
+              return <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" aria-label={`${social.label}, opens in a new tab`}><SocialIcon aria-hidden="true" weight="regular" /></a>;
+            })}
           </div>
         </div>
       </nav>

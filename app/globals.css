@@ -643,15 +643,15 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
   .mobile-nav-item:active .mobile-nav-text, .mobile-nav-item.is-selected .mobile-nav-text { opacity: .82; transform: translateX(.25rem); }
   .mobile-nav-item:active .mobile-nav-arrow, .mobile-nav-item.is-selected .mobile-nav-arrow { opacity: .82; transform: translate(.25rem, -.25rem); }
   .mobile-nav-cta:active .mobile-nav-arrow, .mobile-nav-cta.is-selected .mobile-nav-arrow { transform: translate(.35rem, -.35rem); }
-  .mobile-nav-utility { width: 100%; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; border-top: 1px solid var(--line); padding-top: 1rem; text-align: center; }
+  .mobile-nav-utility { --mobile-utility-gap: clamp(1.125rem, 3dvh, 1.5rem); width: 100%; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; gap: var(--mobile-utility-gap); border-top: 1px solid var(--line); padding-top: 1rem; text-align: center; }
   .mobile-local-time { width: 100%; display: block; color: var(--muted); font: .5rem/1.4 var(--font-geist-mono), monospace; letter-spacing: .09em; text-align: center; white-space: nowrap; }
   .mobile-local-time time { display: inline; min-width: 0; color: var(--muted-strong); font: inherit; font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; text-align: inherit; }
-  .mobile-availability { min-height: 2.5rem; display: inline-flex; align-items: center; justify-content: center; align-self: center; gap: .48rem; margin-top: clamp(1.125rem, 3dvh, 1.5rem); padding-inline: 1.0625rem; border: 1px solid var(--line); border-radius: 99rem; background: transparent; color: var(--ink); font: 640 .8125rem/1 var(--font-geist-sans), Arial, sans-serif; letter-spacing: .055em; text-align: center; text-transform: uppercase; cursor: pointer; transition: border-color 200ms ease-out, background-color 200ms ease-out, transform 200ms var(--ease-out); }
+  .mobile-availability { min-height: 2.5rem; display: inline-flex; align-items: center; justify-content: center; align-self: center; gap: .48rem; padding-inline: 1.0625rem; border: 1px solid var(--line); border-radius: 99rem; background: transparent; color: var(--ink); font: 640 .8125rem/1 var(--font-geist-sans), Arial, sans-serif; letter-spacing: .055em; text-align: center; text-transform: uppercase; cursor: pointer; transition: border-color 200ms ease-out, background-color 200ms ease-out, transform 200ms var(--ease-out); }
   .mobile-availability:hover { border-color: color-mix(in srgb, var(--accent) 48%, var(--line)); background: color-mix(in srgb, var(--accent) 7%, var(--bg)); transform: translateY(-1px); }
   .mobile-availability i { width: .45rem; height: .45rem; flex: 0 0 auto; border-radius: 50%; background: var(--accent); }
-  .mobile-nav-socials { width: 100%; max-width: 100%; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; align-self: center; gap: .25rem 1.15rem; margin-top: clamp(1.625rem, 4dvh, 2rem); text-align: center; }
-  .mobile-nav-socials a { min-height: 2.25rem; display: inline-flex; align-items: center; gap: .4rem; color: var(--muted-strong); font-size: .6875rem; }
-  .mobile-nav-socials a span { color: var(--muted); }
+  .mobile-nav-socials { width: 100%; max-width: 100%; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; align-self: center; gap: .4rem; text-align: center; }
+  .mobile-nav-socials a { width: 2.75rem; height: 2.75rem; display: inline-flex; align-items: center; justify-content: center; color: var(--muted-strong); }
+  .mobile-nav-socials svg { width: 1.5rem; height: 1.5rem; }
   .hero { --hero-timeline-top: 5.25rem; --hero-timeline-graphic-depth: 8.1rem; grid-template-columns: 1fr; }
   .hero-timeline { --playhead-inset: .5rem; top: var(--hero-timeline-top); height: 9rem; opacity: .68; }
   .timeline-ruler { top: 1.65rem; }
@@ -831,7 +831,7 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
 @media (max-width: 22rem) {
   .hero-actions { flex-wrap: nowrap; gap: .625rem; }
   .hero-actions .button { min-height: 2.875rem; gap: .5rem; padding-inline: .75rem; font-size: .8125rem; }
-  .mobile-nav-socials { gap: .15rem .8rem; }
+  .mobile-nav-socials { gap: .25rem; }
 }
 
 @media (max-width: 50rem) and (max-height: 42rem) {
@@ -839,8 +839,7 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
   .mobile-nav-list { margin-top: .8rem; }
   .mobile-nav-item { min-height: 3.25rem; }
   .mobile-nav-spacer { min-height: .75rem; }
-  .mobile-nav-socials { margin-top: .45rem; }
-  .mobile-nav-socials a { min-height: 2rem; }
+  .mobile-nav-utility { --mobile-utility-gap: .75rem; }
 }
 
 @media (max-width: 50rem) {

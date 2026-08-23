@@ -5,7 +5,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { activateMedia, MEDIA_PLAYBACK_EVENT, stopAllMedia, stopMediaWithin, type MediaPlaybackEvent } from "./media-playback";
-import { categories, projects, type Project, type ProjectMedia } from "./portfolio-data";
+import { categories, projects, selectedShortFormMedia, type Project, type ProjectMedia } from "./portfolio-data";
 import { ShortFormProjectViewer } from "./ShortFormProjectViewer";
 
 type ViewTransitionDocument = Document & {
@@ -299,7 +299,7 @@ export function PortfolioGrid() {
   const filterReadyRef = useRef(false);
   const shortProjects = projects.filter((project) => project.category === "Short-form video");
   const shortBase = shortProjects[0];
-  const shortMedia = shortProjects.flatMap((project) => project.media ?? []);
+  const shortMedia = selectedShortFormMedia;
   const shortFormProject: Project | null = shortBase ? {
     ...shortBase,
     id: "short-form-video",
