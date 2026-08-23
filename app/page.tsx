@@ -38,35 +38,45 @@ function ClientLogoSet({ duplicate = false }: { duplicate?: boolean }) {
 
 export default function Home() {
   const structuredData = [
-    { "@context": "https://schema.org", "@type": "WebSite", name: "Sarthak Sharma", url: "https://sarthakeai.com/" },
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      name: "Sarthak Sharma",
+      alternateName: ["Sarthak EAI", "sarthakeai.com"],
+      url: "https://sarthakeai.com/",
+    },
     {
       "@context": "https://schema.org",
       "@type": "Person",
+      "@id": "https://sarthakeai.com/#person",
       name: "Sarthak Sharma",
+      alternateName: "Sarthak EAI",
       url: "https://sarthakeai.com/",
+      description: "Video editor and creator based in India.",
+      image: "https://sarthakeai.com/sarthak-about-1600.webp",
       jobTitle: "Video Editor & Creator",
       address: { "@type": "PostalAddress", addressLocality: "New Delhi", addressCountry: "IN" },
-      sameAs: ["https://www.instagram.com/sarthak.eai", "https://x.com/sarthakeai", "https://www.youtube.com/@sarthakeai"],
+      sameAs: [
+        "https://www.instagram.com/sarthak.eai",
+        "https://x.com/sarthakeai",
+        "https://www.youtube.com/@sarthakeai",
+        "https://www.upwork.com/freelancers/~01a047caaf8c8ed5b6",
+      ],
     },
   ];
   return (
     <PageFrame>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
-        <div className="timeline-scroll-region">
-          <div className="timeline-sticky-track">
-            <HeroTimeline />
-          </div>
         <section className="hero" id="top">
+          <HeroTimeline />
           <div className="hero-copy">
-            <figure className="hero-portrait hero-reveal">
-              <img src="/sarthak-sharma.webp" alt="Sarthak" width="320" height="320" fetchPriority="high" />
-            </figure>
-            <div className="hero-availability hero-reveal hero-delay-1" aria-label="Available for work">
-              <span className="hero-availability-dot" aria-hidden="true" />
-              <span>Available for work</span>
+            <div className="hero-left-anchor">
+              <figure className="hero-portrait hero-reveal">
+                <img src="/sarthak-sharma.webp" alt="Sarthak" width="320" height="320" fetchPriority="high" />
+              </figure>
+              <h1 className="hero-reveal hero-delay-1">Hi, I’m Sarthak.</h1>
+              <p className="hero-intro hero-reveal hero-delay-2">I’m a video editor and creator based in India. I edit YouTube videos, shorts, podcasts and social content for brands and creators around the world.</p>
             </div>
-            <h1 className="hero-reveal hero-delay-1">Hi, I’m Sarthak.</h1>
-            <p className="hero-intro hero-reveal hero-delay-2">I’m a video editor and creator based in India. I edit YouTube videos, shorts, podcasts and social content for brands and creators around the world.</p>
             <div className="hero-actions hero-reveal hero-delay-2">
               <a className="button button-secondary" href="#work">See selected work <span aria-hidden="true">↓</span></a>
               <BookingTrigger className="button button-primary hero-connect">Connect <span aria-hidden="true">↗</span></BookingTrigger>
@@ -187,7 +197,6 @@ export default function Home() {
           </div>
           <ContactForm />
         </section>
-        </div>
     </PageFrame>
   );
 }

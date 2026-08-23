@@ -14,14 +14,14 @@ const startupScrollScript = `(() => {
   } catch (_) {}
 })();`;
 
-const title = "Sarthak | Video Editor";
-const description = "Freelance video editor and creator from India, working across YouTube, short-form, podcasts, tech and social content.";
+const title = "Sarthak Sharma | Video Editor & Creator";
+const description = "Sarthak Sharma is a video editor and creator based in India, editing YouTube videos, shorts, podcasts and social content for brands and creators worldwide.";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://sarthakeai.com"),
   title,
   description,
-  alternates: { canonical: "/" },
+  alternates: { canonical: "https://sarthakeai.com/" },
   robots: {
     index: true,
     follow: true,
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
     ],
     apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
   },
-  openGraph: { title, description, type: "website", url: "https://sarthakeai.com/", images: [{ url: "/og-white.png", width: 1200, height: 630, alt: title }] },
+  openGraph: { title, description, siteName: "Sarthak Sharma", type: "website", url: "https://sarthakeai.com/", images: [{ url: "/og-white.png", width: 1200, height: 630, alt: title }] },
   twitter: { card: "summary_large_image", title, description, images: ["/og-white.png"] },
 };
 

@@ -19,6 +19,78 @@ interface ExecutionContext {
   passThroughOnException(): void;
 }
 
+const VIDEO_PATH_PATTERN = /^\/work\/.+\.mp4$/i;
+const SINGLE_BYTE_RANGE_PATTERN = /^bytes=(\d*)-(\d*)$/i;
+
+function rangeNotSatisfiable(totalLength: number) {
+  return new Response(null, {
+    status: 416,
+    headers: {
+      "Accept-Ranges": "bytes",
+      "Content-Range": `bytes */${totalLength}`,
+    },
+  });
+}
+
+async function serveVideoAsset(request: Request, env: Env): Promise<Response> {
+  const assetResponse = await env.ASSETS.fetch(request);
+  const rangeHeader = request.headers.get("Range");
+
+  if (!assetResponse.ok || assetResponse.status === 206) {
+    const headers = new Headers(assetResponse.headers);
+    headers.set("Accept-Ranges", "bytes");
+    return new Response(request.method === "HEAD" ? null : assetResponse.body, {
+      status: assetResponse.status,
+      statusText: assetResponse.statusText,
+      headers,
+    });
+  }
+
+  if (!rangeHeader) {
+    const headers = new Headers(assetResponse.headers);
+    headers.set("Accept-Ranges", "bytes");
+    return new Response(request.method === "HEAD" ? null : assetResponse.body, {
+      status: assetResponse.status,
+      statusText: assetResponse.statusText,
+      headers,
+    });
+  }
+
+  const match = SINGLE_BYTE_RANGE_PATTERN.exec(rangeHeader.trim());
+  const assetBytes = await assetResponse.arrayBuffer();
+  const totalLength = assetBytes.byteLength;
+  if (!match || totalLength === 0) return rangeNotSatisfiable(totalLength);
+
+  const [, startText, endText] = match;
+  if (!startText && !endText) return rangeNotSatisfiable(totalLength);
+
+  let start: number;
+  let end: number;
+  if (!startText) {
+    const suffixLength = Number(endText);
+    if (!Number.isInteger(suffixLength) || suffixLength <= 0) return rangeNotSatisfiable(totalLength);
+    start = Math.max(0, totalLength - suffixLength);
+    end = totalLength - 1;
+  } else {
+    start = Number(startText);
+    end = endText ? Number(endText) : totalLength - 1;
+  }
+
+  if (!Number.isInteger(start) || !Number.isInteger(end) || start < 0 || start >= totalLength || end < start) {
+    return rangeNotSatisfiable(totalLength);
+  }
+  end = Math.min(end, totalLength - 1);
+
+  const headers = new Headers(assetResponse.headers);
+  headers.set("Accept-Ranges", "bytes");
+  headers.set("Content-Range", `bytes ${start}-${end}/${totalLength}`);
+  headers.set("Content-Length", String(end - start + 1));
+  return new Response(assetBytes.slice(start, end + 1), {
+    status: 206,
+    headers,
+  });
+}
+
 // Image security config. SVG sources with .svg extension auto-skip the
 // optimization endpoint on the client side (served directly, no proxy).
 // To route SVGs through the optimizer (with security headers), set
@@ -33,6 +105,10 @@ const worker = {
       url.protocol = "https:";
       url.hostname = "sarthakeai.com";
       return Response.redirect(url.toString(), 301);
+    }
+
+    if (VIDEO_PATH_PATTERN.test(url.pathname)) {
+      return serveVideoAsset(request, env);
     }
 
     if (url.pathname === "/_vinext/image") {

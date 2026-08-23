@@ -3,9 +3,10 @@
 /* eslint-disable @next/next/no-img-element -- Static WebP posters are pre-sized and optimized for this project. */
 /* eslint-disable jsx-a11y/media-has-caption -- Supplied portfolio previews use their source/open captions; separate timed-text files were not provided. */
 
-import { type TransitionEvent, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { activateMedia, MEDIA_PLAYBACK_EVENT, stopAllMedia, stopMediaWithin, type MediaPlaybackEvent } from "./media-playback";
 import { categories, projects, type Project, type ProjectMedia } from "./portfolio-data";
+import { ShortFormProjectViewer } from "./ShortFormProjectViewer";
 
 type ViewTransitionDocument = Document & {
   startViewTransition?: (update: () => void) => void;
@@ -145,7 +146,7 @@ function PortfolioVideo({ media, projectLabel, ratio }: { media: ProjectMedia; p
   }
 
   return (
-    <video ref={videoRef} controls playsInline preload="none" poster={media.poster} aria-label={`${media.title} — ${projectLabel}`} onPlay={(event) => activateMedia(media.id, event.currentTarget)}>
+    <video ref={videoRef} controls playsInline preload="metadata" poster={media.poster} aria-label={`${media.title} — ${projectLabel}`} onPlay={(event) => activateMedia(media.id, event.currentTarget)}>
       <source src={media.videoUrl} type="video/mp4" />
     </video>
   );
@@ -211,7 +212,7 @@ function ShortPreviewCard({
       className={`short-card${isPlaying ? " is-playing" : ""}`}
       data-reveal={reveal ? "" : undefined}
     >
-      <button className="short-card-open" type="button" onClick={(event) => onOpen(event.currentTarget)} aria-label={`View ${media.title} — ${project.client ?? project.title}`}>
+      <button className="short-card-open" type="button" onClick={(event) => { event.stopPropagation(); onOpen(event.currentTarget); }} aria-label={`View ${media.title} — ${project.client ?? project.title}`}>
         <figure>
           <PosterImage media={media} alt="" sizes="(max-width: 42rem) 45vw, (max-width: 64rem) 30vw, 18vw" />
           {hasStarted && media.videoUrl ? (
@@ -287,17 +288,15 @@ function EditorialProjectCard({
 
 export function PortfolioGrid() {
   const [active, setActive] = useState("All");
-  const [shortExpansionPhase, setShortExpansionPhase] = useState<"collapsed" | "opening" | "expanded" | "collapsing">("collapsed");
-  const [shortExtrasHeight, setShortExtrasHeight] = useState<number | null>(null);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [shortFormViewerOpen, setShortFormViewerOpen] = useState(false);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const returnFocusRef = useRef<HTMLElement | null>(null);
+  const shortFormReturnFocusRef = useRef<HTMLElement | null>(null);
   const filtersRef = useRef<HTMLDivElement>(null);
   const filterButtonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const filterReadyRef = useRef(false);
-  const shortExtrasRef = useRef<HTMLDivElement>(null);
-  const shortExpansionFrameRef = useRef<number | null>(null);
   const shortProjects = projects.filter((project) => project.category === "Short-form video");
   const shortBase = shortProjects[0];
   const shortMedia = shortProjects.flatMap((project) => project.media ?? []);
@@ -325,7 +324,6 @@ export function PortfolioGrid() {
   const showShortForm = active === "All" || active === "Short-form video";
   const visibleCategoryCount = (showShortForm ? 1 : 0) + visibleNonShort.length;
   const shortInitialCount = 5;
-  const shortExpanded = shortExpansionPhase !== "collapsed";
 
   useEffect(() => {
     if (!filterReadyRef.current) {
@@ -340,81 +338,10 @@ export function PortfolioGrid() {
     filters.scrollTo({ left: Math.max(0, left), behavior: reducedMotion ? "auto" : "smooth" });
   }, [active]);
 
-  useEffect(() => () => {
-    if (shortExpansionFrameRef.current !== null) window.cancelAnimationFrame(shortExpansionFrameRef.current);
-  }, []);
-
-  useLayoutEffect(() => {
-    if (shortExpansionPhase !== "opening") return;
-    const extras = shortExtrasRef.current;
-    if (!extras) return;
-    extras.style.height = "auto";
-    const expandedHeight = extras.scrollHeight;
-    extras.style.height = "0px";
-    void extras.offsetHeight;
-    shortExpansionFrameRef.current = window.requestAnimationFrame(() => {
-      setShortExtrasHeight(expandedHeight);
-      setShortExpansionPhase("expanded");
-      shortExpansionFrameRef.current = null;
-    });
-    return () => {
-      if (shortExpansionFrameRef.current !== null) window.cancelAnimationFrame(shortExpansionFrameRef.current);
-    };
-  }, [shortExpansionPhase, shortInitialCount]);
-
-  const expandShorts = () => {
-    if (shortExpansionPhase !== "collapsed") return;
-    stopAllMedia();
-    setShortExtrasHeight(0);
-    setShortExpansionPhase("opening");
-  };
-
-  const collapseShorts = () => {
-    if (shortExpansionPhase !== "opening" && shortExpansionPhase !== "expanded") return;
-    stopAllMedia();
-    const extras = shortExtrasRef.current;
-    if (!extras) {
-      setShortExpansionPhase("collapsed");
-      return;
-    }
-    const measuredHeight = Math.ceil(shortExpansionPhase === "opening" ? extras.getBoundingClientRect().height : extras.scrollHeight);
-    extras.style.height = `${measuredHeight}px`;
-    void extras.offsetHeight;
-    setShortExtrasHeight(measuredHeight);
-    setShortExpansionPhase("collapsing");
-    shortExpansionFrameRef.current = window.requestAnimationFrame(() => {
-      setShortExtrasHeight(0);
-      shortExpansionFrameRef.current = null;
-    });
-  };
-
-  const toggleShorts = () => {
-    if (shortExpansionPhase === "opening" || shortExpansionPhase === "expanded") {
-      collapseShorts();
-      return;
-    }
-    expandShorts();
-  };
-
-  const onShortExtrasTransitionEnd = (event: TransitionEvent<HTMLDivElement>) => {
-    if (event.target !== event.currentTarget || event.propertyName !== "height") return;
-    if (shortExpansionPhase === "expanded") {
-      setShortExtrasHeight(null);
-      return;
-    }
-    if (shortExpansionPhase === "collapsing") {
-      setShortExtrasHeight(null);
-      setShortExpansionPhase("collapsed");
-    }
-  };
-
   const selectCategory = (category: string) => {
     if (category === active) return;
     stopAllMedia();
     const update = () => {
-      if (shortExpansionFrameRef.current !== null) window.cancelAnimationFrame(shortExpansionFrameRef.current);
-      setShortExtrasHeight(null);
-      setShortExpansionPhase("collapsed");
       setActive(category);
     };
     const transition = (document as ViewTransitionDocument).startViewTransition;
@@ -427,6 +354,14 @@ export function PortfolioGrid() {
     returnFocusRef.current = trigger;
     setSelectedProject(project);
   };
+
+  const openShortFormProject = (trigger: HTMLElement) => {
+    stopAllMedia();
+    shortFormReturnFocusRef.current = trigger;
+    setShortFormViewerOpen(true);
+  };
+
+  const closeShortFormProject = useCallback(() => setShortFormViewerOpen(false), []);
 
   const closeProject = () => {
     stopMediaWithin(dialogRef.current);
@@ -497,28 +432,19 @@ export function PortfolioGrid() {
                   mediaOnly
                   eyebrowText="Swan Bitcoin + Roxom · Short-form social video"
                   className="mobile-short-project-card"
-                  onOpen={(trigger) => openProject(mobileShortFormProject, trigger)}
+                  onOpen={openShortFormProject}
                 />
               </div>
             ) : null}
             <div className="short-form-desktop-content">
                 <div className="shorts-grid" id="short-form-grid" aria-label="Short-form video gallery">
                   {shortMedia.slice(0, shortInitialCount).map((media) => (
-                    <ShortPreviewCard key={media.id} media={media} reveal project={shortFormProject} onOpen={(trigger) => openProject(shortFormProject, trigger)} />
+                    <ShortPreviewCard key={media.id} media={media} reveal project={shortFormProject} onOpen={openShortFormProject} />
                   ))}
                 </div>
-                {shortExpanded ? (
-                  <div ref={shortExtrasRef} className={`shorts-expanded-wrapper is-${shortExpansionPhase}`} id="short-form-expanded" style={{ height: shortExtrasHeight ?? undefined }} onTransitionEnd={onShortExtrasTransitionEnd} aria-hidden={shortExpansionPhase === "collapsing"}>
-                    <div className="shorts-expanded-grid">
-                      {shortMedia.slice(shortInitialCount, 14).map((media) => (
-                        <ShortPreviewCard key={media.id} media={media} reveal={false} project={shortFormProject} onOpen={(trigger) => openProject(shortFormProject, trigger)} />
-                      ))}
-                    </div>
-                  </div>
-                ) : null}
                 {shortMedia.length > 10 ? (
-                  <button className="button button-secondary shorts-see-more" type="button" aria-expanded={shortExpanded} aria-controls="short-form-expanded" onClick={toggleShorts}>
-                    {shortExpanded ? "See less" : "See more"}
+                  <button className="button button-secondary shorts-see-more" type="button" aria-haspopup="dialog" onClick={(event) => openShortFormProject(event.currentTarget)}>
+                    See more
                   </button>
                 ) : null}
             </div>
@@ -536,8 +462,10 @@ export function PortfolioGrid() {
         ) : null}
       </div>
 
+      <ShortFormProjectViewer open={shortFormViewerOpen} onClose={closeShortFormProject} onRestoreFocus={() => shortFormReturnFocusRef.current?.focus()} />
+
       {selectedProject ? (
-        <div className={`video-modal${selectedProject.id === "short-form-video" ? " video-modal-short-form" : ""}`} role="dialog" aria-modal="true" aria-labelledby="video-modal-title" aria-describedby="video-modal-description" onPointerDown={(event) => { if (event.target === event.currentTarget) closeProject(); }}>
+        <div className="video-modal" role="dialog" aria-modal="true" aria-labelledby="video-modal-title" aria-describedby="video-modal-description" onPointerDown={(event) => { if (event.target === event.currentTarget) closeProject(); }}>
           <div ref={dialogRef} className="video-modal-inner">
             <div className="video-modal-head">
               <div>
@@ -548,7 +476,7 @@ export function PortfolioGrid() {
               <button ref={closeButtonRef} type="button" onClick={closeProject} aria-label="Close project details">Close</button>
             </div>
             {selectedProject.media?.length ? (
-              <div className={`video-modal-media video-modal-media-${selectedProject.ratio}${selectedProject.id === "short-form-video" ? " video-modal-short-grid" : ""}`}>
+              <div className={`video-modal-media video-modal-media-${selectedProject.ratio}`}>
                 {selectedProject.media.map((media) => (
                   <figure key={media.id}>
                     <PortfolioVideo media={media} projectLabel={selectedProject.client ?? selectedProject.title} ratio={selectedProject.ratio} />

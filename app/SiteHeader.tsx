@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useRef, useState, type MouseEvent } from "react";
 import Link from "next/link";
 import { BookingTrigger, CALENDLY_BOOKING_COMPLETE_EVENT } from "./BookingExperience";
-import { TIMELINE_NAVIGATE_EVENT } from "./HeroTimeline";
 import { ThemeToggle } from "./ThemeToggle";
 
 const links = [
@@ -19,6 +18,7 @@ const mobileSocials = [
   { href: "https://www.instagram.com/sarthak.eai", label: "Instagram" },
   { href: "https://x.com/sarthakeai", label: "X / Twitter" },
   { href: "https://www.youtube.com/@sarthakeai", label: "YouTube" },
+  { href: "https://www.upwork.com/freelancers/~01a047caaf8c8ed5b6", label: "Upwork" },
 ];
 
 const delhiTimeFormatter = new Intl.DateTimeFormat("en-GB", {
@@ -61,6 +61,8 @@ export function SiteHeader() {
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const closeTimerRef = useRef<number | null>(null);
   const scrollTimerRef = useRef<number | null>(null);
+  const serviceScrollFrameRef = useRef<number | null>(null);
+  const pendingServiceNavigationRef = useRef<{ hash: string; reducedMotion: boolean } | null>(null);
   const availabilityLabel = getAvailabilityLabel(availability);
 
   const refreshAvailability = useCallback(async (forceRefresh = false) => {
@@ -169,16 +171,48 @@ export function SiteHeader() {
     };
   }, [isMobile, menuOpen]);
 
+  useEffect(() => {
+    const pendingNavigation = pendingServiceNavigationRef.current;
+    if (menuOpen || !pendingNavigation) return;
+
+    serviceScrollFrameRef.current = window.requestAnimationFrame(() => {
+      serviceScrollFrameRef.current = window.requestAnimationFrame(() => {
+        if (pendingServiceNavigationRef.current !== pendingNavigation) return;
+
+        const destination = document.querySelector<HTMLElement>(pendingNavigation.hash);
+        if (destination) {
+          const scrollMargin = Number.parseFloat(window.getComputedStyle(destination).scrollMarginTop) || 0;
+          const targetTop = window.scrollY + destination.getBoundingClientRect().top - scrollMargin;
+          if (window.location.hash !== pendingNavigation.hash) window.history.pushState(null, "", pendingNavigation.hash);
+          window.scrollTo({ top: Math.max(0, targetTop), behavior: pendingNavigation.reducedMotion ? "auto" : "smooth" });
+        }
+
+        pendingServiceNavigationRef.current = null;
+        serviceScrollFrameRef.current = null;
+        setSelectedHref(null);
+      });
+    });
+
+    return () => {
+      if (serviceScrollFrameRef.current !== null) window.cancelAnimationFrame(serviceScrollFrameRef.current);
+      serviceScrollFrameRef.current = null;
+    };
+  }, [menuOpen]);
+
   useEffect(() => () => {
     if (closeTimerRef.current !== null) window.clearTimeout(closeTimerRef.current);
     if (scrollTimerRef.current !== null) window.clearTimeout(scrollTimerRef.current);
+    if (serviceScrollFrameRef.current !== null) window.cancelAnimationFrame(serviceScrollFrameRef.current);
   }, []);
 
   const clearNavigationTimers = () => {
     if (closeTimerRef.current !== null) window.clearTimeout(closeTimerRef.current);
     if (scrollTimerRef.current !== null) window.clearTimeout(scrollTimerRef.current);
+    if (serviceScrollFrameRef.current !== null) window.cancelAnimationFrame(serviceScrollFrameRef.current);
     closeTimerRef.current = null;
     scrollTimerRef.current = null;
+    serviceScrollFrameRef.current = null;
+    pendingServiceNavigationRef.current = null;
   };
 
   const closeMenu = () => {
@@ -193,21 +227,8 @@ export function SiteHeader() {
     setMenuOpen((open) => !open);
   };
 
-  const navigateFromHeader = (event: MouseEvent<HTMLAnchorElement>, href: string) => {
+  const navigateFromHeader = () => {
     closeMenu();
-    if (
-      event.defaultPrevented
-      || event.button !== 0
-      || event.metaKey
-      || event.ctrlKey
-      || event.shiftKey
-      || event.altKey
-      || !href.startsWith("/#")
-      || window.location.pathname !== "/"
-    ) return;
-
-    event.preventDefault();
-    window.dispatchEvent(new CustomEvent(TIMELINE_NAVIGATE_EVENT, { detail: { id: href.slice(2) } }));
   };
 
   const navigateFromMenu = (event: MouseEvent<HTMLAnchorElement>, href: string) => {
@@ -215,7 +236,14 @@ export function SiteHeader() {
     if (selectedHref !== null) return;
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    clearNavigationTimers();
     setSelectedHref(href);
+
+    if (href === "/#services" && window.location.pathname === "/") {
+      pendingServiceNavigationRef.current = { hash: "#services", reducedMotion };
+      setMenuOpen(false);
+      return;
+    }
 
     closeTimerRef.current = window.setTimeout(() => {
       setMenuOpen(false);
@@ -246,7 +274,7 @@ export function SiteHeader() {
         <span className="brand-signature brand-logo-only" aria-hidden="true" />
       </Link>
       <div className="header-location" aria-label={`New Delhi local time ${delhiTime}`}>
-        <span>New Delhi</span><i aria-hidden="true">──</i><time>{delhiTime}</time>
+        <span>New Delhi · <time>{delhiTime}</time></span>
       </div>
       <nav className="nav nav-desktop" aria-label="Primary navigation" aria-hidden={isMobile ? true : undefined} inert={isMobile ? true : undefined}>
         {links.map((link) => <a key={link.href} href={link.href} onClick={(event) => navigateFromHeader(event, link.href)}>{link.label}</a>)}
@@ -268,11 +296,8 @@ export function SiteHeader() {
         </div>
         <div className="mobile-nav-spacer" aria-hidden="true" />
         <div className="mobile-nav-utility">
-          <div className="mobile-nav-utility-head">
-            <span>Elsewhere</span>
-            <BookingTrigger className="mobile-availability" aria-label={`${availabilityLabel}. Book a call with Sarthak`}><i aria-hidden="true" />{availabilityLabel}</BookingTrigger>
-          </div>
-          <div className="mobile-local-time" aria-label={`New Delhi local time ${delhiTime}`}><span>New Delhi</span><span>Local time <time>{delhiTime}</time></span></div>
+          <div className="mobile-local-time" aria-label={`New Delhi local time ${delhiTime}`}>New Delhi · <time>{delhiTime}</time></div>
+          <BookingTrigger className="mobile-availability" aria-label={`${availabilityLabel}. Book a call with Sarthak`}><i aria-hidden="true" /><span>View availability</span></BookingTrigger>
           <div className="mobile-nav-socials">
             {mobileSocials.map((social) => <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer">{social.label}<span aria-hidden="true">↗</span></a>)}
           </div>

@@ -49,7 +49,7 @@ function CaseStudyMediaItem({ media, projectTitle }: { media: ProjectMedia; proj
 
   if (media.videoUrl) {
     return (
-      <video ref={videoRef} controls playsInline preload="none" poster={media.poster} aria-label={`${media.title} — ${projectTitle}`} onPlay={(event) => activateMedia(media.id, event.currentTarget)}>
+      <video ref={videoRef} controls playsInline preload="metadata" poster={media.poster} aria-label={`${media.title} — ${projectTitle}`} onPlay={(event) => activateMedia(media.id, event.currentTarget)}>
         <source src={media.videoUrl} type="video/mp4" />
       </video>
     );

@@ -14,11 +14,8 @@ import {
 export const CALENDLY_URL = "https://calendly.com/officialsarthakeai/30min";
 export const CALENDLY_BOOKING_COMPLETE_EVENT = "calendly:booking-complete";
 
-function getCalendlyEmbedUrl(dark: boolean) {
-  const colors = dark
-    ? "background_color=161614&text_color=f2efe7&primary_color=ff0000"
-    : "background_color=ffffff&text_color=191917&primary_color=ec3d2f";
-  return `${CALENDLY_URL}?hide_gdpr_banner=1&${colors}`;
+function getCalendlyEmbedUrl() {
+  return `${CALENDLY_URL}?hide_gdpr_banner=1`;
 }
 
 type BookingContextValue = {
@@ -31,7 +28,6 @@ export function BookingProvider({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
   const [calendarLoaded, setCalendarLoaded] = useState(false);
   const [calendarSlow, setCalendarSlow] = useState(false);
-  const [darkCalendar, setDarkCalendar] = useState(false);
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const returnFocusRef = useRef<HTMLElement | null>(null);
@@ -40,7 +36,6 @@ export function BookingProvider({ children }: { children: ReactNode }) {
     returnFocusRef.current = trigger ?? (document.activeElement instanceof HTMLElement ? document.activeElement : null);
     setCalendarLoaded(false);
     setCalendarSlow(false);
-    setDarkCalendar(document.documentElement.dataset.theme === "dark");
     setOpen(true);
   }, []);
 
@@ -147,7 +142,7 @@ export function BookingProvider({ children }: { children: ReactNode }) {
               {!calendarLoaded ? <p className="booking-loading" aria-live="polite">Loading calendar&hellip;</p> : null}
               {calendarSlow ? <p className="booking-fallback">Calendar taking longer than expected. <a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer">Open Calendly <span aria-hidden="true">↗</span></a></p> : null}
               <iframe
-                src={getCalendlyEmbedUrl(darkCalendar)}
+                src={getCalendlyEmbedUrl()}
                 title="Book a 30-minute call with Sarthak"
                 loading="eager"
                 onLoad={() => { setCalendarLoaded(true); setCalendarSlow(false); }}

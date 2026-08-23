@@ -103,7 +103,7 @@ export const projects: Project[] = [
           "https://i.ytimg.com/vi/5MWtToYnA00/hqdefault.jpg",
         ],
         width: 1755,
-        height: 987,
+        height: 877,
         featured: true,
       },
     ],

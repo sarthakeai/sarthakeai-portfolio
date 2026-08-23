@@ -9,7 +9,7 @@ export function caseStudyMetadata(study: CaseStudy): Metadata {
     title: study.seoTitle,
     description: study.seoDescription,
     alternates: { canonical: url },
-    openGraph: { title: study.seoTitle, description: study.seoDescription, url, type: "website", images },
+    openGraph: { title: study.seoTitle, description: study.seoDescription, siteName: "Sarthak Sharma", url, type: "website", images },
     twitter: { card: "summary_large_image", title: study.seoTitle, description: study.seoDescription, images: images.map((item) => item.url) },
   };
 }

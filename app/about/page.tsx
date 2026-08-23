@@ -10,14 +10,35 @@ export const metadata: Metadata = {
   title,
   description,
   alternates: { canonical: "/about" },
-  openGraph: { title, description, url: "/about", type: "profile", images: [{ url: "/sarthak-about-1600.webp", width: 1600, height: 2132, alt: "Sarthak Sharma" }] },
+  openGraph: { title, description, siteName: "Sarthak Sharma", url: "/about", type: "profile", images: [{ url: "/sarthak-about-1600.webp", width: 1600, height: 2132, alt: "Sarthak Sharma" }] },
   twitter: { card: "summary_large_image", title, description, images: ["/sarthak-about-1600.webp"] },
 };
 
 export default function AboutPage() {
+  const profilePageData = {
+    "@context": "https://schema.org",
+    "@type": "ProfilePage",
+    url: "https://sarthakeai.com/about",
+    mainEntity: {
+      "@type": "Person",
+      "@id": "https://sarthakeai.com/#person",
+      name: "Sarthak Sharma",
+      alternateName: "Sarthak EAI",
+      description: "Video editor and creator based in India.",
+      image: "https://sarthakeai.com/sarthak-about-1600.webp",
+      sameAs: [
+        "https://www.instagram.com/sarthak.eai",
+        "https://x.com/sarthakeai",
+        "https://www.youtube.com/@sarthakeai",
+        "https://www.upwork.com/freelancers/~01a047caaf8c8ed5b6",
+      ],
+    },
+  };
+
   return (
     <PageFrame>
       <article className="standalone-page about-page" id="top">
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(profilePageData) }} />
         <header className="standalone-page-header">
           <p className="kicker">Video Editor &amp; Creator · New Delhi, India</p>
           <h1>About Sarthak Sharma</h1>
