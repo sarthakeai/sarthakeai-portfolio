@@ -244,7 +244,7 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(layout, /icon:\s*\[[\s\S]*?\/favicon\.ico[\s\S]*?favicon-48\.png[\s\S]*?favicon-192\.png[\s\S]*?favicon-512\.png/);
   assert.match(layout, /apple-touch-icon\.png/);
   assert.match(favicon, /viewBox="0 0 32 32"/);
-  assert.match(favicon, /<g fill="#ffffff"/);
+  assert.match(favicon, /<g fill="#000000"/);
   assert.match(favicon, /fill="#ff0000"/);
   assert.doesNotMatch(favicon, /prefers-color-scheme|<style>/);
   assert.match(layout, /history\.scrollRestoration = 'manual'/);

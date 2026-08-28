@@ -16,7 +16,7 @@ test("keeps the EAI favicon assets crisp and multi-resolution", async () => {
   assert.doesNotMatch(svg, /prefers-color-scheme|<style>/);
   assert.match(svg, /viewBox="0 0 32 32"/);
   assert.match(svg, /translate\(3\.2 5\.6248\) scale\(\.03975155\) translate\(-78 -140\)/);
-  assert.match(svg, /<g fill="#ffffff"/);
+  assert.match(svg, /<g fill="#000000"/);
   assert.match(svg, /fill="#ff0000"/);
   for (const [filename, size] of faviconAssets) {
     const png = await readFile(new URL(`../public/${filename}`, import.meta.url));
@@ -28,6 +28,6 @@ test("keeps the EAI favicon assets crisp and multi-resolution", async () => {
   const ico = await readFile(new URL("../public/favicon.ico", import.meta.url));
   assert.equal(ico.readUInt16LE(0), 0);
   assert.equal(ico.readUInt16LE(2), 1);
-  assert.equal(ico.readUInt16LE(4), 3);
-  assert.deepEqual([ico[6], ico[22], ico[38]], [16, 32, 48]);
+  assert.equal(ico.readUInt16LE(4), 4);
+  assert.deepEqual([ico[6], ico[22], ico[38], ico[54]], [16, 32, 48, 0]);
 });
