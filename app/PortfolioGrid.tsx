@@ -5,7 +5,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { activateMedia, MEDIA_PLAYBACK_EVENT, stopAllMedia, stopMediaWithin, type MediaPlaybackEvent } from "./media-playback";
-import { categories, projects, selectedShortFormMedia, type Project, type ProjectMedia } from "./portfolio-data";
+import { categories, projects, selectedShortFormMedia, shortFormProjectCopy, type Project, type ProjectMedia } from "./portfolio-data";
 import { ShortFormProjectViewer } from "./ShortFormProjectViewer";
 
 type ViewTransitionDocument = Document & {
@@ -235,7 +235,6 @@ function EditorialProjectCard({
   onOpen,
   previewCount = 1,
   mediaOnly = false,
-  eyebrowText,
   className,
 }: {
   project: Project;
@@ -243,7 +242,6 @@ function EditorialProjectCard({
   onOpen: (trigger: HTMLElement) => void;
   previewCount?: number;
   mediaOnly?: boolean;
-  eyebrowText?: string;
   className?: string;
 }) {
   const previewMedia = (project.media ?? []).slice(0, previewCount);
@@ -271,7 +269,6 @@ function EditorialProjectCard({
       </div>
       <div className="project-info">
         <div className="project-copy">
-          {eyebrowText ? <div className="project-eyebrow"><span>{eyebrowText}</span></div> : project.client || project.contentType ? <div className="project-eyebrow">{project.client ? <span>{project.client}</span> : null}{project.contentType ? <span>{project.contentType}</span> : null}</div> : null}
           <h3>{project.caseStudySlug ? <a href={`/work/${project.caseStudySlug}`}>{project.title}</a> : project.title}</h3>
           <p>{project.description}</p>
           <div className="project-role">
@@ -303,11 +300,11 @@ export function PortfolioGrid() {
   const shortFormProject: Project | null = shortBase ? {
     ...shortBase,
     id: "short-form-video",
-    title: "Short-form video",
+    title: shortFormProjectCopy.title,
     client: "Swan Bitcoin + Roxom",
     category: "Short-form video",
     contentType: "Short-form social video",
-    description: shortProjects.map((project) => project.description).join(" "),
+    description: shortFormProjectCopy.description,
     roles: [...new Set(shortProjects.flatMap((project) => project.roles))],
     media: shortMedia,
     caseStudySlug: "short-form-video",
@@ -315,7 +312,6 @@ export function PortfolioGrid() {
   const mobileShortMedia = shortMedia;
   const mobileShortFormProject: Project | null = shortFormProject ? {
     ...shortFormProject,
-    description: "A selection of short-form edits across Swan Bitcoin and Roxom, cut from interviews and talks with captions, visual cutaways, motion graphics and tight pacing.",
     roles: ["Editing", "Captions", "Motion Graphics", "Sound Design"],
     media: mobileShortMedia,
   } : null;
@@ -430,7 +426,6 @@ export function PortfolioGrid() {
                   priority
                   previewCount={3}
                   mediaOnly
-                  eyebrowText="Swan Bitcoin + Roxom · Short-form social video"
                   className="mobile-short-project-card"
                   onOpen={openShortFormProject}
                 />
@@ -495,7 +490,6 @@ export function PortfolioGrid() {
               {selectedProject.result ? <div className="project-result"><strong>{selectedProject.result.value}</strong><span>{selectedProject.result.label}</span></div> : null}
             </div>
             {selectedProject.externalUrl ? <a className="text-link" href={selectedProject.externalUrl} target="_blank" rel="noopener noreferrer">{getYouTubeId(selectedProject.externalUrl) ? "Watch on YouTube" : "Watch project"} <span aria-hidden="true">↗</span></a> : null}
-            {selectedProject.caseStudySlug ? <a className="text-link" href={`/work/${selectedProject.caseStudySlug}`}>View case study <span aria-hidden="true">↗</span></a> : null}
           </div>
         </div>
       ) : null}

@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element -- This site ships hand-optimized responsive image assets without the Next image runtime. */
 
 import { BookingTrigger } from "./BookingExperience";
+import { AboutStoryExperience } from "./AboutStoryExperience";
 import { CalendarBlank } from "@phosphor-icons/react/dist/ssr/CalendarBlank";
 import { ChatText } from "@phosphor-icons/react/dist/ssr/ChatText";
 import { EnvelopeSimple } from "@phosphor-icons/react/dist/ssr/EnvelopeSimple";
@@ -9,7 +10,10 @@ import { ContactForm } from "./ContactForm";
 import { HeroTimeline } from "./HeroTimeline";
 import { PageFrame } from "./PageFrame";
 import { PortfolioGrid } from "./PortfolioGrid";
-import { clients, services, stats, youtubeStats, youtubeVideos } from "./portfolio-data";
+import { YouTubeShowcase } from "./YouTubeShowcase";
+import { loadYouTubeShowcaseData } from "./api/youtube-latest/route";
+import { homepageAboutIntro } from "./about-content";
+import { clients, services, stats } from "./portfolio-data";
 
 function ClientLogoSet({ duplicate = false }: { duplicate?: boolean }) {
   return (
@@ -36,7 +40,8 @@ function ClientLogoSet({ duplicate = false }: { duplicate?: boolean }) {
   );
 }
 
-export default function Home() {
+export default async function Home() {
+  const { data: youtubeShowcaseData } = await loadYouTubeShowcaseData();
   const structuredData = [
     {
       "@context": "https://schema.org",
@@ -79,7 +84,7 @@ export default function Home() {
             </div>
             <div className="hero-actions hero-reveal hero-delay-2">
               <a className="button button-secondary" href="#work">See selected work <span aria-hidden="true">↓</span></a>
-              <BookingTrigger className="button button-primary hero-connect">Connect <span aria-hidden="true">↗</span></BookingTrigger>
+              <BookingTrigger className="button button-primary cta-outline hero-connect">Connect <span aria-hidden="true">↗</span></BookingTrigger>
             </div>
           </div>
         </section>
@@ -102,16 +107,13 @@ export default function Home() {
         <section className="section work" id="work">
           <div className="section-head">
             <div><p className="kicker">Selected work</p><h2>A look at<br />what I edit.</h2></div>
-            <p>Selected edits across short-form, YouTube, company video, motion and interview work.</p>
           </div>
           <PortfolioGrid />
         </section>
 
-        <ClientTestimonials />
-
         <section className="section about" id="about" data-reveal>
           <div className="about-grid">
-            <p className="kicker">About</p>
+            <p className="kicker">About me</p>
             <figure className="about-portrait">
               <img
                 src="/sarthak-about-960.webp"
@@ -126,14 +128,16 @@ export default function Home() {
             </figure>
             <div className="about-copy">
               <h2>I know the edit from both sides of the timeline.</h2>
-              <p>I’ve been editing professionally for around five years, working with brands and creators across YouTube, podcasts, tech, finance and social.</p>
-              <p>I also run a technology YouTube channel of my own. That means I’m not only thinking about clean cuts - I’m thinking about the idea, the audience and whether the video actually holds up once it’s published.</p>
+              <p className="about-intro">{homepageAboutIntro}</p>
+              <AboutStoryExperience />
+              <div className="about-stats" aria-label="Experience in numbers">
+                {stats.map((stat) => <div key={stat.value}><strong>{stat.value}</strong><p>{stat.label}</p></div>)}
+              </div>
             </div>
           </div>
-          <div className="stats" aria-label="Experience in numbers">
-            {stats.map((stat) => <div key={stat.value}><strong>{stat.value}</strong><p>{stat.label}</p></div>)}
-          </div>
         </section>
+
+        <ClientTestimonials />
 
         <section className="section services" id="services" data-reveal>
           <div className="services-intro">
@@ -145,30 +149,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="section youtube" id="youtube" data-reveal>
-          <div className="youtube-copy">
-            <p className="kicker">Personal project / YouTube</p>
-            <h2>I make videos too.</h2>
-            <p>I’ve created and published more than 350 long-form videos on my technology channel, which now has over 24,000 subscribers. Running the channel has taught me what works after a video leaves the timeline and reaches a real audience.</p>
-          </div>
-          <div className="youtube-panel" aria-label="YouTube channel in numbers">
-            <div className="youtube-mark"><span className="sr-only">EAI</span></div>
-            <div className="youtube-stats">
-              {youtubeStats.map((stat) => <div className="youtube-stat" key={stat.label}><strong>{stat.value}</strong><span>{stat.label}</span></div>)}
-            </div>
-          </div>
-          <a className="text-link youtube-cta" href="https://www.youtube.com/@sarthakeai" target="_blank" rel="noopener noreferrer" aria-label="Visit my YouTube channel, opens in a new tab">Visit my YouTube channel <span aria-hidden="true">↗</span></a>
-          {youtubeVideos.length > 0 ? (
-            <div className="youtube-videos" aria-label="Selected YouTube videos">
-              {youtubeVideos.map((video) => (
-                <a key={video.url} href={video.url} target="_blank" rel="noopener noreferrer">
-                  <span className="youtube-thumbnail"><img src={video.thumbnail} alt={`${video.title} thumbnail`} width="640" height="360" loading="lazy" decoding="async" /></span>
-                  <span className="youtube-video-copy"><strong>{video.title}</strong>{video.date || video.views || video.duration ? <small>{[video.date, video.views, video.duration].filter(Boolean).join(" · ")}</small> : null}</span>
-                </a>
-              ))}
-            </div>
-          ) : null}
-        </section>
+        <YouTubeShowcase initialData={youtubeShowcaseData} />
 
         <section className="section contact" id="contact" data-reveal>
           <p className="kicker">Get in touch</p>
@@ -182,7 +163,7 @@ export default function Home() {
               <p>Book a 30-minute call.</p>
             </div>
             <div className="contact-actions">
-              <BookingTrigger className="button button-primary contact-connect">Connect <span aria-hidden="true">↗</span></BookingTrigger>
+              <BookingTrigger className="button button-primary cta-outline contact-connect">Connect <span aria-hidden="true">↗</span></BookingTrigger>
             </div>
           </div>
           <div className="contact-form-intro">

@@ -2,6 +2,7 @@
 
 import type { Metadata } from "next";
 import { PageFrame } from "../PageFrame";
+import { aboutBodyCopy, aboutPersonalNote } from "../about-content";
 
 const title = "About Sarthak Sharma | Video Editor & Creator";
 const description = "Learn about Sarthak Sharma, a video editor and creator from India working across YouTube, short-form content, podcasts, tech and finance.";
@@ -49,9 +50,8 @@ export default function AboutPage() {
             <img src="/sarthak-about-960.webp" srcSet="/sarthak-about-960.webp 960w, /sarthak-about-1600.webp 1600w" sizes="(max-width: 50rem) calc(100vw - 2.5rem), 38vw" alt="Sarthak beside his motorcycle in the mountains" width="1600" height="2132" loading="eager" decoding="async" />
           </figure>
           <div className="standalone-about-copy">
-            <p>I’ve been editing professionally for around five years, working with brands and creators across YouTube, podcasts, tech, finance and social.</p>
-            <p>I also run a technology YouTube channel of my own. That means I’m not only thinking about clean cuts - I’m thinking about the idea, the audience and whether the video actually holds up once it’s published.</p>
-            <p>Away from the timeline: photography, films, music, travel, cars and motorcycles.</p>
+            {aboutBodyCopy.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+            <p>{aboutPersonalNote}</p>
             <a className="text-link" href="/work">See selected work <span aria-hidden="true">↗</span></a>
           </div>
         </div>

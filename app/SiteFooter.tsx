@@ -6,8 +6,8 @@ import { YoutubeLogo } from "@phosphor-icons/react/dist/ssr/YoutubeLogo";
 import { socials } from "./portfolio-data";
 
 const footerLinks = [
-  { href: "/work", label: "Work" },
-  { href: "/about", label: "About" },
+  { href: "/#work", label: "Work" },
+  { href: "/#about", label: "About" },
   { href: "/#services", label: "What I do" },
   { href: "/#youtube", label: "YouTube" },
   { href: "/#contact", label: "Contact" },

@@ -11,14 +11,19 @@ export function MotionController() {
       elements.forEach((element) => element.classList.add("is-visible"));
       return;
     }
-    const pending = elements.filter((element) => {
-      if (element.getBoundingClientRect().top <= window.innerHeight * .9) {
-        element.classList.add("is-visible");
-        return false;
-      }
-      element.classList.add(revealPendingClass(element));
-      return true;
+    const initialRevealThreshold = window.innerHeight * .9;
+    const initiallyVisible: HTMLElement[] = [];
+    const pending: HTMLElement[] = [];
+
+    elements.forEach((element) => {
+      const group = element.getBoundingClientRect().top <= initialRevealThreshold
+        ? initiallyVisible
+        : pending;
+      group.push(element);
     });
+
+    initiallyVisible.forEach((element) => element.classList.add("is-visible"));
+    pending.forEach((element) => element.classList.add(revealPendingClass(element)));
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (!entry.isIntersecting) return;

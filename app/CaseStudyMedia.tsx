@@ -19,15 +19,17 @@ function getYouTubeId(url?: string) {
   return null;
 }
 
-function CaseStudyMediaItem({ media, projectTitle }: { media: ProjectMedia; projectTitle: string }) {
+function CaseStudyMediaItem({ media, projectTitle, showCenterPlay }: { media: ProjectMedia; projectTitle: string; showCenterPlay: boolean }) {
   const youtubeId = getYouTubeId(media.externalUrl);
   const [youtubeStarted, setYoutubeStarted] = useState(false);
+  const [videoPlaying, setVideoPlaying] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     const onPlaybackChange = (event: Event) => {
       if ((event as MediaPlaybackEvent).detail.activeId === media.id) return;
       videoRef.current?.pause();
+      setVideoPlaying(false);
       setYoutubeStarted(false);
     };
     window.addEventListener(MEDIA_PLAYBACK_EVENT, onPlaybackChange);
@@ -49,21 +51,45 @@ function CaseStudyMediaItem({ media, projectTitle }: { media: ProjectMedia; proj
 
   if (media.videoUrl) {
     return (
-      <video ref={videoRef} controls playsInline preload="metadata" poster={media.poster} aria-label={`${media.title} — ${projectTitle}`} onPlay={(event) => activateMedia(media.id, event.currentTarget)}>
-        <source src={media.videoUrl} type="video/mp4" />
-      </video>
+      <>
+        <video
+          ref={videoRef}
+          className={showCenterPlay ? "case-study-short-video" : undefined}
+          controls playsInline preload="metadata"
+          poster={media.poster}
+          aria-label={`${media.title} — ${projectTitle}`}
+          onPlay={(event) => { setVideoPlaying(true); activateMedia(media.id, event.currentTarget); }}
+          onPause={() => setVideoPlaying(false)}
+          onEnded={() => setVideoPlaying(false)}
+        >
+          <source src={media.videoUrl} type="video/mp4" />
+        </video>
+        {showCenterPlay && !videoPlaying ? (
+          <button
+            className="case-study-video-play"
+            type="button"
+            aria-label={`Play ${media.title}`}
+            onClick={() => {
+              const video = videoRef.current;
+              if (!video) return;
+              activateMedia(media.id, video);
+              void video.play().catch(() => setVideoPlaying(false));
+            }}
+          />
+        ) : null}
+      </>
     );
   }
 
   return <img src={media.poster} alt={`${media.title} — ${projectTitle}`} width={media.width} height={media.height} loading="lazy" decoding="async" />;
 }
 
-export function CaseStudyMedia({ media, projectTitle, portrait = false }: { media: ProjectMedia[]; projectTitle: string; portrait?: boolean }) {
+export function CaseStudyMedia({ media, projectTitle, portrait = false, showCenterPlay = false }: { media: ProjectMedia[]; projectTitle: string; portrait?: boolean; showCenterPlay?: boolean }) {
   return (
     <div className={`case-study-media${portrait ? " is-portrait" : ""}`} aria-label={`Selected media for ${projectTitle}`}>
       {media.map((item) => (
         <figure key={item.id}>
-          <div className="case-study-media-frame"><CaseStudyMediaItem media={item} projectTitle={projectTitle} /></div>
+          <div className="case-study-media-frame"><CaseStudyMediaItem media={item} projectTitle={projectTitle} showCenterPlay={showCenterPlay} /></div>
           <figcaption>{item.title}</figcaption>
         </figure>
       ))}

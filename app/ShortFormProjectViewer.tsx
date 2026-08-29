@@ -70,7 +70,6 @@ export function ShortFormProjectViewer({
       <div ref={dialogRef} className="video-modal-inner">
         <div className="video-modal-head">
           <div>
-            <div className="project-eyebrow"><span>{shortFormStudy.eyebrow}</span></div>
             <h2 id="short-form-viewer-title">{shortFormStudy.title}</h2>
             <p className="short-form-viewer-description" id="short-form-viewer-description">{shortFormStudy.description}</p>
           </div>
@@ -81,9 +80,8 @@ export function ShortFormProjectViewer({
             <p className="project-label">My role</p>
             <ul className="case-study-roles" aria-label={`Roles for ${shortFormStudy.title}`}>{shortFormStudy.roles.map((role) => <li key={role}>{role}</li>)}</ul>
           </div>
-          <p className="short-form-viewer-supporting-copy">{shortFormStudy.supportingCopy}</p>
         </div>
-        <CaseStudyMedia media={shortFormStudy.media} projectTitle={shortFormStudy.title} portrait />
+        <CaseStudyMedia media={shortFormStudy.media} projectTitle={shortFormStudy.title} portrait showCenterPlay />
       </div>
     </div>
   );

@@ -5,16 +5,19 @@
 import { useCallback, useRef, useState } from "react";
 import type { CaseStudy } from "./case-study-data";
 import { ShortFormProjectViewer } from "./ShortFormProjectViewer";
+import { shortFormProjectCopy } from "./portfolio-data";
 
 export function WorkShortFormCard({ study }: { study: CaseStudy }) {
   const [viewerOpen, setViewerOpen] = useState(false);
   const triggerRef = useRef<HTMLAnchorElement>(null);
   const closeViewer = useCallback(() => setViewerOpen(false), []);
+  const displayTitle = shortFormProjectCopy.title;
+  const displayDescription = shortFormProjectCopy.description;
 
   return (
     <>
       <article className="work-index-card">
-        <a ref={triggerRef} className="work-index-media" href={`/work/${study.slug}`} aria-label={`View ${study.title}`} onClick={(event) => { event.preventDefault(); setViewerOpen(true); }}>
+        <a ref={triggerRef} className="work-index-media" href={`/work/${study.slug}`} aria-label={`View ${displayTitle}`} onClick={(event) => { event.preventDefault(); setViewerOpen(true); }}>
           <div className="project-preview project-preview-triptych work-index-short-form-preview" aria-hidden="true">
             {study.media.slice(0, 3).map((item) => (
               <figure key={item.id}>
@@ -26,9 +29,8 @@ export function WorkShortFormCard({ study }: { study: CaseStudy }) {
         </a>
         <div className="project-info">
           <div className="project-copy">
-            <div className="project-eyebrow"><span>{study.eyebrow}</span></div>
-            <h2><a href={`/work/${study.slug}`}>{study.title}</a></h2>
-            <p>{study.description}</p>
+            <h2><a href={`/work/${study.slug}`}>{displayTitle}</a></h2>
+            <p>{displayDescription}</p>
           </div>
         </div>
       </article>

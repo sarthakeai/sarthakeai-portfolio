@@ -178,7 +178,7 @@ html[data-theme="dark"] .theme-icon-moon { color: #f7f5ef; opacity: 1; transform
 .hero h1 { max-width: 60rem; margin: 0; font-size: clamp(2.1rem, calc(1rem + 5vw), 5.35rem); line-height: .98; letter-spacing: clamp(-.055em, -0.25vw, -.035em); font-weight: 590; text-wrap: balance; }
 .hero-intro { width: min(100%, 39rem); max-width: 39rem; margin: var(--hero-title-to-copy) 0 0; color: var(--muted-strong); font-size: clamp(1rem, calc(.94rem + .22vw), 1.1875rem); line-height: 1.68; }
 .hero-actions { width: fit-content; max-width: 100%; display: flex; flex-wrap: wrap; align-items: center; gap: var(--hero-actions-gap); margin-top: var(--hero-copy-to-actions); }
-.hero-actions .button { min-height: clamp(3rem, calc(2.8rem + .4vw), 3.5rem); gap: clamp(.65rem, 1.2vw, 1.15rem); padding-inline: clamp(1rem, calc(.8rem + .55vw), 1.35rem); font-size: clamp(.875rem, calc(.82rem + .2vw), 1rem); }
+.hero-actions .button, .button.about-story-trigger { min-height: clamp(3rem, calc(2.8rem + .4vw), 3.5rem); gap: clamp(.65rem, 1.2vw, 1.15rem); padding-inline: clamp(1rem, calc(.8rem + .55vw), 1.35rem); font-size: clamp(.875rem, calc(.82rem + .2vw), 1rem); }
 .button { width: fit-content; min-height: 3.5rem; display: inline-flex; align-items: center; justify-content: center; gap: clamp(1rem, 1.6vw, 1.35rem); padding: 0 1.35rem; border: 1px solid var(--line); border-radius: var(--control-radius); font-size: 1rem; font-weight: 600; line-height: 1; transition: transform var(--press-speed) ease-out, border-color 200ms ease-out, background-color 200ms ease-out, color 200ms ease-out; }
 .button-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
 .button-secondary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
@@ -188,10 +188,20 @@ html[data-theme="dark"] .theme-icon-moon { color: #f7f5ef; opacity: 1; transform
 .button-secondary:hover { border-color: color-mix(in srgb, var(--ink) 84%, var(--bg)); background: color-mix(in srgb, var(--ink) 90%, var(--bg)); }
 .text-link { min-height: 2.75rem; display: inline-flex; align-items: center; gap: .7rem; border-bottom: 1px solid var(--line); font-size: .75rem; transition: border-color 180ms ease-out, color 180ms ease-out; }
 .text-link:hover { color: var(--accent); border-color: var(--accent); }
-.hero-connect { flex: 0 0 auto; cursor: pointer; }
-.hero-connect span { color: currentColor; transition: transform 220ms cubic-bezier(.22, 1, .36, 1); }
-.hero-connect:hover { transform: translateY(-2px); }
-.hero-connect:hover span { transform: translate(.2rem, -.2rem); }
+.hero-connect { flex: 0 0 auto; }
+.button.button-primary.cta-outline {
+  border-color: var(--accent);
+  border-radius: var(--control-radius);
+  background: transparent;
+  color: var(--accent);
+  cursor: pointer;
+  transition: transform var(--press-speed) ease-out, border-color 200ms ease-out, background-color 200ms ease-out, color 200ms ease-out;
+}
+.button.button-primary.cta-outline span { color: currentColor; }
+.button.button-primary.cta-outline:active { border-color: var(--accent); background: var(--accent); color: #fff; transform: scale(.98); }
+@media (hover: hover) and (pointer: fine) {
+  .button.button-primary.cta-outline:hover { border-color: var(--accent); background: var(--accent); color: #fff; transform: translateY(-2px); }
+}
 .hero-reveal { animation: hero-reveal 620ms both var(--ease-out); }
 .hero-delay-1 { animation-delay: 70ms; }
 .hero-delay-2 { animation-delay: 140ms; }
@@ -234,6 +244,8 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
 .page-breadcrumb a { color: var(--ink); }
 .page-breadcrumb a:hover { color: var(--accent); }
 .case-study-details { display: grid; grid-template-columns: minmax(13rem, .7fr) minmax(0, 1.3fr); gap: clamp(2rem, 6vw, 7rem); padding-block: clamp(2.5rem, 5vw, 4.5rem); }
+.short-form-project-viewer .video-modal-head { margin-bottom: 0; }
+.short-form-project-viewer .case-study-details { padding-top: var(--project-modal-role-gap); padding-bottom: clamp(1.75rem, 2vw, 2.5rem); }
 .case-study-details > p { max-width: 42rem; margin: 0; color: var(--muted-strong); font-size: .9375rem; line-height: 1.72; }
 .case-study-roles { display: flex; flex-wrap: wrap; gap: .55rem 1rem; list-style: none; margin: .7rem 0 0; padding: 0; }
 .case-study-roles li { padding-bottom: .3rem; border-bottom: 1px solid var(--line); color: var(--muted-strong); font-size: .75rem; }
@@ -244,10 +256,14 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
 .case-study-media.is-portrait .case-study-media-frame { aspect-ratio: 9 / 16; }
 .case-study-media-frame > img, .case-study-media-frame > video, .case-study-media-frame > iframe, .case-study-youtube-poster, .case-study-youtube-poster img { width: 100%; height: 100%; display: block; border: 0; object-fit: cover; }
 .case-study-media-frame > video { position: relative; z-index: 1; pointer-events: auto; touch-action: auto; }
+.case-study-short-video:fullscreen,
+.case-study-short-video:-webkit-full-screen { width: 100vw; height: 100vh; max-width: 100vw; max-height: 100vh; border-radius: 0; background: #000; object-fit: contain; object-position: center; }
 .case-study-media figcaption { margin-top: .7rem; color: var(--muted); font-size: .6875rem; line-height: 1.45; }
 .case-study-youtube-poster { position: relative; padding: 0; border: 0; background: #0d0d0c; cursor: pointer; }
 .case-study-youtube-poster > span { position: absolute; top: 50%; left: 50%; width: 3.5rem; height: 3.5rem; display: grid; place-items: center; border: 1px solid rgba(255,255,255,.72); border-radius: 50%; background: rgba(10,10,9,.7); transform: translate(-50%, -50%); }
 .case-study-youtube-poster > span::before { content: ""; margin-left: .2rem; border-top: .45rem solid transparent; border-bottom: .45rem solid transparent; border-left: .7rem solid #fff; }
+.case-study-video-play { position: absolute; z-index: 2; top: 50%; left: 50%; width: 3.5rem; height: 3.5rem; display: grid; place-items: center; border: 1px solid rgba(255,255,255,.72); border-radius: 50%; padding: 0; background: rgba(10,10,9,.7); transform: translate(-50%, -50%); cursor: pointer; }
+.case-study-video-play::before { content: ""; margin-left: .2rem; border-top: .45rem solid transparent; border-bottom: .45rem solid transparent; border-left: .7rem solid #fff; }
 .case-study-back { margin-top: clamp(3rem, 6vw, 5rem); }
 .standalone-about-grid { display: grid; grid-template-columns: minmax(18rem, .8fr) minmax(0, 1.2fr); gap: clamp(2.5rem, 7vw, 8rem); align-items: start; padding-top: clamp(3rem, 6vw, 5rem); }
 .standalone-about-grid figure { width: min(100%, 36rem); margin: 0; overflow: hidden; border-radius: 14px; background: var(--surface); }
@@ -375,7 +391,7 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
 }
 .shorts-see-more { display: flex; width: fit-content; margin: clamp(1.15rem, 1.8vw, 1.5rem) auto 0; cursor: pointer; }
 .button.shorts-see-more { min-height: 2.75rem; padding: 0 1.25rem; border-radius: .625rem; font-size: .875rem; font-weight: 600; }
-.video-modal { position: fixed; inset: 0; z-index: 90; display: grid; place-items: center; padding: clamp(1rem, 4vw, 3rem); background: rgba(10,10,9,.78); animation: modal-backdrop-in 220ms both ease-out; }
+.video-modal { --project-modal-role-gap: clamp(1.5rem, calc(1rem + 1vw), 2rem); position: fixed; inset: 0; z-index: 90; display: grid; place-items: center; padding: clamp(1rem, 4vw, 3rem); background: rgba(10,10,9,.78); animation: modal-backdrop-in 220ms both ease-out; }
 .video-modal-inner { width: min(100%, 66rem); max-height: 94dvh; overflow: auto; padding: clamp(1rem, 2.5vw, 1.75rem); background: var(--bg); color: var(--ink); border: 1px solid var(--line); animation: modal-panel-in 300ms both var(--ease-out); }
 .video-modal-head { display: flex; align-items: start; justify-content: space-between; gap: 2rem; margin-bottom: 1rem; }
 .video-modal-head h2 { margin: .6rem 0 0; font-size: clamp(1.75rem, 4vw, 3rem); line-height: 1; letter-spacing: -.045em; font-weight: 580; }
@@ -407,7 +423,7 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
 .video-modal-media figcaption { padding: .65rem 0 .9rem; border-bottom: 1px solid var(--line); color: var(--muted-strong); font-size: .6875rem; line-height: 1.45; }
 .video-modal-art { min-height: clamp(14rem, 42vw, 28rem); display: grid; place-items: center; overflow: hidden; background-image: radial-gradient(circle, color-mix(in srgb, currentColor 13%, transparent) .6px, transparent .75px); background-size: 12px 12px; }
 .video-modal-art strong { max-width: 80%; font-size: clamp(2.5rem, 8vw, 6rem); line-height: .88; letter-spacing: -.06em; text-transform: uppercase; text-align: center; }
-.video-modal-details { display: grid; grid-template-columns: 1.3fr 1fr auto; gap: 2rem; align-items: start; padding-top: 1.4rem; margin-top: 1rem; border-top: 1px solid var(--line); }
+.video-modal-details { display: grid; grid-template-columns: 1.3fr 1fr auto; gap: 2rem; align-items: start; padding-top: var(--project-modal-role-gap); }
 .video-modal-details .project-result { align-self: start; }
 .video-modal .text-link { margin-top: 1rem; }
 @keyframes modal-backdrop-in { from { opacity: 0; } to { opacity: 1; } }
@@ -419,13 +435,39 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
 .about-portrait { grid-area: portrait; width: min(100%, 27rem); aspect-ratio: 3/4; align-self: start; justify-self: start; margin: 0; overflow: hidden; background: var(--surface); }
 .about-portrait img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
 .about-copy { grid-area: copy; }
-.about-copy h2 { max-width: 43rem; margin-top: 0; }
-.about-copy > p { max-width: 39rem; color: var(--muted-strong); font-size: 1rem; line-height: 1.75; }
-.about-copy h2 + p { margin-top: 2rem; }
+.about-copy h2 { max-width: 43rem; margin: 0; }
+.about-copy .about-intro { max-width: 39rem; margin: clamp(1.5rem, 2.25vw, 2rem) 0 0; color: var(--muted-strong); font-size: 1rem; line-height: 1.75; }
+.button.about-story-trigger { gap: .75rem; margin-top: clamp(1.25rem, 2vw, 1.75rem); }
 .personal-note { margin-top: 2rem; padding-top: 1.2rem; border-top: 1px solid var(--line); color: var(--muted) !important; font-size: .8125rem !important; }
-.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; margin-top: clamp(4rem, 8vw, 7rem); border-top: 1px solid var(--line); padding-top: 1.75rem; }
-.stats strong { font-size: clamp(2.15rem, 4vw, 3.75rem); line-height: 1; letter-spacing: -.05em; font-weight: 580; }
-.stats p { color: var(--muted); font-size: .6875rem; line-height: 1.5; }
+.about-stats { --about-stat-label-gap: clamp(.8rem, 1vw, 1rem); display: grid; grid-template-columns: minmax(0, .92fr) minmax(0, 1fr) minmax(0, 1.08fr); gap: 0; margin-top: clamp(2.5rem, 3.2vw, 3.25rem); align-items: stretch; text-align: left; }
+.about-stats > div { min-width: 0; display: grid; grid-template-rows: auto auto; align-content: start; row-gap: var(--about-stat-label-gap); padding-inline: clamp(1rem, 2.5vw, 2rem); }
+.about-stats > div:first-child { padding-left: 0; }
+.about-stats > div + div { border-left: 1px solid var(--line); }
+.about-stats strong { display: block; margin: 0; font-size: clamp(2.25rem, 2.8vw, 2.75rem); line-height: .94; letter-spacing: -.055em; font-weight: 580; font-variant-numeric: tabular-nums; }
+.about-stats p { margin: 0; color: var(--muted); font-size: clamp(.6875rem, .75vw, .75rem); line-height: 1.45; }
+
+.about-story-overlay { --about-story-overlay-pad: clamp(.625rem, 1.5vw, 1.25rem); position: fixed; z-index: 90; inset: 0; display: grid; place-items: center; padding: var(--about-story-overlay-pad); background: rgba(9, 9, 8, .5); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); animation: about-story-backdrop-in 260ms cubic-bezier(.22, 1, .36, 1) both; }
+.about-story-overlay[data-state="closing"] { animation-name: about-story-backdrop-out; }
+.about-story-dialog { width: min(96vw, 112.5rem); min-height: min(82dvh, 54rem); max-height: calc(100dvh - (2 * var(--about-story-overlay-pad))); overflow-y: auto; overscroll-behavior: contain; border: 1px solid var(--line); background: var(--bg); color: var(--ink); box-shadow: 0 1.25rem 4rem rgba(0, 0, 0, .16); transform-origin: 50% 55%; will-change: opacity, transform; animation: about-story-panel-in 280ms cubic-bezier(.22, 1, .36, 1) both; }
+.about-story-overlay[data-state="closing"] .about-story-dialog { animation-name: about-story-panel-out; }
+.about-story-head { position: sticky; z-index: 3; top: 0; display: flex; align-items: flex-start; justify-content: space-between; gap: 2rem; margin-inline: clamp(1.5rem, 3vw, 3.5rem); padding: clamp(1.25rem, 2vw, 1.75rem) 0 clamp(1rem, 1.5vw, 1.25rem); border-bottom: 1px solid var(--line); background: var(--bg); }
+.about-story-head h2 { margin: 0; font-size: clamp(3.25rem, 4.6vw, 5.5rem); font-weight: 590; line-height: .9; letter-spacing: -.065em; text-transform: uppercase; }
+.about-story-head button { min-height: 2.75rem; display: inline-flex; align-items: center; gap: .45rem; border: 0; padding: 0; background: transparent; color: var(--muted-strong); font: .625rem/1.35 var(--font-geist-mono), monospace; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; transition: color 180ms ease-out; }
+.about-story-head button:hover { color: var(--accent); }
+.about-story-head button span { color: var(--accent); }
+.about-story-body { display: grid; grid-template-columns: minmax(16.875rem, 18rem) minmax(0, 1fr); gap: clamp(2.625rem, 3.4vw, 3.25rem); align-items: start; padding: clamp(1.5rem, 2vw, 2rem) clamp(1.5rem, 3vw, 3.5rem) clamp(2rem, 2.5vw, 2.75rem); }
+.about-story-portrait { width: 100%; max-width: 18rem; height: 28.5rem; margin: 0; overflow: hidden; background: var(--surface); }
+.about-story-portrait img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
+.about-story-columns { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(2.5rem, 3vw, 3rem); align-items: start; }
+.about-story-columns > div { min-width: 0; }
+.about-story-columns p { margin: 0; color: var(--muted-strong); font-family: var(--font-geist-sans), sans-serif; font-size: clamp(.84375rem, calc(.8rem + .06vw), .90625rem); font-style: italic; font-weight: 400; line-height: 1.5; }
+.about-story-columns p + p { margin-top: 1rem; }
+.about-story-columns .about-story-intro { color: var(--muted-strong); }
+.about-story-intro strong { font-style: italic; font-weight: 700; }
+@keyframes about-story-backdrop-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes about-story-backdrop-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes about-story-panel-in { from { opacity: 0; transform: translateY(.875rem) scale(.99); } to { opacity: 1; transform: none; } }
+@keyframes about-story-panel-out { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(.5rem) scale(.995); } }
 
 .services-intro { display: grid; gap: var(--label-gap); margin-bottom: clamp(2.5rem, 4vw, 3.5rem); }
 .services-intro > p:last-child { max-width: 42rem; margin: 0; color: var(--muted-strong); font-size: clamp(1rem, 1.4vw, 1.125rem); line-height: 1.68; }
@@ -437,25 +479,28 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
 .service p { color: var(--muted); line-height: 1.62; font-size: .875rem; max-width: 29rem; }
 .service i { color: var(--muted); opacity: .45; font-style: normal; justify-self: end; transition: transform 260ms var(--ease-out), color 180ms ease-out, opacity 180ms ease-out; }
 
-.youtube { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(18rem, .65fr); grid-template-areas: "copy panel" "cta panel" "videos videos"; column-gap: clamp(3.5rem, 9vw, 9rem); row-gap: clamp(1.5rem, 2.6vw, 2.5rem); align-items: start; }
-.youtube-panel { grid-area: panel; min-height: 100%; display: grid; align-content: center; justify-items: center; gap: clamp(1.75rem, 3vw, 2.75rem); padding: clamp(2rem, 4vw, 3.5rem) 0; border-block: 1px solid var(--line); text-align: center; }
-.youtube-mark { width: clamp(5.5rem, 7vw, 6.75rem); aspect-ratio: 644 / 522; background: var(--brand-logo) center / contain no-repeat; opacity: .94; transition: opacity 240ms ease-out, transform 360ms var(--ease-spring); }
-.youtube-copy { grid-area: copy; }
+.youtube { display: block; }
+.youtube-intro { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(15rem, .55fr); gap: clamp(2.5rem, 7vw, 7rem); align-items: end; padding-bottom: clamp(2.5rem, 4.5vw, 4rem); }
 .youtube-copy h2 { max-width: 12ch; margin-block: 1.1rem 1.65rem; }
-.youtube-copy > p:last-child { max-width: 38rem; color: var(--muted); line-height: 1.72; font-size: .9rem; }
-.youtube-stats { width: min(100%, 14rem); display: grid; grid-template-columns: 1fr; padding-top: clamp(1.5rem, 2.5vw, 2rem); border-top: 1px solid var(--line); }
-.youtube-stat { min-width: 0; padding: clamp(1.15rem, 2vw, 1.65rem) 0; }
-.youtube-stat strong { display: block; font-size: clamp(2.35rem, 4.2vw, 4rem); font-weight: 580; line-height: .95; letter-spacing: -.06em; font-variant-numeric: tabular-nums; }
-.youtube-stat span { display: block; margin-top: .55rem; color: var(--muted); font: .5625rem/1.35 var(--font-geist-mono), monospace; text-transform: uppercase; letter-spacing: .1em; }
-.youtube-cta { grid-area: cta; width: fit-content; margin-top: .25rem; }
+.youtube-copy > p:last-child { max-width: 41rem; margin: 0; color: var(--muted); line-height: 1.72; font-size: .9rem; }
+.youtube-channel-meta { display: grid; justify-items: start; gap: clamp(1.4rem, 2.5vw, 2rem); padding-bottom: .1rem; }
+.youtube-subscriber-stat strong { display: block; font-size: clamp(1.875rem, 2.8vw, 2.5rem); font-weight: 580; line-height: .9; letter-spacing: -.06em; font-variant-numeric: tabular-nums; }
+.youtube-subscriber-stat span { display: block; margin-top: .6rem; color: var(--muted); font: .5625rem/1.35 var(--font-geist-mono), monospace; text-transform: uppercase; letter-spacing: .1em; }
+.youtube-cta { width: fit-content; }
 .youtube-cta span { display: inline-block; color: var(--accent); transition: transform 220ms var(--ease-out); }
-.youtube-videos { grid-area: videos; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; padding-top: clamp(2rem, 4vw, 3.5rem); border-top: 1px solid var(--line); }
-.youtube-videos > a { display: grid; grid-template-columns: minmax(8rem, .75fr) 1fr; gap: 1rem; align-items: center; }
-.youtube-thumbnail { position: relative; display: block; aspect-ratio: 16/9; overflow: hidden; background: var(--surface); }
-.youtube-thumbnail img { width: 100%; height: 100%; object-fit: cover; transition: transform 700ms var(--ease-out); }
-.youtube-video-copy { display: grid; gap: .45rem; }
-.youtube-video-copy strong { font-size: .875rem; line-height: 1.35; font-weight: 560; }
-.youtube-video-copy small { color: var(--muted); font: .5625rem/1.4 var(--font-geist-mono), monospace; letter-spacing: .05em; text-transform: uppercase; }
+.youtube-video-stage { overflow: hidden; padding-top: clamp(1.5rem, 2.5vw, 2rem); border-top: 1px solid var(--line); }
+.youtube-video-row { display: flex; gap: clamp(1rem, 1.5vw, 1.25rem); transform: translate3d(var(--youtube-track-offset, 0), 0, 0); transition: transform 480ms cubic-bezier(.22, 1, .36, 1); touch-action: pan-y; user-select: none; }
+.youtube-video-card { min-width: 0; flex: 0 0 46.5%; transition: transform 480ms cubic-bezier(.22, 1, .36, 1); }
+.youtube-video-frame { position: relative; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 0; background: #0b0b0a; }
+.youtube-native-player { position: absolute; inset: 0; width: 100%; height: 100%; display: block; border: 0; background: #000; }
+.youtube-navigation { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; margin-top: clamp(1.25rem, 2vw, 1.75rem); }
+.youtube-pagination { display: flex; align-items: center; gap: .5rem; }
+.youtube-pagination > span { width: .4375rem; height: .4375rem; flex: 0 0 auto; border-radius: 50%; background: color-mix(in srgb, var(--muted) 58%, transparent); transition: background-color 220ms ease-out, transform 480ms cubic-bezier(.22, 1, .36, 1); }
+.youtube-pagination > span.is-active { background: var(--accent); transform: scale(1.08); }
+.youtube-arrows { display: flex; align-items: center; gap: .75rem; }
+.youtube-arrows button { width: 3rem; height: 3rem; display: grid; place-items: center; border: 0; border-radius: 50%; padding: 0; background: var(--accent); color: #fff; cursor: pointer; transition: opacity 220ms ease-out, transform 480ms cubic-bezier(.22, 1, .36, 1), background-color 220ms ease-out; }
+.youtube-arrows svg { width: 1.125rem; height: 1.125rem; display: block; overflow: visible; }
+.youtube-arrows button:disabled { cursor: default; opacity: .28; }
 
 .client-testimonials { padding-block: clamp(4rem, 6vw, 5.5rem); }
 .testimonials-intro { display: grid; gap: var(--label-gap); margin-bottom: clamp(2.5rem, 4vw, 3.5rem); }
@@ -487,9 +532,7 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
 .contact-route-icon { width: 1rem; height: 1rem; flex: 0 0 auto; color: var(--muted-strong); }
 .contact-route-label { margin: 0; color: var(--ink) !important; font: 560 .8125rem/1.5 var(--font-geist-mono), monospace !important; letter-spacing: .11em; text-transform: uppercase; }
 .contact-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 1rem 1.5rem; }
-.contact-connect { min-width: 0; cursor: pointer; }
-.contact-connect span { color: currentColor; transition: transform 220ms var(--ease-out); }
-.contact-connect:hover span { transform: translate(.25rem, -.25rem); }
+.contact-connect { min-width: 0; }
 .contact-write-copy > p { margin: 0; color: var(--muted); font-size: .8125rem; line-height: 1.6; }
 .contact-email { width: fit-content; justify-self: end; display: inline-flex; align-items: center; gap: .55rem; min-height: 2.5rem; border-bottom: 1px solid var(--line); color: var(--ink); font-size: .9375rem; font-weight: 540; line-height: 1.2; transition: border-color 180ms ease-out, color 180ms ease-out; }
 .contact-email > svg { width: 1rem; height: 1rem; flex: 0 0 auto; color: var(--muted-strong); }
@@ -565,7 +608,9 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
   .project-art { transition: transform 480ms var(--ease-spring); }
   .project:hover .project-visual::before { transform: scale(1.08); }
   .project-visual::before { transition: transform 650ms var(--ease-spring); }
-  .project:hover .project-visual > img, .project:hover .project-preview img, .youtube-videos a:hover .youtube-thumbnail img { transform: scale(1.025); }
+  .project:hover .project-visual > img, .project:hover .project-preview img { transform: scale(1.025); }
+  .youtube-video-card:hover { transform: translateY(-.15rem); }
+  .youtube-arrows button:not(:disabled):hover { background: color-mix(in srgb, var(--accent) 88%, #000); transform: translateY(-.12rem); }
   .project:hover .project-open > span { opacity: 1; transform: none; }
   .project:hover .project-info h3 { transform: translateX(.2rem); }
   .short-card:hover img { transform: scale(1.02); filter: saturate(1.04); }
@@ -575,7 +620,6 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
   .service:hover::after { transform: scaleX(1); }
   .service:hover h3 { transform: translateX(.2rem); }
   .service:hover i { color: var(--accent); opacity: 1; transform: translate(.15rem, -.15rem); }
-  .youtube:hover .youtube-mark { opacity: 1; transform: translateY(-.12rem); }
   .youtube-cta:hover span { transform: translate(.15rem, -.15rem); }
   .footer-directory-link:hover { color: var(--footer-ink); }
   .footer-social-link:hover .footer-link-icon { color: var(--footer-ink); transform: translateY(-.08rem); }
@@ -603,7 +647,21 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
   .availability-cta { padding-inline: .7rem; font-size: .625rem; }
   .section-head { grid-template-columns: minmax(0, 1.3fr) minmax(15rem, .75fr); }
   .about-grid { column-gap: 4rem; }
-  .youtube { grid-template-columns: minmax(0, 1.15fr) minmax(17rem, .85fr); column-gap: clamp(2.5rem, 6vw, 4.5rem); }
+  .youtube-intro { grid-template-columns: minmax(0, 1.25fr) minmax(14rem, .75fr); gap: clamp(2.5rem, 5vw, 4rem); }
+}
+
+@media (min-width: 64.0625rem) and (max-width: 80rem) {
+  .about-story-body { grid-template-columns: minmax(14rem, 15rem) minmax(0, 1fr); gap: 2rem; }
+  .about-story-portrait { max-width: 15rem; height: 22.5rem; }
+  .about-story-columns { gap: 1.75rem; }
+}
+
+@media (max-width: 64rem) {
+  .about-story-body { grid-template-columns: minmax(13rem, 14rem) minmax(0, 1fr); gap: 2rem; }
+  .about-story-portrait { max-width: 14rem; height: 21rem; }
+  .about-story-columns { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .about-story-columns > div + div p:first-child { margin-top: 1rem; }
+  .youtube-video-card { flex-basis: 84%; }
 }
 
 @media (min-width: 50.0625rem) and (max-width: 62rem) {
@@ -643,10 +701,10 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
   .mobile-nav-item:active .mobile-nav-text, .mobile-nav-item.is-selected .mobile-nav-text { opacity: .82; transform: translateX(.25rem); }
   .mobile-nav-item:active .mobile-nav-arrow, .mobile-nav-item.is-selected .mobile-nav-arrow { opacity: .82; transform: translate(.25rem, -.25rem); }
   .mobile-nav-cta:active .mobile-nav-arrow, .mobile-nav-cta.is-selected .mobile-nav-arrow { transform: translate(.35rem, -.35rem); }
-  .mobile-nav-utility { --mobile-utility-gap: clamp(1.125rem, 3dvh, 1.5rem); width: 100%; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; gap: var(--mobile-utility-gap); border-top: 1px solid var(--line); padding-top: 1rem; text-align: center; }
+  .mobile-nav-utility { --mobile-utility-gap: 1.5rem; width: 100%; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; gap: var(--mobile-utility-gap); border-top: 1px solid var(--line); padding-top: var(--mobile-utility-gap); text-align: center; }
   .mobile-local-time { width: 100%; display: block; color: var(--muted); font: .5rem/1.4 var(--font-geist-mono), monospace; letter-spacing: .09em; text-align: center; white-space: nowrap; }
   .mobile-local-time time { display: inline; min-width: 0; color: var(--muted-strong); font: inherit; font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; text-align: inherit; }
-  .mobile-availability { min-height: 2.5rem; display: inline-flex; align-items: center; justify-content: center; align-self: center; gap: .48rem; padding-inline: 1.0625rem; border: 1px solid var(--line); border-radius: 99rem; background: transparent; color: var(--ink); font: 640 .8125rem/1 var(--font-geist-sans), Arial, sans-serif; letter-spacing: .055em; text-align: center; text-transform: uppercase; cursor: pointer; transition: border-color 200ms ease-out, background-color 200ms ease-out, transform 200ms var(--ease-out); }
+  .mobile-availability { min-height: 2.875rem; display: inline-flex; align-items: center; justify-content: center; align-self: center; gap: .48rem; padding-inline: .875rem; border: 1px solid var(--line); border-radius: 99rem; background: transparent; color: var(--ink); font: 640 .8125rem/1 var(--font-geist-sans), Arial, sans-serif; letter-spacing: .055em; text-align: center; text-transform: uppercase; cursor: pointer; transition: border-color 200ms ease-out, background-color 200ms ease-out, transform 200ms var(--ease-out); }
   .mobile-availability:hover { border-color: color-mix(in srgb, var(--accent) 48%, var(--line)); background: color-mix(in srgb, var(--accent) 7%, var(--bg)); transform: translateY(-1px); }
   .mobile-availability i { width: .45rem; height: .45rem; flex: 0 0 auto; border-radius: 50%; background: var(--accent); }
   .mobile-nav-socials { width: 100%; max-width: 100%; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; align-self: center; gap: .4rem; text-align: center; }
@@ -704,18 +762,25 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
   .project-result { align-self: start; }
   .about-grid { grid-template-areas: "label" "portrait" "copy"; gap: 1.5rem; }
   .about-portrait { width: min(100%, 32rem); justify-self: start; margin: 0 0 .5rem; }
-  .stats { grid-template-columns: 1fr 1fr; gap: 2.75rem; }
+  .about-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .about-story-overlay { --about-story-overlay-pad: .375rem; align-items: end; }
+  .about-story-dialog { width: 100%; min-height: calc(100dvh - var(--about-story-overlay-pad)); max-height: calc(100dvh - var(--about-story-overlay-pad)); }
+  .about-story-head { margin-inline: 1rem; padding: max(1.25rem, env(safe-area-inset-top)) 0 1rem; }
+  .about-story-head h2 { font-size: clamp(2.5rem, 12vw, 4rem); }
+  .about-story-body { grid-template-columns: minmax(0, 1fr); gap: 2rem; padding: 1.75rem 1rem calc(3.25rem + env(safe-area-inset-bottom)); }
+  .about-story-portrait { width: min(100%, 30rem); max-width: none; height: auto; aspect-ratio: 3 / 4; }
+  .about-story-columns { grid-template-columns: minmax(0, 1fr); }
+  .about-story-columns p { font-size: clamp(.9375rem, 3.8vw, 1rem); line-height: 1.68; }
   .service { grid-template-columns: .18fr 1fr .1fr; }
   .service p { grid-column: 2/4; margin: 0; }
-  .youtube { grid-template-columns: 1fr; grid-template-areas: "copy" "panel" "cta" "videos"; row-gap: 2rem; }
-  .youtube-panel { width: 100%; min-height: 18rem; }
-  .youtube-mark { width: clamp(4.5rem, 20vw, 6rem); }
+  .youtube-intro { grid-template-columns: 1fr; gap: 1.75rem; padding-bottom: 2.5rem; }
   .youtube-copy h2 { max-width: 10ch; margin-bottom: 1.35rem; }
   .youtube-copy > p:last-child { font-size: .875rem; line-height: 1.68; }
-  .youtube-stats { grid-template-columns: 1fr; margin-top: .2rem; }
-  .youtube-stat strong { font-size: clamp(2.35rem, 11vw, 3.5rem); }
-  .youtube-cta { margin-top: -.35rem; }
-  .youtube-videos { grid-template-columns: 1fr; }
+  .youtube-channel-meta { gap: 1.25rem; }
+  .youtube-subscriber-stat strong { font-size: clamp(1.875rem, 9vw, 2.5rem); }
+  .youtube-video-row { gap: 0; }
+  .youtube-video-card { flex-basis: 100%; }
+  .youtube-arrows button { width: 2.875rem; height: 2.875rem; }
   .contact h2 { font-size: clamp(2.85rem, 13vw, 5.5rem); }
   .contact-bottom { display: block; }
   .contact-actions { justify-content: flex-start; margin-top: 1.5rem; }
@@ -758,6 +823,7 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
 }
 
 @media (max-width: 42rem) {
+  .video-modal { --project-modal-role-gap: 1.25rem; }
   .short-form-mobile-content { display: contents; }
   .short-form-desktop-content { display: none; }
   .portfolio-sections {
@@ -788,7 +854,7 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
   .short-form-project-viewer .video-modal-head h2 { max-width: calc(100% - 3.75rem); margin-top: .4rem; font-size: clamp(1.45rem, 7vw, 1.85rem); line-height: 1.02; }
   .short-form-project-viewer .video-modal-head button { min-width: 3.25rem; min-height: 2.5rem; }
   .short-form-project-viewer :is(.short-form-viewer-description, .short-form-viewer-supporting-copy) { display: none; }
-  .short-form-project-viewer .case-study-details { display: block; padding: .75rem 0 1rem; }
+  .short-form-project-viewer .case-study-details { display: block; padding: var(--project-modal-role-gap) 0 1rem; }
   .short-form-project-viewer .case-study-roles { gap: .35rem .7rem; margin-top: .4rem; }
   .short-form-project-viewer .case-study-media.is-portrait { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .6rem 6px; }
   .short-form-project-viewer .case-study-media figcaption { margin-top: .4rem; }
@@ -818,14 +884,19 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
   .hero-connect { width: fit-content; min-width: 0; min-height: 3.25rem; }
   .section-head h2, .about h2, .youtube h2 { font-size: clamp(2.35rem, 12vw, 3.5rem); }
   .project-art strong { max-width: 88%; }
-  .stats { gap: 2rem 1rem; }
+  .about-stats { gap: 2rem 0; }
+  .about-stats > div { padding-inline: .75rem; }
+
   .service { gap: .8rem; }
   .service h3 { font-size: 1.15rem; }
-  .youtube-stat + .youtube-stat { padding-left: .9rem; }
-  .youtube-videos > a { grid-template-columns: 1fr; }
   .contact h2 { font-size: clamp(2.65rem, 14vw, 4rem); }
   .contact-actions { align-items: flex-start; flex-direction: column; gap: .8rem; }
   .contact-connect { width: fit-content; }
+}
+
+@media (max-width: 23rem) {
+  .about-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .about-stats > div:nth-child(3) { border-left: 0; padding-left: 0; }
 }
 
 @media (max-width: 22rem) {
@@ -839,7 +910,7 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
   .mobile-nav-list { margin-top: .8rem; }
   .mobile-nav-item { min-height: 3.25rem; }
   .mobile-nav-spacer { min-height: .75rem; }
-  .mobile-nav-utility { --mobile-utility-gap: .75rem; }
+  .mobile-nav-utility { --mobile-utility-gap: 1.5rem; }
 }
 
 @media (max-width: 50rem) {
@@ -856,8 +927,9 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
   body { transition: none; }
   .hero-reveal { animation: none; }
   .timeline-clip, .timeline-playhead { animation: none; }
-  .video-modal, .video-modal-inner, .booking-overlay, .booking-dialog { animation: none; }
-  .site-header, .hero-timeline, .nav, .availability-cta, .hero-connect, .contact-connect, .booking-close, .mobile-nav, .mobile-nav-item, .mobile-nav-text, .mobile-nav-arrow, .menu span, .theme-track, .theme-track i, .theme-icon, .client-logo-set img, .project-art, .project-visual::before, .project-visual > img, .project-preview img, .project-info h3, .project-external-link span, .hero-portrait img, .service, .service::after, .service h3, .service i, .youtube-thumbnail img, .footer-directory-link, .footer-link-title, .footer-link-arrow { transition-duration: 80ms; transition-delay: 0ms; transition-timing-function: ease-out; }
+  .video-modal, .video-modal-inner, .booking-overlay, .booking-dialog, .about-story-overlay, .about-story-dialog { animation: none; }
+  .site-header, .hero-timeline, .nav, .availability-cta, .hero-connect, .contact-connect, .booking-close, .mobile-nav, .mobile-nav-item, .mobile-nav-text, .mobile-nav-arrow, .menu span, .theme-track, .theme-track i, .theme-icon, .client-logo-set img, .project-art, .project-visual::before, .project-visual > img, .project-info h3, .project-external-link span, .hero-portrait img, .service, .service::after, .service h3, .service i, .youtube-video-row, .youtube-video-card, .youtube-pagination > span, .youtube-arrows button, .footer-directory-link, .footer-link-title, .footer-link-arrow { transition-duration: 80ms; transition-delay: 0ms; transition-timing-function: ease-out; }
+  .youtube-video-card:hover { transform: none; }
   .client-strip { overflow-x: auto; overscroll-behavior-inline: contain; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
   .client-marquee-track { animation: none; transform: none; will-change: auto; }
   .client-logo-set[aria-hidden="true"] { display: none; }

@@ -1,4 +1,4 @@
-import { projects, selectedShortFormMedia, type Project } from "./portfolio-data";
+import { projects, selectedShortFormMedia, shortFormProjectCopy, type Project } from "./portfolio-data";
 
 export type CaseStudy = {
   slug: string;
@@ -27,11 +27,11 @@ const interview = projectById("podcast-interview");
 export const caseStudies: CaseStudy[] = [
   {
     slug: "short-form-video",
-    title: "Short-form video editing for Swan Bitcoin & Roxom",
+    title: shortFormProjectCopy.title,
     seoTitle: "Short-Form Video Editing for Swan Bitcoin & Roxom | Sarthak Sharma",
     seoDescription: "Short-form video editing by Sarthak Sharma for Swan Bitcoin and Roxom, featuring interview-driven edits, captions, visual cutaways, motion graphics and sound design.",
     eyebrow: "Swan Bitcoin + Roxom · Short-form social video",
-    description: "A selection of short-form edits across Swan Bitcoin and Roxom, cut from interviews and talks with captions, visual cutaways, motion graphics and tight pacing.",
+    description: shortFormProjectCopy.description,
     supportingCopy: "The source material comes from interviews and talks, shaped into focused social edits through tighter pacing, clear captions, visual cutaways, supporting motion graphics and sound design.",
     roles: ["Editing", "Captions", "Motion Graphics", "Sound Design"],
     ratio: "portrait",

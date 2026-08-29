@@ -36,11 +36,11 @@ export type Project = ProjectBase;
 export const projects: Project[] = [
   {
     id: "swan-bitcoin",
-    title: "Swan Bitcoin short-form",
+    title: "Vertical edits for Swan & Roxom",
     client: "Swan Bitcoin",
     category: "Short-form video",
     contentType: "Short-form social edits",
-    description: "Vertical edits cut from interviews and talks, with captions, visual cutaways and tight pacing.",
+    description: "Short-form edits from interviews and talks, with captions, cutaways, motion graphics and sound design to keep things moving.",
     roles: ["Editing", "Captions", "Motion Graphics", "Sound Design"],
     artLabel: "Swan Bitcoin",
     tone: "ink",
@@ -50,7 +50,7 @@ export const projects: Project[] = [
       { id: "swan-01", title: "China Is Laughing at America", videoUrl: "/work/swan/swan-short-01-preview.mp4", poster: "/work/swan/swan-short-01-poster.webp", width: 540, height: 960 },
       { id: "swan-02", title: "How Bitcoin Changed Property Forever", videoUrl: "/work/swan/swan-short-02-preview.mp4", poster: "/work/swan/swan-short-02-poster.webp", width: 540, height: 960 },
       { id: "swan-03", title: "Is Bitcoin Playing the Long Game?", videoUrl: "/work/swan/swan-short-03-preview.mp4", poster: "/work/swan/swan-short-03-poster.webp", width: 540, height: 960 },
-      { id: "swan-04", title: "Bitcoin Is Economic Armor", videoUrl: "/work/swan/swan-short-04-preview.mp4", poster: "/work/swan/swan-short-04-poster.webp", width: 540, height: 960, featured: true },
+      { id: "swan-04", title: "Bitcoin Is Economic Armor", videoUrl: "/work/swan/swan-short-04-preview.mp4", poster: "/work/swan/swan-short-04-economic-armor.jpg", width: 540, height: 960, featured: true },
       { id: "swan-05", title: "The Only Money They Cannot Take", videoUrl: "/work/swan/swan-short-05-preview.mp4", poster: "/work/swan/swan-short-05-poster.webp", width: 540, height: 960 },
       { id: "swan-06", title: "The Bitcoin Journey", videoUrl: "/work/swan/swan-short-06-preview.mp4", poster: "/work/swan/swan-short-06-poster.webp", width: 540, height: 960 },
       { id: "swan-07", title: "The $999 iPhone vs. $2,250 Bitcoin", videoUrl: "/work/swan/swan-short-07-preview.mp4", poster: "/work/swan/swan-short-07-poster.webp", width: 540, height: 960, featured: true },
@@ -84,7 +84,7 @@ export const projects: Project[] = [
     client: "Sarthak EAI",
     category: "YouTube long-form",
     contentType: "Long-form review",
-    description: "A hands-on Xiaomi 13 Pro review edited for my own technology channel.",
+    description: "A hands-on review from my own tech channel, edited around the product, the pacing and the way I wanted the story to flow.",
     roles: ["Editing", "Story Structure", "Motion Graphics", "Sound Design"],
     artLabel: "Xiaomi 13 Pro",
     tone: "clay",
@@ -114,7 +114,7 @@ export const projects: Project[] = [
     client: "21st Capital",
     category: "Brand introductions",
     contentType: "Company introduction",
-    description: "A one-minute company introduction explaining 21st Capital through presenter-led editing, diagrams and supporting motion.",
+    description: "A one-minute company intro built around the presenter, with diagrams and motion used to make the ideas easier to follow.",
     roles: ["Editing", "Motion Graphics", "Layout Design", "Sound Design"],
     artLabel: "21st Capital",
     tone: "acid",
@@ -127,10 +127,10 @@ export const projects: Project[] = [
   },
   {
     id: "motion-brand-animation",
-    title: "Motion & Brand Animation",
+    title: "Selected brand animations",
     category: "Motion & brand animation",
     contentType: "Brand animation",
-    description: "Brand animations for Bitcoin Treasuries, HashrateUp × Swan and Swan.",
+    description: "A mix of logo and brand animations I created for Bitcoin Treasuries, HashrateUp × Swan and Swan.",
     roles: ["Motion Graphics", "2D Animation", "Logo Animation", "Editing", "Sound Design"],
     artLabel: "Motion & Brand Animation",
     tone: "sand",
@@ -170,7 +170,7 @@ export const projects: Project[] = [
     client: "21st Capital",
     category: "Podcasts & interviews",
     contentType: "Interview episode",
-    description: "A 21st Capital interview edit built around a direct, conversation-led presentation.",
+    description: "A conversation-led edit where I focused on keeping the pacing clean and using visuals only where they actually helped the discussion.",
     roles: ["Editing", "Motion Graphics", "Layout Design", "Captions"],
     artLabel: "21st Capital interview",
     tone: "ink",
@@ -195,6 +195,12 @@ export const projects: Project[] = [
     ],
   },
 ];
+
+// Shared display copy for the combined short-form Work card and its modal.
+export const shortFormProjectCopy = {
+  title: projects[0].title,
+  description: projects[0].description,
+} as const;
 
 const selectedShortFormOrder = [
   "swan-01",
@@ -243,10 +249,9 @@ export const services = [
 ];
 
 export const stats = [
-  { value: "5", label: "years editing professionally" },
+  { value: "5", label: "years of experience" },
   { value: "350+", label: "long-form videos" },
   { value: "700+", label: "short-form videos" },
-  { value: "24K+", label: "YouTube subscribers" },
 ];
 
 export type Client = {
@@ -277,20 +282,6 @@ export const socials = [
   { platform: "x", label: "X / Twitter", href: "https://x.com/sarthakeai" },
   { platform: "youtube", label: "YouTube", href: "https://www.youtube.com/@sarthakeai" },
 ];
-
-export const youtubeStats = [
-  { value: "24K+", label: "subscribers" },
-];
-
-export type YouTubeVideo = {
-  title: string;
-  thumbnail: string;
-  url: string;
-  date?: string;
-  views?: string;
-  duration?: string;
-};
-export const youtubeVideos: YouTubeVideo[] = [];
 
 export type Testimonial = {
   quote: string;

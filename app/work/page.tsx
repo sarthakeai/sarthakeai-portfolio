@@ -42,7 +42,6 @@ export default function WorkPage() {
                 </a>
                 <div className="project-info">
                   <div className="project-copy">
-                    <div className="project-eyebrow"><span>{study.eyebrow}</span></div>
                     <h2><a href={`/work/${study.slug}`}>{study.title}</a></h2>
                     <p>{study.description}</p>
                   </div>
@@ -56,7 +55,7 @@ export default function WorkPage() {
                 <img src={motionProject.media?.[0]?.poster} alt="" width={motionProject.media?.[0]?.width} height={motionProject.media?.[0]?.height} loading="lazy" decoding="async" />
                 <span>View on homepage <b aria-hidden="true">↗</b></span>
               </Link>
-              <div className="project-info"><div className="project-copy"><div className="project-eyebrow"><span>Motion &amp; brand animation</span></div><h2><Link href="/#work">{motionProject.title}</Link></h2><p>{motionProject.description}</p></div></div>
+              <div className="project-info"><div className="project-copy"><h2><Link href="/#work">{motionProject.title}</Link></h2><p>{motionProject.description}</p></div></div>
             </article>
           ) : null}
         </div>
