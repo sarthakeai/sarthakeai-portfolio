@@ -1,7 +1,8 @@
 "use client";
 
+/* eslint-disable @next/next/no-html-link-for-pages -- Native home navigation avoids Vinext's production RSC prefetch failure. */
+
 import { useCallback, useEffect, useRef, useState, type MouseEvent } from "react";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Briefcase } from "@phosphor-icons/react/dist/csr/Briefcase";
 import { InstagramLogo } from "@phosphor-icons/react/dist/csr/InstagramLogo";
@@ -341,9 +342,9 @@ export function SiteHeader() {
   return (
     <header ref={headerRef} className={`site-header${scrolled ? " is-scrolled" : ""}${menuOpen ? " menu-open" : ""}`}>
       <div className="site-header-inner">
-      <Link className="brand" href="/" aria-label="Sarthak, home" onClick={navigateHome}>
+      <a className="brand" href="/" aria-label="Sarthak, home" onClick={navigateHome}>
         <span className="brand-signature brand-logo-only" aria-hidden="true" />
-      </Link>
+      </a>
       <div ref={desktopLocationRef} className="header-location" aria-label="New Delhi local time">
         <span>New Delhi · <time ref={desktopTimeRef}>--:--:--</time></span>
       </div>

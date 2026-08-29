@@ -376,6 +376,8 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(header, /desktopTimeRef\.current\.textContent = time/);
   assert.match(header, /\["#what-i-do", "#services"\]/);
   assert.match(header, /window\.scrollTo\(\{ top: 0, behavior:/);
+  assert.doesNotMatch(header, /from "next\/link"/);
+  assert.match(header, /<a className="brand" href="\/" aria-label="Sarthak, home" onClick=\{navigateHome\}>/);
   assert.match(header, /<span>\{availabilityLabel\}<\/span>/);
   assert.match(header, /BookingTrigger/);
   assert.match(header, /instagram\.com\/sarthak\.eai/);
@@ -609,6 +611,7 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.equal((data.match(/id: "roxom-\d{2}"/g) ?? []).length, 4);
   assert.doesNotMatch(portfolio, /project-meta-line/);
   assert.doesNotMatch(workPage, /project-eyebrow/);
+  assert.doesNotMatch(workPage, /from "next\/link"/);
   assert.doesNotMatch(workShortFormCard, /project-eyebrow/);
   assert.match(data, /https:\/\/youtu\.be\/5MWtToYnA00\?si=C8LS743wbJXIkAWy/);
   assert.match(data, /https:\/\/youtu\.be\/X5Z5VLdJxC4\?si=xjztMcaGd1S-CfQH/);

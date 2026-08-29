@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element -- Reuses optimized portfolio poster assets. */
+/* eslint-disable @next/next/no-html-link-for-pages -- These links intentionally perform a normal return to the homepage anchor. */
 
 import type { Metadata } from "next";
-import Link from "next/link";
 import { caseStudies } from "../case-study-data";
 import { PageFrame } from "../PageFrame";
 import { projects } from "../portfolio-data";
@@ -51,11 +51,11 @@ export default function WorkPage() {
           })}
           {motionProject ? (
             <article className="work-index-card">
-              <Link className="work-index-media" href="/#work" aria-label="View Motion and Brand Animation on the homepage">
+              <a className="work-index-media" href="/#work" aria-label="View Motion and Brand Animation on the homepage">
                 <img src={motionProject.media?.[0]?.poster} alt="" width={motionProject.media?.[0]?.width} height={motionProject.media?.[0]?.height} loading="lazy" decoding="async" />
                 <span>View on homepage <b aria-hidden="true">↗</b></span>
-              </Link>
-              <div className="project-info"><div className="project-copy"><h2><Link href="/#work">{motionProject.title}</Link></h2><p>{motionProject.description}</p></div></div>
+              </a>
+              <div className="project-info"><div className="project-copy"><h2><a href="/#work">{motionProject.title}</a></h2><p>{motionProject.description}</p></div></div>
             </article>
           ) : null}
         </div>
