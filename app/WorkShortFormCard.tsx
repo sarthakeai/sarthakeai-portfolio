@@ -9,7 +9,7 @@ import { shortFormProjectCopy } from "./portfolio-data";
 
 export function WorkShortFormCard({ study }: { study: CaseStudy }) {
   const [viewerOpen, setViewerOpen] = useState(false);
-  const triggerRef = useRef<HTMLAnchorElement>(null);
+  const triggerRef = useRef<HTMLElement | null>(null);
   const closeViewer = useCallback(() => setViewerOpen(false), []);
   const displayTitle = shortFormProjectCopy.title;
   const displayDescription = shortFormProjectCopy.description;
@@ -17,7 +17,7 @@ export function WorkShortFormCard({ study }: { study: CaseStudy }) {
   return (
     <>
       <article className="work-index-card">
-        <a ref={triggerRef} className="work-index-media" href={`/work/${study.slug}`} aria-label={`View ${displayTitle}`} onClick={(event) => { event.preventDefault(); setViewerOpen(true); }}>
+        <a className="work-index-media" href={`/work/${study.slug}`} aria-label={`View ${displayTitle}`} onClick={(event) => { event.preventDefault(); triggerRef.current = event.currentTarget; setViewerOpen(true); }}>
           <div className="project-preview project-preview-triptych work-index-short-form-preview" aria-hidden="true">
             {study.media.slice(0, 3).map((item) => (
               <figure key={item.id}>
@@ -29,7 +29,7 @@ export function WorkShortFormCard({ study }: { study: CaseStudy }) {
         </a>
         <div className="project-info">
           <div className="project-copy">
-            <h2><a href={`/work/${study.slug}`}>{displayTitle}</a></h2>
+            <h2><a href={`/work/${study.slug}`} onClick={(event) => { event.preventDefault(); triggerRef.current = event.currentTarget; setViewerOpen(true); }}>{displayTitle}</a></h2>
             <p>{displayDescription}</p>
           </div>
         </div>

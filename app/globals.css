@@ -178,7 +178,7 @@ html[data-theme="dark"] .theme-icon-moon { color: #f7f5ef; opacity: 1; transform
 .hero h1 { max-width: 60rem; margin: 0; font-size: clamp(2.1rem, calc(1rem + 5vw), 5.35rem); line-height: .98; letter-spacing: clamp(-.055em, -0.25vw, -.035em); font-weight: 590; text-wrap: balance; }
 .hero-intro { width: min(100%, 39rem); max-width: 39rem; margin: var(--hero-title-to-copy) 0 0; color: var(--muted-strong); font-size: clamp(1rem, calc(.94rem + .22vw), 1.1875rem); line-height: 1.68; }
 .hero-actions { width: fit-content; max-width: 100%; display: flex; flex-wrap: wrap; align-items: center; gap: var(--hero-actions-gap); margin-top: var(--hero-copy-to-actions); }
-.hero-actions .button, .button.about-story-trigger { min-height: clamp(3rem, calc(2.8rem + .4vw), 3.5rem); gap: clamp(.65rem, 1.2vw, 1.15rem); padding-inline: clamp(1rem, calc(.8rem + .55vw), 1.35rem); font-size: clamp(.875rem, calc(.82rem + .2vw), 1rem); }
+.hero-actions .button { min-height: clamp(3rem, calc(2.8rem + .4vw), 3.5rem); gap: clamp(.65rem, 1.2vw, 1.15rem); padding-inline: clamp(1rem, calc(.8rem + .55vw), 1.35rem); font-size: clamp(.875rem, calc(.82rem + .2vw), 1rem); }
 .button { width: fit-content; min-height: 3.5rem; display: inline-flex; align-items: center; justify-content: center; gap: clamp(1rem, 1.6vw, 1.35rem); padding: 0 1.35rem; border: 1px solid var(--line); border-radius: var(--control-radius); font-size: 1rem; font-weight: 600; line-height: 1; transition: transform var(--press-speed) ease-out, border-color 200ms ease-out, background-color 200ms ease-out, color 200ms ease-out; }
 .button-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
 .button-secondary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
@@ -245,6 +245,7 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
 .page-breadcrumb a:hover { color: var(--accent); }
 .case-study-details { display: grid; grid-template-columns: minmax(13rem, .7fr) minmax(0, 1.3fr); gap: clamp(2rem, 6vw, 7rem); padding-block: clamp(2.5rem, 5vw, 4.5rem); }
 .short-form-project-viewer .video-modal-head { margin-bottom: 0; }
+.short-form-viewer-mobile-copy { display: none; }
 .short-form-project-viewer .case-study-details { padding-top: var(--project-modal-role-gap); padding-bottom: clamp(1.75rem, 2vw, 2.5rem); }
 .case-study-details > p { max-width: 42rem; margin: 0; color: var(--muted-strong); font-size: .9375rem; line-height: 1.72; }
 .case-study-roles { display: flex; flex-wrap: wrap; gap: .55rem 1rem; list-style: none; margin: .7rem 0 0; padding: 0; }
@@ -254,16 +255,16 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
 .case-study-media figure { min-width: 0; margin: 0; }
 .case-study-media-frame { position: relative; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; border-radius: clamp(.75rem, 1.2vw, 1rem); background: #0d0d0c; }
 .case-study-media.is-portrait .case-study-media-frame { aspect-ratio: 9 / 16; }
-.case-study-media-frame > img, .case-study-media-frame > video, .case-study-media-frame > iframe, .case-study-youtube-poster, .case-study-youtube-poster img { width: 100%; height: 100%; display: block; border: 0; object-fit: cover; }
-.case-study-media-frame > video { position: relative; z-index: 1; pointer-events: auto; touch-action: auto; }
+.case-study-media-frame > img, .case-study-media-frame > iframe, .case-study-media-frame > .portfolio-native-video-shell, .case-study-youtube-poster, .case-study-youtube-poster img { width: 100%; height: 100%; display: block; border: 0; object-fit: cover; }
 .case-study-short-video:fullscreen,
 .case-study-short-video:-webkit-full-screen { width: 100vw; height: 100vh; max-width: 100vw; max-height: 100vh; border-radius: 0; background: #000; object-fit: contain; object-position: center; }
 .case-study-media figcaption { margin-top: .7rem; color: var(--muted); font-size: .6875rem; line-height: 1.45; }
 .case-study-youtube-poster { position: relative; padding: 0; border: 0; background: #0d0d0c; cursor: pointer; }
 .case-study-youtube-poster > span { position: absolute; top: 50%; left: 50%; width: 3.5rem; height: 3.5rem; display: grid; place-items: center; border: 1px solid rgba(255,255,255,.72); border-radius: 50%; background: rgba(10,10,9,.7); transform: translate(-50%, -50%); }
 .case-study-youtube-poster > span::before { content: ""; margin-left: .2rem; border-top: .45rem solid transparent; border-bottom: .45rem solid transparent; border-left: .7rem solid #fff; }
-.case-study-video-play { position: absolute; z-index: 2; top: 50%; left: 50%; width: 3.5rem; height: 3.5rem; display: grid; place-items: center; border: 1px solid rgba(255,255,255,.72); border-radius: 50%; padding: 0; background: rgba(10,10,9,.7); transform: translate(-50%, -50%); cursor: pointer; }
-.case-study-video-play::before { content: ""; margin-left: .2rem; border-top: .45rem solid transparent; border-bottom: .45rem solid transparent; border-left: .7rem solid #fff; }
+.portfolio-native-video-shell { position: relative; width: 100%; height: 100%; overflow: hidden; background: #000; }
+.portfolio-native-video { position: relative; z-index: 1; display: block; width: 100%; height: 100%; border: 0; background: #000; object-fit: contain; pointer-events: auto; touch-action: auto; }
+.portfolio-native-video-shell > .portfolio-native-video-idle { position: absolute; z-index: 2; inset: 0; width: 100%; height: 100%; touch-action: manipulation; }
 .case-study-back { margin-top: clamp(3rem, 6vw, 5rem); }
 .standalone-about-grid { display: grid; grid-template-columns: minmax(18rem, .8fr) minmax(0, 1.2fr); gap: clamp(2.5rem, 7vw, 8rem); align-items: start; padding-top: clamp(3rem, 6vw, 5rem); }
 .standalone-about-grid figure { width: min(100%, 36rem); margin: 0; overflow: hidden; border-radius: 14px; background: var(--surface); }
@@ -402,9 +403,9 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
 .video-modal-media-portrait { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .video-modal-media-wide { grid-template-columns: 1fr; }
 .video-modal-media figure { min-width: 0; margin: 0; }
-.video-modal-media video { position: relative; z-index: 1; display: block; width: 100%; max-height: 72dvh; background: #000; pointer-events: auto; touch-action: auto; }
-.video-modal-media-portrait video, .video-modal-poster-portrait { aspect-ratio: 9/16; }
-.video-modal-media-wide video, .video-modal-poster-wide { aspect-ratio: 16/9; }
+.video-modal-media .portfolio-native-video-shell { max-height: 72dvh; }
+.video-modal-media-portrait :is(.portfolio-native-video-shell, video), .video-modal-poster-portrait { aspect-ratio: 9/16; }
+.video-modal-media-wide :is(.portfolio-native-video-shell, video), .video-modal-poster-wide { aspect-ratio: 16/9; }
 .video-modal-media video { object-fit: contain; }
 .video-modal-youtube { width: 100%; aspect-ratio: 16/9; overflow: hidden; background: #000; }
 .video-modal-youtube iframe { display: block; width: 100%; height: 100%; border: 0; }
@@ -437,7 +438,9 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
 .about-copy { grid-area: copy; }
 .about-copy h2 { max-width: 43rem; margin: 0; }
 .about-copy .about-intro { max-width: 39rem; margin: clamp(1.5rem, 2.25vw, 2rem) 0 0; color: var(--muted-strong); font-size: 1rem; line-height: 1.75; }
-.button.about-story-trigger { gap: .75rem; margin-top: clamp(1.25rem, 2vw, 1.75rem); }
+.about-story-trigger { width: fit-content; min-height: 2.5rem; display: inline-flex; align-items: center; gap: .7rem; margin-top: clamp(1.25rem, 2vw, 1.75rem); padding: .2rem 0 .35rem; border: 0; border-bottom: 1px solid var(--line); background: transparent; color: var(--ink); font-size: clamp(1rem, calc(.95rem + .15vw), 1.125rem); font-weight: 520; line-height: 1.2; cursor: pointer; transition: border-color 200ms ease-out, color 200ms ease-out; }
+.about-story-trigger span { color: var(--accent); transition: transform 220ms var(--ease-out); }
+.about-story-trigger:active { opacity: .72; }
 .personal-note { margin-top: 2rem; padding-top: 1.2rem; border-top: 1px solid var(--line); color: var(--muted) !important; font-size: .8125rem !important; }
 .about-stats { --about-stat-label-gap: clamp(.8rem, 1vw, 1rem); display: grid; grid-template-columns: minmax(0, .92fr) minmax(0, 1fr) minmax(0, 1.08fr); gap: 0; margin-top: clamp(2.5rem, 3.2vw, 3.25rem); align-items: stretch; text-align: left; }
 .about-stats > div { min-width: 0; display: grid; grid-template-rows: auto auto; align-content: start; row-gap: var(--about-stat-label-gap); padding-inline: clamp(1rem, 2.5vw, 2rem); }
@@ -448,7 +451,7 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
 
 .about-story-overlay { --about-story-overlay-pad: clamp(.625rem, 1.5vw, 1.25rem); position: fixed; z-index: 90; inset: 0; display: grid; place-items: center; padding: var(--about-story-overlay-pad); background: rgba(9, 9, 8, .5); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); animation: about-story-backdrop-in 260ms cubic-bezier(.22, 1, .36, 1) both; }
 .about-story-overlay[data-state="closing"] { animation-name: about-story-backdrop-out; }
-.about-story-dialog { width: min(96vw, 112.5rem); min-height: min(82dvh, 54rem); max-height: calc(100dvh - (2 * var(--about-story-overlay-pad))); overflow-y: auto; overscroll-behavior: contain; border: 1px solid var(--line); background: var(--bg); color: var(--ink); box-shadow: 0 1.25rem 4rem rgba(0, 0, 0, .16); transform-origin: 50% 55%; will-change: opacity, transform; animation: about-story-panel-in 280ms cubic-bezier(.22, 1, .36, 1) both; }
+.about-story-dialog { width: min(96vw, 112.5rem); min-height: min(82dvh, 54rem); max-height: calc(100dvh - (2 * var(--about-story-overlay-pad))); overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; border: 1px solid var(--line); border-radius: 0; background: var(--bg); color: var(--ink); box-shadow: 0 1.25rem 4rem rgba(0, 0, 0, .16); transform-origin: 50% 55%; will-change: opacity, transform; animation: about-story-panel-in 280ms cubic-bezier(.22, 1, .36, 1) both; }
 .about-story-overlay[data-state="closing"] .about-story-dialog { animation-name: about-story-panel-out; }
 .about-story-head { position: sticky; z-index: 3; top: 0; display: flex; align-items: flex-start; justify-content: space-between; gap: 2rem; margin-inline: clamp(1.5rem, 3vw, 3.5rem); padding: clamp(1.25rem, 2vw, 1.75rem) 0 clamp(1rem, 1.5vw, 1.25rem); border-bottom: 1px solid var(--line); background: var(--bg); }
 .about-story-head h2 { margin: 0; font-size: clamp(3.25rem, 4.6vw, 5.5rem); font-weight: 590; line-height: .9; letter-spacing: -.065em; text-transform: uppercase; }
@@ -464,6 +467,7 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
 .about-story-columns p + p { margin-top: 1rem; }
 .about-story-columns .about-story-intro { color: var(--muted-strong); }
 .about-story-intro strong { font-style: italic; font-weight: 700; }
+.about-story-mobile-overlay, .about-story-mobile { display: none; }
 @keyframes about-story-backdrop-in { from { opacity: 0; } to { opacity: 1; } }
 @keyframes about-story-backdrop-out { from { opacity: 1; } to { opacity: 0; } }
 @keyframes about-story-panel-in { from { opacity: 0; transform: translateY(.875rem) scale(.99); } to { opacity: 1; transform: none; } }
@@ -615,6 +619,8 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
   .project:hover .project-info h3 { transform: translateX(.2rem); }
   .short-card:hover img { transform: scale(1.02); filter: saturate(1.04); }
   .project-external-link:hover span { transform: translate(.15rem, -.15rem); }
+  .about-story-trigger:hover { border-color: var(--accent); }
+  .about-story-trigger:hover span { transform: translate(.18rem, -.12rem); }
   .hero-portrait:hover img { transform: scale(1.025); filter: saturate(1); }
   .service:hover { padding-inline: .7rem; }
   .service:hover::after { transform: scaleX(1); }
@@ -822,6 +828,30 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
   .footer-directory { width: min(100%, 36rem); }
 }
 
+@media (max-width: 47.9375rem) {
+  .about-story-mobile-overlay { --mobile-story-inset: clamp(.625rem, 3vw, 1rem); position: fixed; z-index: 90; inset: 0; display: grid; padding: var(--mobile-story-inset); background: rgba(8, 8, 7, .76); animation: about-story-mobile-backdrop-in 280ms cubic-bezier(.22, 1, .36, 1) both; }
+  .about-story-mobile-overlay[data-state="closing"] { animation-name: about-story-mobile-backdrop-out; }
+  .about-story-mobile { width: 100%; height: calc(100dvh - (2 * var(--mobile-story-inset))); display: block; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; border-top: 3px solid var(--accent); background: var(--bg); color: var(--ink); box-shadow: 0 1rem 3.5rem rgba(0,0,0,.28); transform-origin: 50% 45%; animation: about-story-mobile-panel-in 280ms cubic-bezier(.22, 1, .36, 1) both; -webkit-overflow-scrolling: touch; }
+  .about-story-mobile-overlay[data-state="closing"] .about-story-mobile { animation-name: about-story-mobile-panel-out; }
+  .about-story-mobile-head { position: sticky; z-index: 2; top: 0; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .65rem 1rem; padding: max(.875rem, env(safe-area-inset-top)) var(--page-gutter) .875rem; border-bottom: 1px solid var(--line); background: var(--bg); }
+  .about-story-mobile-head h2 { grid-column: 1 / -1; grid-row: 2; margin: 0; font-size: clamp(44px, 12.5vw, 52px); font-weight: 590; line-height: .92; letter-spacing: -.06em; text-transform: uppercase; }
+  .about-story-mobile-head h2:focus { outline: 0; }
+  .about-story-mobile-head button { grid-column: 2; grid-row: 1; min-width: 4.75rem; min-height: 2.75rem; display: inline-flex; align-items: center; justify-content: flex-end; gap: .4rem; border: 0; padding: 0; background: transparent; color: var(--muted-strong); font: .625rem/1.35 var(--font-geist-mono), monospace; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; }
+  .about-story-mobile-head button span { color: var(--accent); }
+  .about-story-mobile-body { padding: 1.25rem var(--page-gutter) calc(3rem + env(safe-area-inset-bottom)); }
+  .about-story-mobile-portrait { width: 100%; aspect-ratio: 5 / 6; margin: 0; overflow: hidden; background: var(--surface); }
+  .about-story-mobile-portrait img { width: 100%; height: 100%; display: block; object-fit: cover; object-position: center 52%; }
+  .about-story-mobile-copy { margin-top: 1.375rem; color: var(--muted-strong); font-family: var(--font-geist-sans), sans-serif; font-size: clamp(.8125rem, 3.45vw, .875rem); font-style: italic; font-weight: 400; line-height: 1.6; }
+  .about-story-mobile-copy p { margin: 0; }
+  .about-story-mobile-copy p + p { margin-top: 1rem; }
+  .about-story-mobile-copy strong { color: var(--ink); font-weight: 700; }
+}
+
+@keyframes about-story-mobile-backdrop-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes about-story-mobile-backdrop-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes about-story-mobile-panel-in { from { opacity: 0; transform: translateY(.875rem) scale(.992); } to { opacity: 1; transform: none; } }
+@keyframes about-story-mobile-panel-out { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(.5rem) scale(.996); } }
+
 @media (max-width: 42rem) {
   .video-modal { --project-modal-role-gap: 1.25rem; }
   .short-form-mobile-content { display: contents; }
@@ -848,15 +878,18 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
   .video-modal-media-portrait figure { width: min(100%, 20rem); margin-inline: auto; }
   .video-modal-short-form .video-modal-media-portrait { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .video-modal-short-form .video-modal-media-portrait figure { width: 100%; margin-inline: 0; }
-  .short-form-project-viewer { padding: calc(3.75rem + env(safe-area-inset-top)) .5rem .5rem; }
-  .short-form-project-viewer .video-modal-inner { max-height: calc(100dvh - 4.25rem - env(safe-area-inset-top)); padding: .75rem; }
+  .short-form-project-viewer { align-items: stretch; padding: max(.25rem, env(safe-area-inset-top)) .25rem .25rem; }
+  .short-form-project-viewer .video-modal-inner { max-height: calc(100dvh - max(.5rem, env(safe-area-inset-top))); padding: .5rem; }
   .short-form-project-viewer .video-modal-head { margin-bottom: 0; }
-  .short-form-project-viewer .video-modal-head h2 { max-width: calc(100% - 3.75rem); margin-top: .4rem; font-size: clamp(1.45rem, 7vw, 1.85rem); line-height: 1.02; }
+  .short-form-viewer-desktop-copy { display: none; }
+  .short-form-viewer-mobile-copy { display: block; }
+  .short-form-viewer-mobile-copy .project-eyebrow { display: flex; flex-wrap: wrap; gap: .25rem; margin: 0; color: var(--muted); font: 540 .5625rem/1.4 var(--font-geist-mono), monospace; letter-spacing: .075em; text-transform: uppercase; }
+  .short-form-project-viewer .video-modal-head h2 { max-width: calc(100% - 3.75rem); margin-top: .35rem; font-size: clamp(1.35rem, 6.4vw, 1.75rem); line-height: 1.02; }
   .short-form-project-viewer .video-modal-head button { min-width: 3.25rem; min-height: 2.5rem; }
   .short-form-project-viewer :is(.short-form-viewer-description, .short-form-viewer-supporting-copy) { display: none; }
-  .short-form-project-viewer .case-study-details { display: block; padding: var(--project-modal-role-gap) 0 1rem; }
+  .short-form-project-viewer .case-study-details { display: block; padding: .875rem 0 .75rem; }
   .short-form-project-viewer .case-study-roles { gap: .35rem .7rem; margin-top: .4rem; }
-  .short-form-project-viewer .case-study-media.is-portrait { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .6rem 6px; }
+  .short-form-project-viewer .case-study-media.is-portrait { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem 6px; }
   .short-form-project-viewer .case-study-media figcaption { margin-top: .4rem; }
   .footer-inner { width: 100%; display: grid; }
   .footer-upper { order: 1; grid-template-columns: minmax(0, 1fr) auto; gap: 1rem; padding: 3.75rem 0 3.25rem; }
@@ -927,7 +960,7 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
   body { transition: none; }
   .hero-reveal { animation: none; }
   .timeline-clip, .timeline-playhead { animation: none; }
-  .video-modal, .video-modal-inner, .booking-overlay, .booking-dialog, .about-story-overlay, .about-story-dialog { animation: none; }
+  .video-modal, .video-modal-inner, .booking-overlay, .booking-dialog, .about-story-overlay, .about-story-dialog, .about-story-mobile-overlay, .about-story-mobile { animation: none; }
   .site-header, .hero-timeline, .nav, .availability-cta, .hero-connect, .contact-connect, .booking-close, .mobile-nav, .mobile-nav-item, .mobile-nav-text, .mobile-nav-arrow, .menu span, .theme-track, .theme-track i, .theme-icon, .client-logo-set img, .project-art, .project-visual::before, .project-visual > img, .project-info h3, .project-external-link span, .hero-portrait img, .service, .service::after, .service h3, .service i, .youtube-video-row, .youtube-video-card, .youtube-pagination > span, .youtube-arrows button, .footer-directory-link, .footer-link-title, .footer-link-arrow { transition-duration: 80ms; transition-delay: 0ms; transition-timing-function: ease-out; }
   .youtube-video-card:hover { transform: none; }
   .client-strip { overflow-x: auto; overscroll-behavior-inline: contain; scrollbar-width: none; -webkit-overflow-scrolling: touch; }

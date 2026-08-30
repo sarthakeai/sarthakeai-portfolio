@@ -2,6 +2,7 @@ export const MEDIA_PLAYBACK_EVENT = "portfolio:media-playback";
 
 type PlaybackDetail = {
   activeId: string | null;
+  activeVideo: HTMLVideoElement | null;
 };
 
 export function activateMedia(activeId: string, activeVideo?: HTMLVideoElement | null) {
@@ -11,14 +12,14 @@ export function activateMedia(activeId: string, activeVideo?: HTMLVideoElement |
     if (video !== activeVideo && !video.paused) video.pause();
   });
 
-  window.dispatchEvent(new CustomEvent<PlaybackDetail>(MEDIA_PLAYBACK_EVENT, { detail: { activeId } }));
+  window.dispatchEvent(new CustomEvent<PlaybackDetail>(MEDIA_PLAYBACK_EVENT, { detail: { activeId, activeVideo: activeVideo ?? null } }));
 }
 
 export function stopAllMedia() {
   if (typeof document === "undefined" || typeof window === "undefined") return;
 
   document.querySelectorAll<HTMLVideoElement>("video").forEach((video) => video.pause());
-  window.dispatchEvent(new CustomEvent<PlaybackDetail>(MEDIA_PLAYBACK_EVENT, { detail: { activeId: null } }));
+  window.dispatchEvent(new CustomEvent<PlaybackDetail>(MEDIA_PLAYBACK_EVENT, { detail: { activeId: null, activeVideo: null } }));
 }
 
 export function stopMediaWithin(container: HTMLElement | null) {

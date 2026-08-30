@@ -6,6 +6,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { activateMedia, MEDIA_PLAYBACK_EVENT, stopAllMedia, stopMediaWithin, type MediaPlaybackEvent } from "./media-playback";
 import { categories, projects, selectedShortFormMedia, shortFormProjectCopy, type Project, type ProjectMedia } from "./portfolio-data";
+import { NativePortfolioVideo } from "./NativePortfolioVideo";
 import { ShortFormProjectViewer } from "./ShortFormProjectViewer";
 
 type ViewTransitionDocument = Document & {
@@ -68,14 +69,12 @@ function PosterImage({ media, alt, sizes, priority = false, fadeIn = false }: { 
 
 function PortfolioVideo({ media, projectLabel, ratio }: { media: ProjectMedia; projectLabel: string; ratio: Project["ratio"] }) {
   const [started, setStarted] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
   const youtubeId = getYouTubeId(media.externalUrl);
 
   useEffect(() => {
     const onPlaybackChange = (event: Event) => {
       const { activeId } = (event as MediaPlaybackEvent).detail;
       if (activeId === media.id) return;
-      videoRef.current?.pause();
       if (youtubeId) setStarted(false);
     };
 
@@ -84,11 +83,6 @@ function PortfolioVideo({ media, projectLabel, ratio }: { media: ProjectMedia; p
       window.removeEventListener(MEDIA_PLAYBACK_EVENT, onPlaybackChange);
     };
   }, [media.id, youtubeId]);
-
-  useEffect(() => {
-    if (!started || youtubeId) return;
-    void videoRef.current?.play().catch(() => undefined);
-  }, [started, youtubeId]);
 
   const startPlayback = () => {
     activateMedia(media.id);
@@ -134,21 +128,13 @@ function PortfolioVideo({ media, projectLabel, ratio }: { media: ProjectMedia; p
     return <img className="video-modal-still" src={media.poster} alt={`${media.title} — ${projectLabel}`} width={media.width} height={media.height} loading="lazy" decoding="async" />;
   }
 
-  if (!started) {
-    return (
-      <div className={`video-modal-poster video-modal-poster-${ratio}`}>
-        <PosterImage media={media} alt="" sizes="(max-width: 42rem) min(20rem, calc(100vw - 3rem)), (max-width: 50rem) 45vw, 21rem" />
-        <button type="button" onClick={startPlayback} aria-label={`Play ${media.title} — ${projectLabel}`}>
-          <span aria-hidden="true" />
-        </button>
-      </div>
-    );
-  }
-
   return (
-    <video ref={videoRef} controls playsInline preload="metadata" poster={media.poster} aria-label={`${media.title} — ${projectLabel}`} onPlay={(event) => activateMedia(media.id, event.currentTarget)}>
-      <source src={media.videoUrl} type="video/mp4" />
-    </video>
+    <NativePortfolioVideo
+      id={media.id}
+      title={`${media.title} — ${projectLabel}`}
+      src={media.videoUrl}
+      poster={media.poster}
+    />
   );
 }
 
@@ -269,7 +255,7 @@ function EditorialProjectCard({
       </div>
       <div className="project-info">
         <div className="project-copy">
-          <h3>{project.caseStudySlug ? <a href={`/work/${project.caseStudySlug}`}>{project.title}</a> : project.title}</h3>
+          <h3>{project.caseStudySlug ? <a href={`/work/${project.caseStudySlug}`} onClick={(event) => { if (project.id !== "short-form-video") return; event.preventDefault(); onOpen(event.currentTarget); }}>{project.title}</a> : project.title}</h3>
           <p>{project.description}</p>
           <div className="project-role">
             <span className="project-label">My role</span>
@@ -418,7 +404,7 @@ export function PortfolioGrid() {
       <div className="portfolio-sections" id="project-grid">
         {showShortForm && shortFormProject ? (
           <section className="portfolio-category-section short-form-section" id="short-form-section" aria-labelledby="short-form-heading">
-            <h3 className="portfolio-category-heading" id="short-form-heading"><a href="/work/short-form-video">{categoryHeadings["Short-form video"]}</a></h3>
+            <h3 className="portfolio-category-heading" id="short-form-heading"><a href="/work/short-form-video" onClick={(event) => { event.preventDefault(); openShortFormProject(event.currentTarget); }}>{categoryHeadings["Short-form video"]}</a></h3>
             {mobileShortFormProject ? (
               <div className="short-form-mobile-content">
                 <EditorialProjectCard

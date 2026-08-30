@@ -29,9 +29,19 @@ export function ShortFormProjectViewer({
     const dialog = dialogRef.current;
     root.style.overflow = "hidden";
     body.style.overflow = "hidden";
+    if (dialog) {
+      dialog.scrollTop = 0;
+      dialog.scrollLeft = 0;
+    }
 
     const focusableElements = () => Array.from(dialog?.querySelectorAll<HTMLElement>("a[href], button:not([disabled]), video[controls], [tabindex]:not([tabindex='-1'])") ?? []);
-    requestAnimationFrame(() => closeButtonRef.current?.focus());
+    requestAnimationFrame(() => {
+      if (dialog) {
+        dialog.scrollTop = 0;
+        dialog.scrollLeft = 0;
+      }
+      closeButtonRef.current?.focus({ preventScroll: true });
+    });
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -66,12 +76,18 @@ export function ShortFormProjectViewer({
   if (!open || !shortFormStudy) return null;
 
   return (
-    <div className="video-modal video-modal-short-form short-form-project-viewer" role="dialog" aria-modal="true" aria-labelledby="short-form-viewer-title" aria-describedby="short-form-viewer-description" onPointerDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
+    <div className="video-modal video-modal-short-form short-form-project-viewer" role="dialog" aria-modal="true" aria-label="Short-form project viewer" aria-describedby="short-form-viewer-description" onPointerDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
       <div ref={dialogRef} className="video-modal-inner">
         <div className="video-modal-head">
           <div>
-            <h2 id="short-form-viewer-title">{shortFormStudy.title}</h2>
-            <p className="short-form-viewer-description" id="short-form-viewer-description">{shortFormStudy.description}</p>
+            <div className="short-form-viewer-desktop-copy">
+              <h2>{shortFormStudy.title}</h2>
+              <p className="short-form-viewer-description" id="short-form-viewer-description">{shortFormStudy.description}</p>
+            </div>
+            <div className="short-form-viewer-mobile-copy">
+              <p className="project-eyebrow">Swan Bitcoin + Roxom <span aria-hidden="true">·</span> Short-form social video</p>
+              <h2>Short-form video editing for Swan Bitcoin &amp; Roxom</h2>
+            </div>
           </div>
           <button ref={closeButtonRef} type="button" onClick={onClose} aria-label="Close Short-form project">Close</button>
         </div>

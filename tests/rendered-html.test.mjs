@@ -223,7 +223,7 @@ test("keeps both testimonials real, stacked, exact, and accessible", async () =>
 });
 
 test("keeps interaction scoped and accessibility preferences explicit", async () => {
-  const [page, aboutPage, aboutContent, aboutStory, pageFrame, siteFooter, layout, header, booking, availabilityRoute, contactForm, contactSubmit, portfolio, shortFormViewer, workPage, workShortFormCard, caseStudyMedia, mediaPlayback, data, youtubeShowcase, youtubeData, youtubeRoute, theme, timeline, css, worker, viteConfig, swanLogo, favicon] = await Promise.all([
+  const [page, aboutPage, aboutContent, aboutStory, pageFrame, siteFooter, layout, header, booking, availabilityRoute, contactForm, contactSubmit, portfolio, shortFormViewer, shortFormRoute, workPage, workShortFormCard, caseStudyMedia, nativePortfolioVideo, mediaPlayback, data, youtubeShowcase, youtubeData, youtubeRoute, theme, timeline, css, worker, viteConfig, swanLogo, favicon] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/about/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/about-content.ts", import.meta.url), "utf8"),
@@ -238,9 +238,11 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
     readFile(new URL("../app/contact-form-submit.mjs", import.meta.url), "utf8"),
     readFile(new URL("../app/PortfolioGrid.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/ShortFormProjectViewer.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/work/short-form-video/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/work/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/WorkShortFormCard.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/CaseStudyMedia.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/NativePortfolioVideo.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/media-playback.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/portfolio-data.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/YouTubeShowcase.tsx", import.meta.url), "utf8"),
@@ -271,6 +273,9 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(layout, /history\.scrollRestoration = 'manual'/);
   assert.match(layout, /history\.replaceState/);
   assert.match(layout, /window\.scrollTo\(0, 0\)/);
+  assert.match(layout, /const isReload = navigation\?\.type === 'reload'/);
+  assert.match(layout, /if \(isReload && location\.hash\) history\.replaceState/);
+  assert.match(layout, /const hashTarget = isReload \? undefined : hashTargets\[location\.hash\]/);
   assert.match(layout, /'#what-i-do': '#services'/);
   assert.match(layout, /addEventListener\('pageshow'/);
   assert.doesNotMatch(layout, /event\.persisted \|\| location\.hash \|\| navigation\?\.type === 'back_forward'/);
@@ -398,7 +403,7 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(css, /\.hero\s*\{[^}]+min-height:\s*0[^}]+padding-top:\s*calc\(var\(--hero-timeline-top\) \+ var\(--hero-timeline-graphic-depth\) \+ var\(--hero-timeline-to-profile\)\)/s);
   assert.match(css, /\.hero h1\s*\{[^}]+font-size:\s*clamp\(2\.1rem, calc\(1rem \+ 5vw\), 5\.35rem\)/s);
   assert.match(css, /\.hero-actions\s*\{[^}]+gap:\s*var\(--hero-actions-gap\)[^}]+margin-top:\s*var\(--hero-copy-to-actions\)/s);
-  assert.match(css, /\.hero-actions \.button, \.button\.about-story-trigger\s*\{[^}]+min-height:\s*clamp\(3rem,[^}]+font-size:\s*clamp\(\.875rem/s);
+  assert.match(css, /\.hero-actions \.button\s*\{[^}]+min-height:\s*clamp\(3rem,[^}]+font-size:\s*clamp\(\.875rem/s);
   assert.doesNotMatch(css, /\.hero\s*\{[^}]+min-height:\s*min\(46rem, 100svh\)/s);
   assert.match(page, /loading="lazy"/);
   assert.match(layout, /rel="preload" href="\/eai-logo-dark\.svg"/);
@@ -459,8 +464,13 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(shortFormViewer, /caseStudies\.find\(\(study\) => study\.slug === "short-form-video"\)/);
   assert.match(shortFormViewer, /<CaseStudyMedia media=\{shortFormStudy\.media\}/);
   assert.match(shortFormViewer, /stopMediaWithin\(dialog\)/);
+  assert.match(shortFormViewer, /dialog\.scrollTop = 0/);
+  assert.match(shortFormViewer, /Swan Bitcoin \+ Roxom[\s\S]+Short-form social video/);
+  assert.match(shortFormViewer, /Short-form video editing for Swan Bitcoin/);
+  assert.match(shortFormRoute, /<ShortFormRouteViewer \/>/);
   assert.match(workPage, /<WorkShortFormCard key=\{study\.slug\} study=\{study\}/);
   assert.match(workShortFormCard, /<ShortFormProjectViewer open=\{viewerOpen\}/);
+  assert.match(workShortFormCard, /triggerRef\.current = event\.currentTarget/);
   assert.match(portfolio, /className=\{`short-card/);
   assert.match(portfolio, /data-reveal/);
   assert.match(portfolio, /className="short-card-control"/);
@@ -474,22 +484,35 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.doesNotMatch(portfolio, /See less|shortExpansionPhase|shortExtrasHeight|shortExtrasRef|shortExpansionFrameRef|toggleShorts|onShortExtrasTransitionEnd/);
   assert.match(portfolio, /stopAllMedia\(\);/);
   assert.match(portfolio, /media: mobileShortMedia/);
-  assert.match(portfolio, /controls playsInline preload="metadata"/);
-  assert.match(caseStudyMedia, /controls playsInline preload="metadata"/);
+  assert.match(portfolio, /<NativePortfolioVideo/);
+  assert.match(caseStudyMedia, /<NativePortfolioVideo/);
   assert.match(caseStudyMedia, /className=\{showCenterPlay \? "case-study-short-video"/);
+  assert.match(nativePortfolioVideo, /controls=\{active\}/);
+  assert.match(nativePortfolioVideo, /video\.controls = false/);
+  assert.match(nativePortfolioVideo, /video\.controls = true/);
+  assert.match(nativePortfolioVideo, /video\.pause\(\)/);
+  assert.match(nativePortfolioVideo, /activateMedia\(id, video\)/);
+  assert.match(nativePortfolioVideo, /detail\.activeVideo === videoRef\.current/);
+  assert.match(nativePortfolioVideo, /preload=\{hasActivated \? "auto" : "none"\}/);
+  assert.match(nativePortfolioVideo, /activationRequestedRef\.current = false/);
+  assert.doesNotMatch(nativePortfolioVideo, /currentTime\s*=/);
+  assert.doesNotMatch(nativePortfolioVideo, /\.load\(\)/);
+  assert.match(nativePortfolioVideo, /!active \? \(/);
+  assert.match(nativePortfolioVideo, /className="video-modal-poster portfolio-native-video-idle"/);
+  assert.match(nativePortfolioVideo, /<img src=\{poster\}/);
   assert.match(css, /\.case-study-short-video:fullscreen,[\s\S]*?object-fit: contain;/);
   assert.match(portfolio, /playsInline/);
   assert.match(portfolio, /poster=\{media\.poster\}/);
   assert.match(portfolio, /<source src=\{media\.videoUrl\} type="video\/mp4"/);
   assert.match(portfolio, /video-modal-poster/);
   assert.match(portfolio, /setStarted\(true\)/);
-  assert.match(portfolio, /videoRef\.current\?\.play\(\)/);
+  assert.match(nativePortfolioVideo, /video\.play\(\)/);
   assert.doesNotMatch(portfolio, /autoPlay/);
   assert.match(portfolio, /youtube-nocookie\.com\/embed/);
   assert.match(portfolio, /Watch on YouTube/);
   assert.match(portfolio, /MEDIA_PLAYBACK_EVENT/);
   assert.match(portfolio, /stopMediaWithin\(dialogRef\.current\)/);
-  assert.match(portfolio, /onPlay=\{\(event\) => activateMedia/);
+  assert.match(nativePortfolioVideo, /onPlay=\{\(event\) =>/);
   assert.match(mediaPlayback, /video\.pause\(\)/);
   assert.match(mediaPlayback, /activeId/);
   assert.match(mediaPlayback, /iframe\.src = "about:blank"/);
@@ -525,19 +548,38 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(page, /homepageAboutIntro/);
   assert.match(page, /<AboutStoryExperience \/>/);
   assert.doesNotMatch(page, /\(About me\)/i);
-  assert.match(aboutStory, /className="button button-primary about-story-trigger"/);
-  assert.doesNotMatch(aboutStory, /cta-outline about-story-trigger/);
+  assert.match(aboutStory, /className="about-story-trigger"/);
+  assert.doesNotMatch(aboutStory, /button-primary about-story-trigger|cta-outline about-story-trigger/);
   assert.match(aboutStory, /Read my story <span aria-hidden="true">↗<\/span>/);
   assert.match(aboutStory, /role="dialog"/);
   assert.match(aboutStory, /aria-modal="true"/);
+  assert.match(aboutStory, /aria-expanded=\{desktopOpen \|\| mobileOpen\}/);
+  assert.match(aboutStory, /aria-controls=\{mobileViewport \? "about-story-mobile" : "about-story-dialog"\}/);
+  assert.match(aboutStory, /className="about-story-mobile"/);
+  assert.match(aboutStory, /className="about-story-mobile-overlay"/);
+  assert.match(aboutStory, /data-state=\{mobilePhase\}/);
+  assert.match(aboutStory, /mobilePhase === "closing"\) finishMobileClose/);
+  assert.match(aboutStory, /mobileStoryRef\.current\?\.scrollTo/);
+  assert.match(aboutStory, /triggerRef\.current\?\.focus\(\{ preventScroll: true \}\)/);
+  assert.match(aboutStory, /window\.matchMedia\("\(max-width: 47\.9375rem\)"\)/);
   assert.match(aboutContent, /Sarthak Sharma/);
   assert.match(aboutContent, /born 3 September 2001/);
   assert.match(aboutStory, /className="about-story-intro"/);
   assert.match(aboutStory, /<strong>\{aboutStoryBio\.name\}<\/strong>\{aboutStoryBio\.details\}/);
   assert.match(aboutStory, /event\.key === "Escape"/);
   assert.match(aboutStory, /returnFocus\?\.focus/);
-  assert.match(css, /\.about-story-dialog\s*\{[^}]+width:\s*min\(96vw, 112\.5rem\)[^}]+overflow-y:\s*auto/s);
-  assert.match(css, /\.button\.about-story-trigger\s*\{[^}]+gap:\s*\.75rem/s);
+  assert.match(css, /\.about-story-dialog\s*\{[^}]+width:\s*min\(96vw, 112\.5rem\)[^}]+overflow-y:\s*auto[^}]+border-radius:\s*0/s);
+  assert.match(css, /@media \(max-width:\s*47\.9375rem\)[\s\S]+\.about-story-mobile-overlay\s*\{[^}]+position:\s*fixed[^}]+inset:\s*0[^}]+display:\s*grid[^}]+padding:\s*var\(--mobile-story-inset\)/s);
+  assert.match(css, /\.about-story-mobile\s*\{[^}]+height:\s*calc\(100dvh - \(2 \* var\(--mobile-story-inset\)\)\)[^}]+overflow-y:\s*auto[^}]+border-top:\s*3px solid var\(--accent\)/s);
+  assert.match(css, /@keyframes about-story-mobile-panel-in\s*\{[^}]+translateY\(\.875rem\) scale\(\.992\)/s);
+  assert.match(css, /\.about-story-mobile-head h2\s*\{[^}]+font-size:\s*clamp\(44px, 12\.5vw, 52px\)/s);
+  assert.match(css, /\.about-story-mobile-portrait\s*\{[^}]+aspect-ratio:\s*5\s*\/\s*6/s);
+  assert.match(css, /\.about-story-mobile-portrait img\s*\{[^}]+height:\s*100%[^}]+object-fit:\s*cover[^}]+object-position:\s*center 52%/s);
+  assert.match(css, /\.about-story-mobile-copy\s*\{[^}]+font-size:\s*clamp\(\.8125rem, 3\.45vw, \.875rem\)[^}]+font-style:\s*italic[^}]+line-height:\s*1\.6/s);
+  assert.match(css, /\.about-story-mobile-copy p \+ p\s*\{[^}]+margin-top:\s*1rem/s);
+  assert.match(css, /\.about-story-trigger\s*\{[^}]+display:\s*inline-flex[^}]+gap:\s*\.7rem[^}]+border-bottom:\s*1px solid var\(--line\)[^}]+background:\s*transparent[^}]+font-size:\s*clamp\(1rem,[^}]+1\.125rem/s);
+  assert.match(css, /\.about-story-trigger span\s*\{[^}]+color:\s*var\(--accent\)[^}]+transition:\s*transform 220ms var\(--ease-out\)/s);
+  assert.match(css, /\.about-story-trigger:hover span\s*\{[^}]+translate\(\.18rem, -\.12rem\)/s);
   assert.match(css, /@keyframes about-story-panel-in\s*\{[^}]+translateY\(\.875rem\) scale\(\.99\)/s);
   assert.match(css, /\.about-story-body\s*\{[^}]+grid-template-columns:\s*minmax\(16\.875rem, 18rem\) minmax\(0, 1fr\)[^}]+gap:\s*clamp\(2\.625rem, 3\.4vw, 3\.25rem\)/s);
   assert.match(css, /\.about-story-portrait\s*\{[^}]+max-width:\s*18rem[^}]+height:\s*28\.5rem/s);
@@ -728,8 +770,8 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(css, /\.short-card\s*\{[^}]+border-radius:\s*clamp\(1rem, 1\.35vw, 1\.25rem\)/s);
   assert.doesNotMatch(css, /shorts-expanded-wrapper|shorts-expanded-grid/);
   assert.match(css, /\.short-card-control/);
-  assert.match(css, /\.case-study-media-frame > video\s*\{[^}]+pointer-events:\s*auto[^}]+touch-action:\s*auto/s);
-  assert.match(css, /\.video-modal-media video\s*\{[^}]+pointer-events:\s*auto[^}]+touch-action:\s*auto/s);
+  assert.match(css, /\.portfolio-native-video\s*\{[^}]+pointer-events:\s*auto[^}]+touch-action:\s*auto/s);
+  assert.match(css, /\.portfolio-native-video-shell\s*>\s*\.portfolio-native-video-idle\s*\{[^}]+position:\s*absolute[^}]+inset:\s*0[^}]+touch-action:\s*manipulation/s);
   assert.match(css, /\.short-card\.is-playing \.short-card-control\s*\{[^}]+opacity:\s*0[^}]+pointer-events:\s*none/s);
   assert.match(css, /@media \(hover: hover\) and \(pointer: fine\)[\s\S]+\.short-card\.is-playing:hover \.short-card-control\s*\{[^}]+opacity:\s*1[^}]+pointer-events:\s*auto/s);
   assert.match(css, /@media \(hover: none\), \(pointer: coarse\)[\s\S]+\.short-card\.is-playing \.short-card-control\s*\{[^}]+opacity:\s*1[^}]+pointer-events:\s*auto/s);
@@ -757,7 +799,9 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.mobile-short-project-card \.project-open-mobile-cta\s*\{[^}]+align-items:\s*flex-end[^}]+justify-content:\s*flex-end[^}]+padding:\s*1rem/);
   assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.video-modal-short-form \.video-modal-media-portrait\s*\{[^}]+repeat\(2, minmax\(0, 1fr\)\)/);
   assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.short-form-project-viewer :is\(\.short-form-viewer-description, \.short-form-viewer-supporting-copy\)\s*\{\s*display:\s*none/);
-  assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.short-form-project-viewer \.case-study-media\.is-portrait\s*\{[^}]+repeat\(2, minmax\(0, 1fr\)\)[^}]+gap:\s*\.6rem 6px/);
+  assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.short-form-project-viewer \.case-study-media\.is-portrait\s*\{[^}]+repeat\(2, minmax\(0, 1fr\)\)[^}]+gap:\s*\.5rem 6px/);
+  assert.doesNotMatch(css, /\.portfolio-native-video:not\(\[controls\]\)::-webkit-media-controls/);
+  assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.short-form-viewer-desktop-copy\s*\{\s*display:\s*none[\s\S]+?\.short-form-viewer-mobile-copy\s*\{\s*display:\s*block/);
   assert.match(css, /\.project\.portrait \.project-visual\.has-media\s*\{\s*aspect-ratio:\s*27\/16/);
   assert.match(css, /\.project-preview-triptych\s*\{[^}]+repeat\(3, minmax\(0, 1fr\)\)[^}]+padding:\s*0/s);
   assert.match(css, /\.project-meta-line\s*\{[^}]+grid-template-columns:\s*auto minmax\(0, 1fr\) auto/s);
@@ -765,7 +809,7 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.doesNotMatch(css, /background:\s*rgba\(12,12,11,\.74\)/);
   assert.doesNotMatch(css, /transform:\s*scale\(1\.045\)/);
   assert.match(css, /\.video-modal-media-portrait\s*\{[^}]+repeat\(3, minmax\(0, 1fr\)\)/s);
-  assert.match(css, /\.video-modal-media video\s*\{[^}]+width:\s*100%/s);
+  assert.match(css, /\.portfolio-native-video\s*\{[^}]+width:\s*100%/s);
   assert.match(css, /\.video-modal-youtube/);
   assert.match(css, /@media \(max-width: 50rem\)[\s\S]+\.video-modal:not\(\.video-modal-short-form\) \{[^}]+padding-inline:\s*0/s);
   assert.match(css, /@media \(max-width: 50rem\)[\s\S]+\.video-modal:not\(\.video-modal-short-form\) \.video-modal-inner\s*\{\s*padding-inline:\s*0/s);

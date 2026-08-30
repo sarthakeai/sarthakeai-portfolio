@@ -14,12 +14,17 @@ const storyColumns = [
 
 export function AboutStoryExperience() {
   const [phase, setPhase] = useState<"closed" | "open" | "closing">("closed");
+  const [mobilePhase, setMobilePhase] = useState<"closed" | "open" | "closing">("closed");
+  const [mobileViewport, setMobileViewport] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const mobileStoryRef = useRef<HTMLElement>(null);
+  const mobileHeadingRef = useRef<HTMLHeadingElement>(null);
 
-  const open = phase !== "closed";
-  const closeStory = useCallback(() => {
+  const desktopOpen = phase !== "closed";
+  const mobileOpen = mobilePhase !== "closed";
+  const closeDesktopStory = useCallback(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       setPhase("closed");
       return;
@@ -27,8 +32,62 @@ export function AboutStoryExperience() {
     setPhase((current) => current === "closed" ? current : "closing");
   }, []);
 
+  const finishMobileClose = useCallback(() => {
+    setMobilePhase("closed");
+    window.requestAnimationFrame(() => {
+      triggerRef.current?.focus({ preventScroll: true });
+    });
+  }, []);
+
+  const closeMobileStory = useCallback(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      finishMobileClose();
+      return;
+    }
+    setMobilePhase((current) => current === "closed" ? current : "closing");
+  }, [finishMobileClose]);
+
+  const openStory = () => {
+    if (window.matchMedia("(max-width: 47.9375rem)").matches) {
+      setMobilePhase("open");
+      return;
+    }
+    setPhase("open");
+  };
+
   useEffect(() => {
-    if (!open) return;
+    const query = window.matchMedia("(max-width: 47.9375rem)");
+    const syncViewport = (matches: boolean) => {
+      setMobileViewport(matches);
+      if (!matches) setMobilePhase("closed");
+      if (matches) setPhase("closed");
+    };
+    syncViewport(query.matches);
+    const onChange = (event: MediaQueryListEvent) => syncViewport(event.matches);
+    query.addEventListener("change", onChange);
+    return () => query.removeEventListener("change", onChange);
+  }, []);
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const layoutFrame = window.requestAnimationFrame(() => {
+      mobileStoryRef.current?.scrollTo({ top: 0, behavior: "auto" });
+      mobileHeadingRef.current?.focus({ preventScroll: true });
+    });
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      event.preventDefault();
+      closeMobileStory();
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      window.cancelAnimationFrame(layoutFrame);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [closeMobileStory, mobileOpen]);
+
+  useEffect(() => {
+    if (!desktopOpen) return;
 
     const root = document.documentElement;
     const body = document.body;
@@ -54,7 +113,7 @@ export function AboutStoryExperience() {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         event.preventDefault();
-        closeStory();
+        closeDesktopStory();
         return;
       }
 
@@ -92,9 +151,9 @@ export function AboutStoryExperience() {
       root.style.scrollBehavior = previousRootScrollBehavior;
       returnFocus?.focus({ preventScroll: true });
     };
-  }, [closeStory, open]);
+  }, [closeDesktopStory, desktopOpen]);
 
-  const storyDialog = open ? (
+  const storyDialog = desktopOpen ? (
     <div
       className="about-story-overlay"
       data-state={phase}
@@ -103,12 +162,13 @@ export function AboutStoryExperience() {
         if (event.target === event.currentTarget && phase === "closing") setPhase("closed");
       }}
       onPointerDown={(event) => {
-        if (event.target === event.currentTarget) closeStory();
+        if (event.target === event.currentTarget) closeDesktopStory();
       }}
     >
       <div
         ref={dialogRef}
         className="about-story-dialog"
+        id="about-story-dialog"
         role="dialog"
         aria-modal="true"
         aria-labelledby="about-story-title"
@@ -116,7 +176,7 @@ export function AboutStoryExperience() {
       >
         <header className="about-story-head">
           <h2 id="about-story-title">My story</h2>
-          <button ref={closeButtonRef} type="button" onClick={closeStory} aria-label="Close my story">
+          <button ref={closeButtonRef} type="button" onClick={closeDesktopStory} aria-label="Close my story">
             Close <span aria-hidden="true">[X]</span>
           </button>
         </header>
@@ -146,11 +206,60 @@ export function AboutStoryExperience() {
     </div>
   ) : null;
 
+  const mobileStory = mobileOpen ? (
+    <div
+      className="about-story-mobile-overlay"
+      data-state={mobilePhase}
+      role="presentation"
+      onAnimationEnd={(event) => {
+        if (event.target === event.currentTarget && mobilePhase === "closing") finishMobileClose();
+      }}
+      onPointerDown={(event) => {
+        if (event.target === event.currentTarget) closeMobileStory();
+      }}
+    >
+      <section ref={mobileStoryRef} className="about-story-mobile" id="about-story-mobile" role="dialog" aria-modal="true" aria-labelledby="about-story-mobile-title">
+        <header className="about-story-mobile-head">
+          <h2 ref={mobileHeadingRef} id="about-story-mobile-title" tabIndex={-1}>My story</h2>
+          <button type="button" onClick={closeMobileStory} aria-label="Close my story">
+            Close <span aria-hidden="true">[X]</span>
+          </button>
+        </header>
+        <div className="about-story-mobile-body">
+          <figure className="about-story-mobile-portrait">
+            <img
+              src="/sarthak-about-960.webp"
+              srcSet="/sarthak-about-960.webp 960w, /sarthak-about-1600.webp 1600w"
+              sizes="calc(100vw - (2 * var(--page-gutter)))"
+              alt="Sarthak beside his motorcycle in the mountains"
+              width="1600"
+              height="2132"
+              loading="eager"
+              decoding="async"
+            />
+          </figure>
+          <article className="about-story-mobile-copy">
+            <p className="about-story-mobile-intro"><strong>{aboutStoryBio.name}</strong>{aboutStoryBio.details}</p>
+            {aboutStoryParagraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+          </article>
+        </div>
+      </section>
+    </div>
+  ) : null;
+
   return (
     <>
-      <button ref={triggerRef} className="button button-primary about-story-trigger" type="button" onClick={() => setPhase("open")}>
+      <button
+        ref={triggerRef}
+        className="about-story-trigger"
+        type="button"
+        aria-expanded={desktopOpen || mobileOpen}
+        aria-controls={mobileViewport ? "about-story-mobile" : "about-story-dialog"}
+        onClick={openStory}
+      >
         Read my story <span aria-hidden="true">↗</span>
       </button>
+      {mobileStory && typeof document !== "undefined" ? createPortal(mobileStory, document.body) : null}
       {storyDialog && typeof document !== "undefined" ? createPortal(storyDialog, document.body) : null}
     </>
   );

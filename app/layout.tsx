@@ -13,7 +13,10 @@ const startupScrollScript = `(() => {
       '#youtube': '#youtube',
       '#contact': '#contact',
     };
-    const hashTarget = hashTargets[location.hash];
+    const navigation = performance.getEntriesByType?.('navigation')?.[0];
+    const isReload = navigation?.type === 'reload';
+    if (isReload && location.hash) history.replaceState(null, '', location.pathname + location.search);
+    const hashTarget = isReload ? undefined : hashTargets[location.hash];
     if (hashTarget) {
       const initialHash = location.hash;
       let frame = 0;

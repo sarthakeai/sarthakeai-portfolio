@@ -1,10 +1,9 @@
 "use client";
 
 /* eslint-disable @next/next/no-img-element -- Existing portfolio posters are already optimized and dimensioned. */
-/* eslint-disable jsx-a11y/media-has-caption -- Separate timed-text files were not supplied for portfolio preview edits. */
-
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { activateMedia, MEDIA_PLAYBACK_EVENT, type MediaPlaybackEvent } from "./media-playback";
+import { NativePortfolioVideo } from "./NativePortfolioVideo";
 import type { ProjectMedia } from "./portfolio-data";
 
 function getYouTubeId(url?: string) {
@@ -22,14 +21,10 @@ function getYouTubeId(url?: string) {
 function CaseStudyMediaItem({ media, projectTitle, showCenterPlay }: { media: ProjectMedia; projectTitle: string; showCenterPlay: boolean }) {
   const youtubeId = getYouTubeId(media.externalUrl);
   const [youtubeStarted, setYoutubeStarted] = useState(false);
-  const [videoPlaying, setVideoPlaying] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     const onPlaybackChange = (event: Event) => {
       if ((event as MediaPlaybackEvent).detail.activeId === media.id) return;
-      videoRef.current?.pause();
-      setVideoPlaying(false);
       setYoutubeStarted(false);
     };
     window.addEventListener(MEDIA_PLAYBACK_EVENT, onPlaybackChange);
@@ -51,33 +46,13 @@ function CaseStudyMediaItem({ media, projectTitle, showCenterPlay }: { media: Pr
 
   if (media.videoUrl) {
     return (
-      <>
-        <video
-          ref={videoRef}
-          className={showCenterPlay ? "case-study-short-video" : undefined}
-          controls playsInline preload="metadata"
-          poster={media.poster}
-          aria-label={`${media.title} — ${projectTitle}`}
-          onPlay={(event) => { setVideoPlaying(true); activateMedia(media.id, event.currentTarget); }}
-          onPause={() => setVideoPlaying(false)}
-          onEnded={() => setVideoPlaying(false)}
-        >
-          <source src={media.videoUrl} type="video/mp4" />
-        </video>
-        {showCenterPlay && !videoPlaying ? (
-          <button
-            className="case-study-video-play"
-            type="button"
-            aria-label={`Play ${media.title}`}
-            onClick={() => {
-              const video = videoRef.current;
-              if (!video) return;
-              activateMedia(media.id, video);
-              void video.play().catch(() => setVideoPlaying(false));
-            }}
-          />
-        ) : null}
-      </>
+      <NativePortfolioVideo
+        id={media.id}
+        title={`${media.title} — ${projectTitle}`}
+        src={media.videoUrl}
+        poster={media.poster}
+        className={showCenterPlay ? "case-study-short-video" : undefined}
+      />
     );
   }
 
