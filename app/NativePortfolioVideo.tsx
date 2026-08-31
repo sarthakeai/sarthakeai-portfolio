@@ -3,7 +3,7 @@
 /* eslint-disable @next/next/no-img-element -- The supplied portfolio posters are the exact approved local thumbnails. */
 /* eslint-disable jsx-a11y/media-has-caption -- Timed-text files were not supplied for the portfolio preview edits. */
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { activateMedia, MEDIA_PLAYBACK_EVENT, type MediaPlaybackEvent } from "./media-playback";
 
 export function NativePortfolioVideo({
@@ -21,8 +21,17 @@ export function NativePortfolioVideo({
 }) {
   const [active, setActive] = useState(false);
   const [hasActivated, setHasActivated] = useState(false);
+  const [hasPlayed, setHasPlayed] = useState(false);
+  const [showNativeControls, setShowNativeControls] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const activationRequestedRef = useRef(false);
+  const controlsFrameRef = useRef<number | null>(null);
+
+  const cancelControlsFrame = useCallback(() => {
+    if (controlsFrameRef.current === null) return;
+    cancelAnimationFrame(controlsFrameRef.current);
+    controlsFrameRef.current = null;
+  }, []);
 
   useEffect(() => {
     const onPlaybackChange = (event: Event) => {
@@ -33,26 +42,31 @@ export function NativePortfolioVideo({
         video.pause();
         video.controls = false;
       }
+      cancelControlsFrame();
+      setShowNativeControls(false);
       setActive(false);
     };
 
     window.addEventListener(MEDIA_PLAYBACK_EVENT, onPlaybackChange);
-    return () => window.removeEventListener(MEDIA_PLAYBACK_EVENT, onPlaybackChange);
-  }, [id]);
+    return () => {
+      cancelControlsFrame();
+      window.removeEventListener(MEDIA_PLAYBACK_EVENT, onPlaybackChange);
+    };
+  }, [cancelControlsFrame, id]);
 
   const activateAndPlay = () => {
     const video = videoRef.current;
     if (!video) return;
     activationRequestedRef.current = true;
     video.preload = "auto";
-    video.controls = true;
     setHasActivated(true);
-    setActive(true);
+    setShowNativeControls(false);
     activateMedia(id, video);
     void video.play().catch(() => {
       if (!activationRequestedRef.current || videoRef.current !== video) return;
       activationRequestedRef.current = false;
       video.controls = false;
+      setShowNativeControls(false);
       setActive(false);
     });
   };
@@ -62,10 +76,10 @@ export function NativePortfolioVideo({
       <video
         ref={videoRef}
         className={`portfolio-native-video${className ? ` ${className}` : ""}`}
-        controls={active}
+        controls={showNativeControls}
         playsInline
         preload={hasActivated ? "auto" : "none"}
-        poster={poster}
+        poster={hasPlayed ? undefined : poster}
         aria-label={title}
         onPlay={(event) => {
           if (!activationRequestedRef.current) {
@@ -74,17 +88,26 @@ export function NativePortfolioVideo({
             return;
           }
           event.currentTarget.preload = "auto";
-          event.currentTarget.controls = true;
           setHasActivated(true);
           setActive(true);
-          activateMedia(id, event.currentTarget);
+        }}
+        onPlaying={(event) => {
+          if (!activationRequestedRef.current) return;
+          const video = event.currentTarget;
+          setHasPlayed(true);
+          cancelControlsFrame();
+          controlsFrameRef.current = requestAnimationFrame(() => {
+            controlsFrameRef.current = null;
+            if (!activationRequestedRef.current || videoRef.current !== video || video.paused) return;
+            setShowNativeControls(true);
+          });
         }}
       >
         <source src={src} type="video/mp4" />
       </video>
       {!active ? (
-        <div className="video-modal-poster portfolio-native-video-idle">
-          <img src={poster} alt="" draggable={false} />
+        <div className={`video-modal-poster portfolio-native-video-idle${hasPlayed ? " is-resume" : ""}`}>
+          {!hasPlayed ? <img src={poster} alt="" draggable={false} /> : null}
           <button type="button" onClick={activateAndPlay} aria-label={`Play ${title}`}>
             <span aria-hidden="true" />
           </button>
