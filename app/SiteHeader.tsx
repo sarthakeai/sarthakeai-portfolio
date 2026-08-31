@@ -12,7 +12,7 @@ import { BookingTrigger, CALENDLY_BOOKING_COMPLETE_EVENT } from "./BookingExperi
 import { ThemeToggle } from "./ThemeToggle";
 
 const links = [
-  { href: "/#work", label: "Work" },
+  { href: "/work", label: "Work" },
   { href: "/#about", label: "About" },
   { href: "/#services", label: "What I do" },
   { href: "/#youtube", label: "YouTube" },
@@ -296,6 +296,11 @@ export function SiteHeader() {
   };
 
   const navigateFromMenu = (event: MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (href === "/work") {
+      closeMenu();
+      return;
+    }
+
     event.preventDefault();
     if (selectedHref !== null) return;
 

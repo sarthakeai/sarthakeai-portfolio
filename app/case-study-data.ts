@@ -22,6 +22,7 @@ const projectById = (id: string) => {
 
 const xiaomi = projectById("youtube-long-form");
 const introduction = projectById("21st-capital-introduction");
+const motion = projectById("motion-brand-animation");
 const interview = projectById("podcast-interview");
 
 export const caseStudies: CaseStudy[] = [
@@ -61,6 +62,18 @@ export const caseStudies: CaseStudy[] = [
     ratio: xiaomi.ratio,
     media: xiaomi.media ?? [],
     externalUrl: xiaomi.externalUrl,
+  },
+  {
+    slug: "motion-brand-animation",
+    title: motion.title,
+    seoTitle: "Motion & Brand Animation | Sarthak Sharma",
+    seoDescription: "Selected motion and brand animation work by Sarthak Sharma for Bitcoin Treasuries, HashrateUp × Swan and Swan.",
+    eyebrow: "Motion & brand animation",
+    description: motion.description,
+    supportingCopy: "The selected work brings together logo animation, brand motion, editing and sound design across three distinct visual identities.",
+    roles: motion.roles,
+    ratio: motion.ratio,
+    media: motion.media ?? [],
   },
   {
     slug: "21st-capital-interview",

@@ -6,7 +6,7 @@ import { YoutubeLogo } from "@phosphor-icons/react/dist/ssr/YoutubeLogo";
 import { socials } from "./portfolio-data";
 
 const footerLinks = [
-  { href: "/#work", label: "Work" },
+  { href: "/work", label: "Work" },
   { href: "/#about", label: "About" },
   { href: "/#services", label: "What I do" },
   { href: "/#youtube", label: "YouTube" },
@@ -64,7 +64,10 @@ export function SiteFooter() {
           <a className="footer-back-to-top" href="#top" aria-label="Back to top">↑</a>
         </div>
         <div className="footer-divider" aria-hidden="true" />
-        <p className="footer-copyright"><span>© 2026 Sarthak Sharma</span><span>All Rights Reserved.</span></p>
+        <div className="footer-bottom">
+          <p className="footer-quote">TRUST THE PROCESS.</p>
+          <p className="footer-copyright"><span>© 2026 Sarthak Sharma</span><span>All Rights Reserved.</span></p>
+        </div>
       </div>
     </footer>
   );

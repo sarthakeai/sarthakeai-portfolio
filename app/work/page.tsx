@@ -1,10 +1,7 @@
 /* eslint-disable @next/next/no-img-element -- Reuses optimized portfolio poster assets. */
-/* eslint-disable @next/next/no-html-link-for-pages -- These links intentionally perform a normal return to the homepage anchor. */
-
 import type { Metadata } from "next";
 import { caseStudies } from "../case-study-data";
 import { PageFrame } from "../PageFrame";
-import { projects } from "../portfolio-data";
 import { WorkShortFormCard } from "../WorkShortFormCard";
 
 const title = "Sarthak Sharma | Selected Video Editing Work";
@@ -17,8 +14,6 @@ export const metadata: Metadata = {
   openGraph: { title, description, siteName: "Sarthak Sharma", url: "/work", type: "website", images: [{ url: "/og-white.png", width: 1200, height: 630, alt: title }] },
   twitter: { card: "summary_large_image", title, description, images: ["/og-white.png"] },
 };
-
-const motionProject = projects.find((project) => project.id === "motion-brand-animation");
 
 export default function WorkPage() {
   return (
@@ -49,15 +44,6 @@ export default function WorkPage() {
               </article>
             );
           })}
-          {motionProject ? (
-            <article className="work-index-card">
-              <a className="work-index-media" href="/#work" aria-label="View Motion and Brand Animation on the homepage">
-                <img src={motionProject.media?.[0]?.poster} alt="" width={motionProject.media?.[0]?.width} height={motionProject.media?.[0]?.height} loading="lazy" decoding="async" />
-                <span>View on homepage <b aria-hidden="true">↗</b></span>
-              </a>
-              <div className="project-info"><div className="project-copy"><h2><a href="/#work">{motionProject.title}</a></h2><p>{motionProject.description}</p></div></div>
-            </article>
-          ) : null}
         </div>
       </section>
     </PageFrame>

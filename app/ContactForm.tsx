@@ -41,18 +41,15 @@ export function ContactForm() {
     <form ref={formRef} className="contact-form" action={contactFormEndpoint} method="POST" onSubmit={handleSubmit} aria-busy={sending}>
       <div className="contact-form-row">
         <label>
-          <span>Name</span>
-          <input type="text" name="name" autoComplete="name" placeholder="Name" required disabled={sending} />
+          <input type="text" name="name" autoComplete="name" aria-label="Your Name" placeholder="Your Name" required disabled={sending} />
         </label>
         <label>
-          <span>Email</span>
-          <input type="email" name="email" autoComplete="email" placeholder="Email" required disabled={sending} />
+          <input type="email" name="email" autoComplete="email" aria-label="Your Email" placeholder="Your Email" required disabled={sending} />
         </label>
       </div>
 
       <label className="contact-form-message">
-        <span>Message</span>
-        <textarea name="message" placeholder="Message" rows={7} required disabled={sending} onKeyDown={handleKeyDown} />
+        <textarea name="message" aria-label="Your Message" placeholder="Your Message" rows={7} required disabled={sending} onKeyDown={handleKeyDown} />
       </label>
 
       <label className="contact-honeypot" aria-hidden="true">
@@ -61,10 +58,8 @@ export function ContactForm() {
       </label>
 
       <div className="contact-form-actions">
+        <button className="contact-submit" type="submit" disabled={sending}>{sending ? "Sending…" : "Send message"}</button>
         <p className="contact-form-hint"><kbd>Ctrl</kbd> / <kbd>⌘</kbd> + <kbd>Enter</kbd> to send</p>
-        <button className="button button-primary contact-submit" type="submit" disabled={sending}>
-          {sending ? "Sending…" : "Send message"}<span aria-hidden="true">↗</span>
-        </button>
       </div>
 
       <div className="contact-form-status" aria-live="polite" aria-atomic="true">

@@ -14,11 +14,11 @@ async function render(path = "/") {
 
 test("serves the standalone portfolio routes with unique indexable metadata", async () => {
   const routes = [
-    ["/about", "About Sarthak Sharma | Video Editor & Creator", "Learn about Sarthak Sharma, a video editor and creator from India working across YouTube, short-form content, podcasts, tech and finance."],
     ["/work", "Sarthak Sharma | Selected Video Editing Work", "Selected video editing work by Sarthak Sharma across YouTube, short-form content, podcasts, brand videos and motion graphics."],
     ["/work/short-form-video", "Short-Form Video Editing for Swan Bitcoin & Roxom | Sarthak Sharma", "Short-form video editing by Sarthak Sharma for Swan Bitcoin and Roxom, featuring interview-driven edits, captions, visual cutaways, motion graphics and sound design."],
     ["/work/21st-capital-introduction", "21st Capital Brand Video Editing | Sarthak Sharma", "A company introduction video edited by Sarthak Sharma for 21st Capital using presenter-led editing, diagrams, motion graphics and sound design."],
     ["/work/xiaomi-13-pro-review", "Xiaomi 13 Pro Review Video Editing | Sarthak Sharma", "A hands-on Xiaomi 13 Pro review created and edited by Sarthak Sharma for his technology YouTube channel."],
+    ["/work/motion-brand-animation", "Motion & Brand Animation | Sarthak Sharma", "Selected motion and brand animation work by Sarthak Sharma for Bitcoin Treasuries, HashrateUp × Swan and Swan."],
     ["/work/21st-capital-interview", "Podcast & Interview Video Editing | Sarthak Sharma", "Interview video editing by Sarthak Sharma for 21st Capital, including editing, captions, motion graphics and layout design."],
   ];
 
@@ -41,6 +41,7 @@ test("serves the standalone portfolio routes with unique indexable metadata", as
     assert.match(sitemap, new RegExp(`https://sarthakeai\\.com${path === "/" ? "/" : path.replaceAll("/", "\\/")}`));
   }
   assert.doesNotMatch(sitemap, /work\/swan-bitcoin|work\/roxom/);
+  assert.doesNotMatch(sitemap, /https:\/\/sarthakeai\.com\/about(?:<|\s)/);
   assert.doesNotMatch(sitemap, /localhost|chatgpt\.site|www\.sarthakeai\.com/);
 
   const robotsResponse = await render("/robots.txt");
@@ -52,12 +53,8 @@ test("serves the standalone portfolio routes with unique indexable metadata", as
   assert.match(robots, /Sitemap: https:\/\/sarthakeai\.com\/sitemap\.xml/i);
 
   const aboutResponse = await render("/about");
-  const aboutHtml = await aboutResponse.text();
-  assert.match(aboutHtml, /"@type":"ProfilePage"/);
-  assert.match(aboutHtml, /"@type":"Person"/);
-  assert.match(aboutHtml, /"@id":"https:\/\/sarthakeai\.com\/#person"/);
-  assert.match(aboutHtml, /https:\/\/www\.upwork\.com\/freelancers\/~01a047caaf8c8ed5b6/);
-  assert.doesNotMatch(aboutHtml, /"@type":"(?:Review|AggregateRating)"/);
+  assert.equal(aboutResponse.status, 308);
+  assert.equal(aboutResponse.headers.get("location"), "/#about");
 });
 
 test("server-renders the complete Sarthak portfolio", async () => {
@@ -223,9 +220,8 @@ test("keeps both testimonials real, stacked, exact, and accessible", async () =>
 });
 
 test("keeps interaction scoped and accessibility preferences explicit", async () => {
-  const [page, aboutPage, aboutContent, aboutStory, pageFrame, siteFooter, layout, header, booking, availabilityRoute, contactForm, contactSubmit, portfolio, shortFormViewer, shortFormRoute, workPage, workShortFormCard, caseStudyMedia, nativePortfolioVideo, mediaPlayback, data, youtubeShowcase, youtubeData, youtubeRoute, theme, timeline, css, worker, viteConfig, swanLogo, favicon] = await Promise.all([
+  const [page, aboutContent, aboutStory, pageFrame, siteFooter, layout, header, booking, availabilityRoute, contactForm, contactSubmit, portfolio, shortFormViewer, shortFormRoute, workPage, workShortFormCard, caseStudyMedia, nativePortfolioVideo, mediaPlayback, data, youtubeShowcase, youtubeData, youtubeRoute, theme, timeline, css, worker, viteConfig, swanLogo, favicon, nextConfig, motionRoute, caseStudyData] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/about/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/about-content.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/AboutStoryExperience.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/PageFrame.tsx", import.meta.url), "utf8"),
@@ -255,6 +251,9 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
     readFile(new URL("../vite.config.ts", import.meta.url), "utf8"),
     readFile(new URL("../public/collaborators/swan-bitcoin.svg", import.meta.url), "utf8"),
     readFile(new URL("../public/favicon.svg", import.meta.url), "utf8"),
+    readFile(new URL("../next.config.ts", import.meta.url), "utf8"),
+    readFile(new URL("../app/work/motion-brand-animation/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/case-study-data.ts", import.meta.url), "utf8"),
   ]);
   assert.doesNotMatch(page, /^"use client"/);
   assert.doesNotMatch(layout, /next\/headers|generateMetadata/);
@@ -337,7 +336,7 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(header, /mobile-nav-cta/);
   assert.match(header, /navigateFromMenu/);
   assert.match(header, /scrollIntoView\(\{ behavior: reducedMotion \? "auto" : "smooth"/);
-  assert.match(header, /\{ href: "\/#work", label: "Work" \}/);
+  assert.match(header, /\{ href: "\/work", label: "Work" \}/);
   assert.match(header, /\{ href: "\/#about", label: "About" \}/);
   assert.match(header, /const hash = href\.startsWith\("\/#"\) \? href\.slice\(1\) : null/);
   assert.match(header, /const homepageSectionTargets = new Map\(\[/);
@@ -414,7 +413,11 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(css, /\.mobile-nav-text[^}]+var\(--font-geist-sans\)/s);
   assert.match(css, /font-size:\s*clamp\(1\.8rem, 7\.7vw, 2\.125rem\)/);
   assert.match(css, /transform:\s*translateY\(\.625rem\)/);
-  assert.match(css, /opacity 340ms var\(--ease-out\) var\(--row-open-delay\)/);
+  assert.match(css, /\.mobile-nav\s*\{[^}]+opacity:\s*0[^}]+visibility:\s*hidden[^}]+transition:\s*opacity var\(--motion-fast\) var\(--ease-premium\), visibility 0s linear var\(--motion-fast\)/s);
+  assert.match(css, /\.menu-open \.mobile-nav\s*\{[^}]+opacity:\s*1[^}]+visibility:\s*visible[^}]+transition-delay:\s*0s, 0s/s);
+  assert.match(css, /\.mobile-nav-item\s*\{[^}]+opacity:\s*1[^}]+transition:\s*transform var\(--motion-fast\) var\(--ease-premium\)/s);
+  assert.doesNotMatch(css, /\.mobile-nav-item\s*\{[^}]+transition:\s*opacity/s);
+  assert.match(css, /\.menu-open \.mobile-nav-item\s*\{[^}]+transition:\s*transform var\(--motion-medium\) var\(--ease-premium\) var\(--row-open-delay\)/s);
   assert.match(css, /--row-open-delay:\s*245ms/);
   assert.match(css, /\.mobile-nav-item\.is-selected/);
   assert.match(css, /scroll-margin-top:\s*5\.25rem/);
@@ -424,6 +427,7 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(css, /\.mobile-nav-socials\s*\{[^}]+justify-content:\s*center/s);
   assert.match(css, /env\(safe-area-inset-top\)/);
   assert.match(css, /env\(safe-area-inset-bottom\)/);
+  assert.match(css, /@media \(max-width: 50rem\)[\s\S]+\.about-story-trigger\s*\{[^}]+display:\s*flex[^}]+margin-inline-start:\s*auto/s);
   assert.match(portfolio, /aria-pressed/);
   assert.doesNotMatch(portfolio, /button\.scrollIntoView/);
   assert.match(portfolio, /filters\.scrollTo\(\{ left: Math\.max\(0, left\), behavior: reducedMotion \? "auto" : "smooth" \}\)/);
@@ -465,8 +469,8 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(shortFormViewer, /<CaseStudyMedia media=\{shortFormStudy\.media\}/);
   assert.match(shortFormViewer, /stopMediaWithin\(dialog\)/);
   assert.match(shortFormViewer, /dialog\.scrollTop = 0/);
-  assert.match(shortFormViewer, /Swan Bitcoin \+ Roxom[\s\S]+Short-form social video/);
-  assert.match(shortFormViewer, /Short-form video editing for Swan Bitcoin/);
+  assert.match(shortFormViewer, /<p className="project-eyebrow">Swan &amp; Roxom<\/p>/);
+  assert.match(shortFormViewer, /<h2>Vertical edits<\/h2>/);
   assert.match(shortFormRoute, /<ShortFormRouteViewer \/>/);
   assert.match(workPage, /<WorkShortFormCard key=\{study\.slug\} study=\{study\}/);
   assert.match(workShortFormCard, /<ShortFormProjectViewer open=\{viewerOpen\}/);
@@ -595,8 +599,15 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(css, /\.about-story-columns \.about-story-intro\s*\{[^}]+color:\s*var\(--muted-strong\)/s);
   assert.doesNotMatch(css, /\.about-story-columns \.about-story-intro\s*\{[^}]+font(?:-size|-style|-weight)?:/s);
   assert.match(css, /\.about-story-intro strong\s*\{[^}]+font-style:\s*italic[^}]+font-weight:\s*700/s);
-  assert.match(aboutPage, /aboutBodyCopy/);
-  assert.doesNotMatch(aboutPage, /I also run a technology YouTube channel of my own/);
+  assert.match(nextConfig, /source:\s*"\/about"[\s\S]+destination:\s*"\/#about"[\s\S]+permanent:\s*true/);
+  assert.match(motionRoute, /getCaseStudy\("motion-brand-animation"\)/);
+  assert.match(caseStudyData, /slug:\s*"motion-brand-animation"/);
+  assert.doesNotMatch(workPage, /href="\/#work"/);
+  assert.match(siteFooter, /\{ href: "\/work", label: "Work" \}/);
+  assert.match(css, /--ease-premium:\s*cubic-bezier\(\.22, 1, \.36, 1\)/);
+  assert.match(css, /--motion-fast:\s*200ms/);
+  assert.match(css, /--motion-medium:\s*280ms/);
+  assert.match(css, /--motion-slow:\s*500ms/);
   assert.match(youtubeShowcase, /I run my own technology channel, creating reviews, hands-on videos and other tech content\./);
   assert.match(youtubeData, /YOUTUBE_CHANNEL_ID = "UCFA48GH6QpjejK8xcIdMz_g"/);
   assert.equal((youtubeData.match(/durationSeconds:/g) ?? []).length, 4);
@@ -711,10 +722,14 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(contactForm, /textarea name="message"[^>]+required/);
   assert.match(contactForm, /event\.isComposing \|\| event\.key !== "Enter" \|\| \(!event\.ctrlKey && !event\.metaKey\)/);
   assert.match(contactForm, /event\.currentTarget\.form\?\.requestSubmit\(\)/);
+  assert.match(contactForm, /aria-label="Your Name" placeholder="Your Name"/);
+  assert.match(contactForm, /aria-label="Your Email" placeholder="Your Email"/);
+  assert.match(contactForm, /aria-label="Your Message" placeholder="Your Message"/);
+  assert.doesNotMatch(contactForm, /<span>Name<\/span>|<span>Email<\/span>|<span>Message<\/span>/);
   assert.match(contactForm, /Message sent\. I’ll get back to you soon\./);
   assert.match(contactForm, /Something went wrong\. Please try again or email me directly\./);
   assert.match(contactForm, /mailto:officialsarthakeai@gmail\.com/);
-  assert.match(contactForm, /<div className="contact-form-actions">\s*<p className="contact-form-hint">[\s\S]*?<button className="button button-primary contact-submit"/);
+  assert.match(contactForm, /<div className="contact-form-actions">\s*<button className="contact-submit" type="submit" disabled=\{sending\}>[\s\S]*?<p className="contact-form-hint">/);
   assert.match(booking, /role="dialog"/);
   assert.match(booking, /aria-modal="true"/);
   assert.match(booking, /<iframe/);
@@ -734,8 +749,8 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(css, /\.contact-form\s*\{/);
   assert.match(css, /\.contact-bottom, \.contact-form-intro\s*\{[^}]+grid-template-columns:\s*minmax\(12rem, \.75fr\) minmax\(0, 1\.25fr\)/s);
   assert.match(css, /\.contact-email\s*\{[^}]+border-bottom:\s*1px solid var\(--line\)/s);
-  assert.match(css, /\.contact-form-actions\s*\{[^}]+display:\s*flex[^}]+align-items:\s*center[^}]+justify-content:\s*space-between/s);
-  assert.match(css, /\.contact-submit/);
+  assert.match(css, /\.contact-form-actions\s*\{[^}]+display:\s*grid[^}]+gap:\s*\.65rem/);
+  assert.match(css, /\.contact-submit\s*\{[^}]+width:\s*100%[^}]+min-height:\s*3\.5rem[^}]+border-radius:\s*\.35rem[^}]+background:\s*var\(--ink\)[^}]+color:\s*var\(--bg\)/);
   assert.doesNotMatch(css, /email-shortcut/);
   assert.match(theme, /role="switch"/);
   assert.match(theme, /aria-checked/);
@@ -806,6 +821,10 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.video-modal-short-form \.video-modal-media-portrait\s*\{[^}]+repeat\(2, minmax\(0, 1fr\)\)/);
   assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.short-form-project-viewer :is\(\.short-form-viewer-description, \.short-form-viewer-supporting-copy\)\s*\{\s*display:\s*none/);
   assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.short-form-project-viewer \.case-study-media\.is-portrait\s*\{[^}]+repeat\(2, minmax\(0, 1fr\)\)[^}]+gap:\s*\.5rem 6px/);
+  assert.match(css, /@keyframes mobile-project-modal-panel-in\s*\{\s*from\s*\{[^}]+translateY\(2rem\)[^}]+\}\s*to\s*\{[^}]+translateY\(0\)/);
+  assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.video-modal-inner\s*\{[^}]+animation-name:\s*mobile-project-modal-panel-in[^}]+animation-duration:\s*480ms/);
+  assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.short-form-project-viewer \.video-modal-inner\s*\{[^}]+max-height:\s*84dvh[^}]+border-radius:\s*1\.25rem 1\.25rem 0 0/);
+  assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.short-form-project-viewer \.case-study-roles\s*\{[^}]+flex-wrap:\s*nowrap[^}]+gap:\s*\.9rem/);
   assert.doesNotMatch(css, /\.portfolio-native-video:not\(\[controls\]\)::-webkit-media-controls/);
   assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.short-form-viewer-desktop-copy\s*\{\s*display:\s*none[\s\S]+?\.short-form-viewer-mobile-copy\s*\{\s*display:\s*block/);
   assert.match(css, /\.project\.portrait \.project-visual\.has-media\s*\{\s*aspect-ratio:\s*27\/16/);
@@ -847,12 +866,17 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(css, /\.footer-directory[^}]+grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/s);
   assert.match(css, /\.footer-link-icon\s*\{[^}]+width:\s*1\.3125rem[^}]+height:\s*1\.3125rem/s);
   assert.match(siteFooter, /href:\s*"mailto:work@sarthakeai\.com"/);
+  assert.match(siteFooter, /<p className="footer-quote">TRUST THE PROCESS\.<\/p>/);
   assert.doesNotMatch(page, /<small>work@sarthakeai\.com<\/small>/);
   assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.footer-upper[^}]+order:\s*1[^}]+grid-template-columns:\s*minmax\(0, 1fr\) auto/);
   assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.footer-directory[^}]+grid-template-columns:\s*minmax\(0, \.85fr\) minmax\(0, 1\.15fr\)/);
   assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.footer-social-link \.footer-link-title[^}]+white-space:\s*nowrap/);
   assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.footer-divider[^}]+order:\s*2/);
-  assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.footer-copyright[^}]+order:\s*3/);
+  assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.footer-bottom[^}]+order:\s*3[^}]+grid-template-columns:\s*minmax\(0, 1fr\)/);
+  assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.footer-bottom[^}]+gap:\s*1rem/);
+  assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.footer-quote[^}]+justify-self:\s*center[^}]+text-align:\s*center/);
+  assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.footer-copyright[^}]+justify-self:\s*center[^}]+text-align:\s*center/);
+  assert.match(css, /\.footer-quote\s*\{[^}]+font:[^}]+var\(--font-geist-mono\)[^}]+letter-spacing:\s*\.12em/);
   assert.match(css, /\.footer-back-to-top/);
   assert.match(css, /\.footer-copyright\s*\{[^}]+text-align:\s*right/s);
   assert.doesNotMatch(css, /footer-nav-row|footer-nav-index|footer-social-links|social-icon/);

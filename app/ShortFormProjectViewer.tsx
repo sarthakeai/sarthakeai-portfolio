@@ -15,7 +15,7 @@ export function ShortFormProjectViewer({
   open: boolean;
   onClose: () => void;
   onRestoreFocus?: () => void;
-}) {
+  }) {
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -34,13 +34,23 @@ export function ShortFormProjectViewer({
       dialog.scrollLeft = 0;
     }
 
-    const focusableElements = () => Array.from(dialog?.querySelectorAll<HTMLElement>("a[href], button:not([disabled]), video[controls], [tabindex]:not([tabindex='-1'])") ?? []);
-    requestAnimationFrame(() => {
-      if (dialog) {
-        dialog.scrollTop = 0;
+    const focusableElements = () => Array.from(dialog?.querySelectorAll<HTMLElement>("a[href], button:not([disabled]), video[controls], [tabindex]:not([tabindex='-1'])") ?? [])
+      .filter((element) => element.getClientRects().length > 0);
+    let layoutFrame = 0;
+    const initialFrame = requestAnimationFrame(() => {
+      layoutFrame = requestAnimationFrame(() => {
+        if (!dialog) return;
+
         dialog.scrollLeft = 0;
-      }
-      closeButtonRef.current?.focus({ preventScroll: true });
+        if (window.matchMedia("(max-width: 42rem)").matches) {
+          dialog.scrollTop = 0;
+          closeButtonRef.current?.focus({ preventScroll: true });
+          return;
+        }
+
+        dialog.scrollTop = 0;
+        closeButtonRef.current?.focus({ preventScroll: true });
+      });
     });
 
     const onKeyDown = (event: KeyboardEvent) => {
@@ -68,6 +78,8 @@ export function ShortFormProjectViewer({
       stopAllMedia();
       root.style.overflow = previousRootOverflow;
       body.style.overflow = previousBodyOverflow;
+      cancelAnimationFrame(initialFrame);
+      cancelAnimationFrame(layoutFrame);
       document.removeEventListener("keydown", onKeyDown);
       onRestoreFocus?.();
     };
@@ -85,15 +97,17 @@ export function ShortFormProjectViewer({
               <p className="short-form-viewer-description" id="short-form-viewer-description">{shortFormStudy.description}</p>
             </div>
             <div className="short-form-viewer-mobile-copy">
-              <p className="project-eyebrow">Swan Bitcoin + Roxom <span aria-hidden="true">·</span> Short-form social video</p>
-              <h2>Short-form video editing for Swan Bitcoin &amp; Roxom</h2>
+              <p className="project-eyebrow">Swan &amp; Roxom</p>
+              <h2>Vertical edits</h2>
             </div>
           </div>
           <button ref={closeButtonRef} type="button" onClick={onClose} aria-label="Close Short-form project">Close</button>
         </div>
         <div className="case-study-details">
           <div>
-            <p className="project-label">My role</p>
+            <div className="case-study-role-header">
+              <p className="project-label">My role</p>
+            </div>
             <ul className="case-study-roles" aria-label={`Roles for ${shortFormStudy.title}`}>{shortFormStudy.roles.map((role) => <li key={role}>{role}</li>)}</ul>
           </div>
         </div>
