@@ -361,25 +361,27 @@ export function SiteHeader() {
         </BookingTrigger>
       </nav>
       <nav ref={navRef} id="primary-navigation" className="mobile-nav" aria-label="Mobile navigation" aria-hidden={!isMobile || !menuOpen} inert={!isMobile || !menuOpen ? true : undefined}>
-        <span className="mobile-nav-label">Menu</span>
-        <div className="mobile-nav-list">
-          {mobileLinks.map((link, index) => (
-            <a className={`mobile-nav-item${link.href === "/#contact" ? " mobile-nav-cta" : ""}${selectedHref === link.href ? " is-selected" : ""}`} key={link.href} href={link.href} onClick={(event) => navigateFromMenu(event, link.href)}>
-              <span className="mobile-nav-index">{String(index + 1).padStart(2, "0")}</span>
-              <span className="mobile-nav-text">{link.label}</span>
-              <span className="mobile-nav-arrow" aria-hidden="true">↗</span>
-            </a>
-          ))}
-        </div>
-        <div className="mobile-nav-spacer" aria-hidden="true" />
-        <div className="mobile-nav-utility">
-          <div ref={mobileLocationRef} className="mobile-local-time" aria-label="New Delhi local time">NEW DELHI · <time ref={mobileTimeRef}>--:--:--</time></div>
-          <BookingTrigger className="mobile-availability" aria-label={`${availabilityLabel}. Book a call with Sarthak`}><i aria-hidden="true" /><span>{availabilityLabel}</span></BookingTrigger>
-          <div className="mobile-nav-socials">
-            {mobileSocials.map((social) => {
-              const SocialIcon = social.icon;
-              return <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" aria-label={`${social.label}, opens in a new tab`}><SocialIcon aria-hidden="true" weight="regular" /></a>;
-            })}
+        <div className="mobile-nav-content">
+          <span className="mobile-nav-label">Menu</span>
+          <div className="mobile-nav-list">
+            {mobileLinks.map((link, index) => (
+              <a className={`mobile-nav-item${link.href === "/#contact" ? " mobile-nav-cta" : ""}${selectedHref === link.href ? " is-selected" : ""}`} key={link.href} href={link.href} onClick={(event) => navigateFromMenu(event, link.href)}>
+                <span className="mobile-nav-index">{String(index + 1).padStart(2, "0")}</span>
+                <span className="mobile-nav-text">{link.label}</span>
+                <span className="mobile-nav-arrow" aria-hidden="true">↗</span>
+              </a>
+            ))}
+          </div>
+          <div className="mobile-nav-spacer" aria-hidden="true" />
+          <div className="mobile-nav-utility">
+            <div ref={mobileLocationRef} className="mobile-local-time" aria-label="New Delhi local time">NEW DELHI · <time ref={mobileTimeRef}>--:--:--</time></div>
+            <BookingTrigger className="mobile-availability" aria-label={`${availabilityLabel}. Book a call with Sarthak`}><i aria-hidden="true" /><span>{availabilityLabel}</span></BookingTrigger>
+            <div className="mobile-nav-socials">
+              {mobileSocials.map((social) => {
+                const SocialIcon = social.icon;
+                return <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" aria-label={`${social.label}, opens in a new tab`}><SocialIcon aria-hidden="true" weight="regular" /></a>;
+              })}
+            </div>
           </div>
         </div>
       </nav>
