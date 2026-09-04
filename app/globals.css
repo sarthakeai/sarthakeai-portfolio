@@ -39,6 +39,11 @@
   --footer-ink: #191917;
   --footer-muted: #777168;
   --footer-line: rgba(25, 25, 23, .16);
+  --booking-stage: #20201d;
+  --booking-stage-ink: #f5f2eb;
+  --booking-stage-muted: #b7b2a8;
+  --booking-stage-line: rgba(245, 242, 235, .16);
+  --booking-stage-ghost: rgba(245, 242, 235, .055);
   --page-gutter: clamp(1.25rem, 4.5vw, 5rem);
   --section-space: clamp(5rem, 7vw, 7rem);
   --section-space-compact: clamp(3.75rem, 5vw, 5rem);
@@ -79,6 +84,11 @@ html[data-theme="dark"] {
   --footer-ink: #f2efe7;
   --footer-muted: #9f9a90;
   --footer-line: rgba(242, 239, 231, .16);
+  --booking-stage: #0f0f0e;
+  --booking-stage-ink: #f2efe7;
+  --booking-stage-muted: #aaa398;
+  --booking-stage-line: rgba(242, 239, 231, .17);
+  --booking-stage-ghost: rgba(242, 239, 231, .06);
   color-scheme: dark;
 }
 
@@ -595,19 +605,28 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
 .contact-form-status .is-error a { display: inline; border-bottom: 1px solid currentColor; color: var(--ink); }
 .contact-honeypot { position: absolute !important; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
-.booking-overlay { --booking-overlay-pad: clamp(.75rem, 2vw, 1.5rem); position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: var(--booking-overlay-pad); background: rgba(9, 9, 8, .74); animation: booking-overlay-in 220ms ease-out both; }
-.booking-dialog { --booking-body-pad: clamp(1.25rem, 2vw, 2rem); --booking-header-height: calc(clamp(1.75rem, 3vw, 2.75rem) + 3.875rem); width: min(72rem, 100%); height: auto; max-height: calc(100dvh - (2 * var(--booking-overlay-pad))); min-height: 0; display: grid; grid-template-rows: auto auto; overflow: hidden; border: 1px solid var(--line); border-radius: .8rem; background: var(--bg); color: var(--ink); animation: booking-dialog-in 320ms var(--ease-out) both; }
-.booking-head { position: relative; min-height: var(--booking-header-height); display: flex; align-items: center; justify-content: center; gap: 2rem; padding: 1.15rem clamp(4.5rem, 7vw, 6rem); border-bottom: 1px solid var(--line); text-align: center; }
-.booking-head h2 { margin: .3rem 0 0; font-size: clamp(1.75rem, 3vw, 2.75rem); font-weight: 580; line-height: 1; letter-spacing: -.045em; }
-.booking-close { position: absolute; top: 50%; right: clamp(1.15rem, 3vw, 2rem); width: 2.75rem; height: 2.75rem; flex: 0 0 auto; border: 1px solid var(--line); border-radius: 50%; background: transparent; color: var(--ink); font-size: 1.75rem; line-height: 1; cursor: pointer; transform: translateY(-50%); transition: color 200ms ease-out, border-color 200ms ease-out, background-color 200ms ease-out, transform 200ms var(--ease-out); }
-.booking-close:hover { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 7%, var(--bg)); color: var(--accent); transform: translateY(-50%) rotate(3deg); }
-.booking-calendar { position: relative; min-height: 0; display: grid; grid-template-columns: minmax(0, 68rem); justify-content: center; padding: var(--booking-body-pad); overflow: auto; overscroll-behavior: contain; background: var(--bg); }
-.booking-calendar iframe { position: relative; z-index: 1; width: 100%; height: min(43.75rem, calc(100dvh - (2 * var(--booking-overlay-pad)) - var(--booking-header-height) - (2 * var(--booking-body-pad)) - 2px)); min-height: 0; display: block; border: 0; background: var(--bg); }
-.booking-loading { position: absolute; inset: 50% auto auto 50%; margin: 0; color: var(--muted); font: .625rem/1.4 var(--font-geist-mono), monospace; letter-spacing: .1em; text-transform: uppercase; transform: translate(-50%, -50%); }
-.booking-fallback { position: absolute; z-index: 2; inset: auto 1rem 1rem; margin: 0; padding: .65rem .8rem; border: 1px solid var(--line); background: var(--bg); color: var(--muted); font-size: .6875rem; line-height: 1.45; text-align: center; }
-.booking-fallback a { color: var(--ink); border-bottom: 1px solid var(--accent); }
+.booking-overlay { --booking-overlay-x: clamp(2rem, 5vw, 6rem); --booking-overlay-y: clamp(1.5rem, 6vh, 4.5rem); position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: var(--booking-overlay-y) var(--booking-overlay-x); background: rgba(8, 8, 7, .78); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); animation: booking-overlay-in var(--motion-medium) var(--ease-premium) both; }
+.booking-overlay[data-state="closed"] { animation-name: booking-overlay-out; }
+.booking-dialog { position: relative; width: 100%; height: calc(100dvh - (2 * var(--booking-overlay-y))); min-height: 0; display: grid; grid-template-rows: auto minmax(0, 1fr); overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; border: 1px solid var(--booking-stage-line); border-radius: 0; background: var(--booking-stage); color: var(--booking-stage-ink); box-shadow: 0 1.5rem 5rem rgba(0, 0, 0, .24); transform-origin: 50% 55%; will-change: opacity, transform; animation: booking-dialog-in var(--motion-medium) var(--ease-premium) both; -webkit-overflow-scrolling: touch; }
+.booking-overlay[data-state="closed"] .booking-dialog { animation-name: booking-dialog-out; }
+.booking-topbar { position: sticky; z-index: 4; top: 0; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: clamp(1rem, 2vw, 1.5rem) clamp(1.25rem, 2.5vw, 2.5rem); border-bottom: 1px solid var(--booking-stage-line); background: color-mix(in srgb, var(--booking-stage) 94%, transparent); }
+.booking-availability { min-height: 2.25rem; display: inline-flex; align-items: center; gap: .55rem; margin: 0; padding: 0 .8rem; border: 1px solid var(--booking-stage-line); border-radius: 99rem; color: var(--booking-stage-muted); font: 600 .625rem/1 var(--font-geist-mono), monospace; letter-spacing: .075em; text-transform: uppercase; white-space: nowrap; }
+.booking-availability i { position: relative; width: .45rem; height: .45rem; flex: 0 0 auto; border-radius: 50%; background: var(--accent); }
+.booking-availability i::after { content: ""; position: absolute; inset: -.2rem; border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent); border-radius: inherit; animation: availability-pulse 3s ease-out infinite; }
+.booking-close { min-width: 5rem; min-height: 2.75rem; display: inline-flex; align-items: center; justify-content: flex-end; gap: .45rem; border: 0; padding: 0; background: transparent; color: var(--booking-stage-muted); font: .625rem/1.35 var(--font-geist-mono), monospace; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; transition: color var(--motion-fast) var(--ease-premium); }
+.booking-close i { color: var(--accent); font-style: normal; }
+.booking-close:hover { color: var(--booking-stage-ink); }
+.booking-wordmark { position: absolute; z-index: 0; inset: 50% auto auto 50%; width: min(92%, 86rem); display: grid; color: var(--booking-stage-ghost); font-family: var(--font-geist-sans), Arial, sans-serif; font-size: clamp(6.25rem, 14vw, 15.5rem); font-weight: 700; line-height: .76; letter-spacing: -.085em; text-align: center; text-transform: uppercase; pointer-events: none; user-select: none; transform: translate(-50%, -48%); }
+.booking-wordmark span:last-child { margin-left: .2em; }
+.booking-calendar { position: relative; z-index: 2; width: min(100% - 2rem, 22.5rem); min-height: 0; align-self: center; justify-self: center; padding-block: clamp(1.5rem, 3vh, 2.5rem); }
+.booking-calendar iframe { width: 100%; height: min(40.5rem, calc(100dvh - (2 * var(--booking-overlay-y)) - 7rem)); min-height: 35rem; display: block; border: 0; border-radius: .75rem; background: #ffffff; box-shadow: 0 .75rem 2.5rem rgba(0, 0, 0, .18); color-scheme: light; }
+.booking-loading { position: absolute; z-index: 0; inset: 50% auto auto 50%; margin: 0; color: var(--booking-stage-muted); font: .625rem/1.4 var(--font-geist-mono), monospace; letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; transform: translate(-50%, -50%); }
+.booking-fallback { position: absolute; z-index: 3; inset: auto .75rem 2.5rem; margin: 0; padding: .65rem .8rem; border: 1px solid var(--booking-stage-line); background: var(--booking-stage); color: var(--booking-stage-muted); font-size: .6875rem; line-height: 1.45; text-align: center; }
+.booking-fallback a { color: var(--booking-stage-ink); border-bottom: 1px solid var(--accent); }
 @keyframes booking-overlay-in { from { opacity: 0; } to { opacity: 1; } }
-@keyframes booking-dialog-in { from { opacity: 0; transform: translateY(.75rem) scale(.99); } to { opacity: 1; transform: none; } }
+@keyframes booking-overlay-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes booking-dialog-in { from { opacity: 0; transform: translateY(.75rem) scale(.985); } to { opacity: 1; transform: none; } }
+@keyframes booking-dialog-out { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(.5rem) scale(.992); } }
 
 .site-footer { padding: 0 var(--page-gutter); background: var(--footer-bg); color: var(--footer-ink); font-size: .75rem; transition: background-color var(--motion-medium) var(--ease-out), color var(--motion-medium) var(--ease-out); }
 .footer-inner { position: relative; width: min(100%, calc(var(--content-width) - (2 * var(--page-gutter)))); margin: 0 auto; }
@@ -830,9 +849,14 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
   .contact-form-actions { gap: .65rem; }
   .contact-submit { width: 100%; }
   .contact-form-hint { display: none; }
-  .booking-overlay { --booking-overlay-pad: .35rem; align-items: center; }
-  .booking-dialog { --booking-body-pad: clamp(.6rem, 3vw, 1rem); --booking-header-height: 5.5rem; width: 100%; border-radius: .75rem; }
-  .booking-head { min-height: 5.5rem; justify-content: flex-start; padding: 1rem 4.5rem 1rem 1.15rem; text-align: left; }
+  .booking-overlay { --booking-overlay-x: clamp(.625rem, 3vw, 1rem); --booking-overlay-y: clamp(.625rem, 3vw, 1rem); align-items: stretch; }
+  .booking-dialog { height: calc(100dvh - (2 * var(--booking-overlay-y))); border-top: 3px solid var(--accent); }
+  .booking-topbar { padding: max(.75rem, env(safe-area-inset-top)) clamp(.875rem, 4vw, 1.25rem) .75rem; }
+  .booking-availability { min-height: 2.125rem; gap: .45rem; padding-inline: .65rem; font-size: clamp(.5rem, 2.3vw, .59375rem); letter-spacing: .055em; }
+  .booking-close { min-width: 4.75rem; min-height: 2.75rem; font-size: .625rem; }
+  .booking-wordmark { top: 43%; width: 120%; font-size: clamp(5.5rem, 27vw, 8.5rem); line-height: .8; transform: translate(-50%, -50%) rotate(-3deg); }
+  .booking-calendar { width: min(calc(100% - 1.25rem), 22.5rem); align-self: start; padding-block: clamp(2.25rem, 7dvh, 4rem) calc(2rem + env(safe-area-inset-bottom)); }
+  .booking-calendar iframe { height: 43rem; min-height: 43rem; border-radius: .625rem; }
   .video-modal { align-items: end; padding: calc(4.5rem + env(safe-area-inset-top)) .75rem .75rem; }
   .video-modal-inner { max-height: 92dvh; border-radius: .75rem .75rem 0 0; }
   .video-modal:not(.video-modal-short-form) { padding-inline: 0; padding-bottom: 0; }
