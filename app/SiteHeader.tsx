@@ -2,13 +2,13 @@
 
 /* eslint-disable @next/next/no-html-link-for-pages -- Native home navigation avoids Vinext's production RSC prefetch failure. */
 
-import { useCallback, useEffect, useRef, useState, type MouseEvent } from "react";
+import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { usePathname } from "next/navigation";
 import { Briefcase } from "@phosphor-icons/react/dist/csr/Briefcase";
 import { InstagramLogo } from "@phosphor-icons/react/dist/csr/InstagramLogo";
 import { XLogo } from "@phosphor-icons/react/dist/csr/XLogo";
 import { YoutubeLogo } from "@phosphor-icons/react/dist/csr/YoutubeLogo";
-import { BookingTrigger, CALENDLY_BOOKING_COMPLETE_EVENT } from "./BookingExperience";
+import { BookingTrigger, useBookingAvailability } from "./BookingExperience";
 import { ThemeToggle } from "./ThemeToggle";
 
 const links = [
@@ -43,26 +43,6 @@ const delhiTimeFormatter = new Intl.DateTimeFormat("en-GB", {
   hour12: false,
 });
 
-type AvailabilityState =
-  | { status: "loading"; slots: null }
-  | { status: "ready"; slots: number }
-  | { status: "error"; slots: null };
-
-function getAvailabilityLabel(availability: AvailabilityState) {
-  if (availability.status === "loading") return "Checking availability";
-  if (availability.status === "error") return "View availability";
-  if (availability.slots === 0) return "Today’s slots filled";
-  return `${availability.slots} ${availability.slots === 1 ? "slot" : "slots"} left today`;
-}
-
-function getVisitorTimeZone() {
-  try {
-    return Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
-  } catch {
-    return "UTC";
-  }
-}
-
 export function SiteHeader() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -70,7 +50,6 @@ export function SiteHeader() {
   const [pendingMobileNavigation, setPendingMobileNavigation] = useState<{ hash: string; reducedMotion: boolean } | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [availability, setAvailability] = useState<AvailabilityState>({ status: "loading", slots: null });
   const headerRef = useRef<HTMLElement>(null);
   const navRef = useRef<HTMLElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
@@ -81,41 +60,7 @@ export function SiteHeader() {
   const closeTimerRef = useRef<number | null>(null);
   const scrollTimerRef = useRef<number | null>(null);
   const navigationFrameRef = useRef<number | null>(null);
-  const availabilityLabel = getAvailabilityLabel(availability);
-
-  const refreshAvailability = useCallback(async (forceRefresh = false) => {
-    setAvailability({ status: "loading", slots: null });
-
-    try {
-      const query = new URLSearchParams({ timeZone: getVisitorTimeZone() });
-      if (forceRefresh) query.set("refresh", "1");
-      const response = await fetch(`/api/calendly-availability?${query}`, {
-        cache: "no-store",
-        headers: { Accept: "application/json" },
-      });
-      if (!response.ok) throw new Error("Calendly availability request failed");
-
-      const payload = await response.json() as { availableSlots?: unknown };
-      if (!Number.isInteger(payload.availableSlots) || Number(payload.availableSlots) < 0) {
-        throw new Error("Calendly availability response was invalid");
-      }
-
-      setAvailability({ status: "ready", slots: Number(payload.availableSlots) });
-    } catch {
-      setAvailability({ status: "error", slots: null });
-    }
-  }, []);
-
-  useEffect(() => {
-    const initialRequestFrame = window.requestAnimationFrame(() => void refreshAvailability());
-
-    const handleBookingComplete = () => void refreshAvailability(true);
-    window.addEventListener(CALENDLY_BOOKING_COMPLETE_EVENT, handleBookingComplete);
-    return () => {
-      window.cancelAnimationFrame(initialRequestFrame);
-      window.removeEventListener(CALENDLY_BOOKING_COMPLETE_EVENT, handleBookingComplete);
-    };
-  }, [refreshAvailability]);
+  const availabilityLabel = useBookingAvailability();
 
   useEffect(() => {
     const updateClock = () => {

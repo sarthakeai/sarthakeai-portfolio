@@ -2,6 +2,17 @@
 
 import { useEffect, useState } from "react";
 
+function suppressThemeTransitions(updateTheme: () => void) {
+  const style = document.createElement("style");
+  style.textContent = "*,*::before,*::after{transition:none !important}";
+  document.head.appendChild(style);
+  updateTheme();
+  void document.body.offsetHeight;
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => style.remove());
+  });
+}
+
 function SunIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
@@ -29,10 +40,12 @@ export function ThemeToggle() {
 
   const toggleTheme = () => {
     const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
-    document.documentElement.dataset.theme = next;
-    document.documentElement.style.colorScheme = next;
-    localStorage.setItem("theme", next);
-    setDark(next === "dark");
+    suppressThemeTransitions(() => {
+      document.documentElement.dataset.theme = next;
+      document.documentElement.style.colorScheme = next;
+      localStorage.setItem("theme", next);
+      setDark(next === "dark");
+    });
   };
 
   return (
