@@ -532,7 +532,8 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
 .editorial-overlay[data-state="closing"] { visibility: visible; opacity: 0; pointer-events: none; transition-duration: 150ms, 0s; transition-timing-function: ease-out, linear; transition-delay: 0s, 150ms; }
 .editorial-overlay[data-state="closing"] > .editorial-panel { opacity: 0; transform: translate3d(0, .75rem, 0); transition-duration: 150ms; transition-timing-function: ease-out; }
 .editorial-close { min-width: 5.25rem; min-height: 2.75rem; display: inline-flex; align-items: center; justify-content: flex-end; gap: .45rem; border: 0; padding: 0; background: transparent; font: .71875rem/1.35 var(--font-geist-mono), monospace; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; transition-property: color, scale; transition-duration: 150ms; transition-timing-function: ease-out; }
-.editorial-close i { display: inline-block; color: var(--accent); font-size: 1.25em; line-height: 1; letter-spacing: .04em; font-style: normal; }
+.editorial-close > span, .editorial-close > i { display: inline-flex; align-items: center; line-height: 1; }
+.editorial-close i { color: var(--accent); font-style: normal; }
 .overlay-focus-sentinel { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 .editorial-close:hover { color: var(--ink); }
 .editorial-close:active { scale: .96; }
@@ -812,8 +813,8 @@ html[data-theme="dark"] .about-story-portrait img { outline-color: oklch(1 0 0 /
   .about-story-trigger { display: flex; margin-inline-start: 0; margin-inline-end: auto; }
   .hero { --hero-timeline-top: 5.25rem; --hero-timeline-graphic-depth: 8.1rem; grid-template-columns: 1fr; }
   .hero-timeline { --timeline-ruler-top: 1.65rem; top: var(--hero-timeline-top); height: 9rem; opacity: .68; }
-  .timeline-clip-a { top: 3.2rem; width: 50%; }
-  .timeline-clip-b { top: 5.65rem; left: 50%; width: 50%; }
+  .timeline-clip-a { top: 3.2rem; width: 64%; }
+  .timeline-clip-b { top: 5.65rem; left: 64%; width: 36%; }
   .hero-copy { padding-top: 0; }
   .hero-portrait { border-radius: 12px; }
   .button { min-height: 3.25rem; font-size: .9375rem; }
@@ -1008,6 +1009,7 @@ html[data-theme="dark"] .about-story-portrait img { outline-color: oklch(1 0 0 /
 
 @media (max-width: 28rem) {
   :root { --page-gutter: 1.1rem; }
+  .hero .hero-left-anchor > p.hero-intro { width: min(calc(100% + .5rem), 39rem); font-size: .9375rem; line-height: 1.64; text-align: left; text-wrap-style: auto; }
   .hero-actions { align-items: flex-start; flex-wrap: wrap; gap: .8rem; }
   .button { width: fit-content; }
   .hero-connect { width: fit-content; min-width: 0; min-height: 3.25rem; }

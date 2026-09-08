@@ -352,7 +352,7 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(css, /\.site-header\.is-timeline-aware\s*\{[^}]+position:\s*fixed/s);
   assert.match(css, /\.site-header\.is-timeline-aware\.is-past-timeline:not\(\.menu-open\)\s*\{[^}]+transform:\s*translate3d\(0, calc\(-100% - 1px\), 0\)/s);
   assert.match(css, /@media \(max-width: 50rem\)[\s\S]+\.hero\s*\{[^}]+--hero-timeline-top:\s*5\.25rem/s);
-  assert.match(css, /@media \(max-width: 50rem\)[\s\S]+\.timeline-clip-a\s*\{[^}]+width:\s*50%[^}]*\}[\s\S]+\.timeline-clip-b\s*\{[^}]+left:\s*50%[^}]+width:\s*50%/s);
+  assert.match(css, /@media \(max-width: 50rem\)[\s\S]+\.timeline-clip-a\s*\{[^}]+width:\s*64%[^}]*\}[\s\S]+\.timeline-clip-b\s*\{[^}]+left:\s*64%[^}]+width:\s*36%/s);
   assert.match(header, /const timeline = pathname === "\/" \? document\.querySelector<HTMLElement>\("\.hero-timeline"\) : null/);
   assert.match(header, /timelineBoundary = window\.scrollY \+ timelineRect\.bottom - headerHeight/);
   assert.match(header, /new ResizeObserver\(onViewportChange\)/);
@@ -434,6 +434,8 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(css, /\.hero-portrait\s*\{[^}]+aspect-ratio:\s*1[^}]+overflow:\s*hidden[^}]+border-radius:\s*14px/s);
   assert.match(css, /\.hero-left-anchor\s*\{[^}]+width:\s*100%[^}]+grid-template-columns:\s*minmax\(0, 1fr\)/s);
   assert.match(css, /\.hero-left-anchor > :is\(\.hero-portrait, h1, \.hero-intro\)\s*\{[^}]+grid-column:\s*1[^}]+margin-inline-start:\s*0/s);
+  assert.match(css, /@media \(max-width: 28rem\)[\s\S]+\.hero \.hero-left-anchor > p\.hero-intro\s*\{[^}]+width:\s*min\(calc\(100% \+ \.5rem\), 39rem\)[^}]+font-size:\s*\.9375rem[^}]+line-height:\s*1\.64[^}]+text-align:\s*left[^}]+text-wrap-style:\s*auto/s);
+  assert.match(page, /<p className="hero-intro hero-reveal hero-delay-2">I’m a video editor and creator based in India\. I edit YouTube videos, shorts, podcasts and social content for brands and creators around the world\.<\/p>/);
   assert.match(css, /@media \(max-width: 50rem\)[\s\S]+\.hero-portrait\s*\{[^}]+border-radius:\s*12px/s);
   assert.match(css, /\.hero-portrait img\s*\{[^}]+object-fit:\s*cover/s);
   assert.match(css, /\.hero\s*\{[^}]+--hero-timeline-to-profile:[^}]+--hero-profile-to-title:[^}]+--hero-title-to-copy:[^}]+--hero-copy-to-actions:[^}]+--hero-bottom-gap:/s);
@@ -940,7 +942,9 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(css, /@media \(max-width: 50rem\)[\s\S]+\.booking-overlay\s*\{[^}]+--booking-overlay-x:\s*clamp\(\.625rem, 3vw, 1rem\)[^}]+--booking-overlay-y:\s*clamp\(\.625rem, 3vw, 1rem\)/s);
   assert.match(css, /@media \(max-width: 50rem\)[\s\S]+\.booking-calendar\s*\{[^}]+height:\s*min\(var\(--booking-calendar-height, 44rem\), 100%\)/s);
   assert.match(css, /\.editorial-overlay\s*\{[^}]+visibility:\s*hidden[^}]+pointer-events:\s*none[^}]+transition-property:\s*opacity, visibility/s);
-  assert.match(css, /\.editorial-close\s*\{[^}]+min-height:\s*2\.75rem[^}]+font:\s*\.71875rem/s);
+  assert.match(css, /\.editorial-close\s*\{[^}]+min-height:\s*2\.75rem[^}]+align-items:\s*center[^}]+font:\s*\.71875rem/s);
+  assert.match(css, /\.editorial-close > span, \.editorial-close > i\s*\{[^}]+display:\s*inline-flex[^}]+align-items:\s*center[^}]+line-height:\s*1/s);
+  assert.doesNotMatch(css, /\.editorial-close i\s*\{[^}]+font-size:/s);
   assert.match(css, /--booking-stage:\s*#f2f0ea/);
   assert.match(css, /html\[data-theme="dark"\][\s\S]+--booking-stage:\s*#0f0f0e/s);
   assert.ok(!css.includes("height: min(50rem, calc(100dvh - clamp(1.5rem, 4vw, 3rem)))"));
