@@ -32,6 +32,7 @@ test("serves the standalone portfolio routes with unique indexable metadata", as
     assert.match(html, new RegExp(`<link rel="canonical" href="https://sarthakeai\\.com${path.replaceAll("/", "\\/")}"\\/>`), path);
     assert.equal((html.match(/rel="canonical"/g) ?? []).length, 1, path);
     assert.doesNotMatch(html, /noindex|localhost|chatgpt\.site/, path);
+    assert.doesNotMatch(html, /__sourcePage|__renderObservation/, path);
   }
 
   const sitemapResponse = await render("/sitemap.xml");
@@ -55,6 +56,17 @@ test("serves the standalone portfolio routes with unique indexable metadata", as
   const aboutResponse = await render("/about");
   assert.equal(aboutResponse.status, 308);
   assert.equal(aboutResponse.headers.get("location"), "/#about");
+
+  const legacyAboutPageResponse = await render("/about/page");
+  assert.equal(legacyAboutPageResponse.status, 308);
+  assert.equal(legacyAboutPageResponse.headers.get("location"), "/#about");
+
+  const legacyXiaomiPageResponse = await render("/work/xiaomi-13-pro-review/page");
+  assert.equal(legacyXiaomiPageResponse.status, 308);
+  assert.equal(legacyXiaomiPageResponse.headers.get("location"), "/work/xiaomi-13-pro-review");
+
+  const missingResponse = await render("/definitely-missing-seo-check");
+  assert.equal(missingResponse.status, 404);
 });
 
 test("server-renders the complete Sarthak portfolio", async () => {
@@ -62,22 +74,31 @@ test("server-renders the complete Sarthak portfolio", async () => {
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
   const html = await response.text();
-  assert.match(html, /<title>Sarthak Sharma \| Video Editor &amp; Creator<\/title>/);
-  assert.match(html, /<meta name="description" content="Sarthak Sharma is a video editor and creator based in India, editing YouTube videos, shorts, podcasts and social content for brands and creators worldwide\."\/>/);
+  assert.match(html, /<title>Sarthak Sharma \| Freelance Video Editor in Delhi<\/title>/);
+  assert.match(html, /<meta name="description" content="Official portfolio of Sarthak Sharma, a freelance video editor in New Delhi creating YouTube, podcast, short-form and social content for brands and creators\."\/>/);
   assert.match(html, /<link rel="canonical" href="https:\/\/sarthakeai\.com\/?"\/>/);
+  assert.match(html, /<meta property="og:title" content="Sarthak Sharma \| Freelance Video Editor in Delhi"\/>/);
+  assert.match(html, /<meta property="og:description" content="Official portfolio of Sarthak Sharma, a freelance video editor in New Delhi creating YouTube, podcast, short-form and social content for brands and creators\."\/>/);
+  assert.match(html, /<meta property="og:url" content="https:\/\/sarthakeai\.com\/?"\/>/);
   assert.match(html, /<meta property="og:site_name" content="Sarthak Sharma"\/>/);
-  assert.match(html, /<link rel="icon" href="\/favicon\.ico" sizes="any" type="image\/x-icon"\/>/);
-  assert.match(html, /<link rel="icon" href="\/favicon-16x16\.png" sizes="16x16" type="image\/png"\/>/);
-  assert.match(html, /<link rel="icon" href="\/favicon-32x32\.png" sizes="32x32" type="image\/png"\/>/);
-  assert.match(html, /<link rel="icon" href="\/favicon-48x48\.png" sizes="48x48" type="image\/png"\/>/);
+  assert.match(html, /<meta name="twitter:title" content="Sarthak Sharma \| Freelance Video Editor in Delhi"\/>/);
+  assert.match(html, /<meta name="twitter:description" content="Official portfolio of Sarthak Sharma, a freelance video editor in New Delhi creating YouTube, podcast, short-form and social content for brands and creators\."\/>/);
+  assert.match(html, /<link rel="icon" href="\/favicon\.ico" type="image\/x-icon" sizes="any"\/>/);
+  assert.match(html, /<link rel="icon" href="\/favicon-16x16\.png" type="image\/png" sizes="16x16"\/>/);
+  assert.match(html, /<link rel="icon" href="\/favicon-32x32\.png" type="image\/png" sizes="32x32"\/>/);
+  assert.match(html, /<link rel="icon" href="\/favicon-48x48\.png" type="image\/png" sizes="48x48"\/>/);
   assert.match(html, /<link rel="shortcut icon" href="\/favicon\.ico"\/>/);
   assert.match(html, /<link rel="manifest" href="\/site\.webmanifest"\/>/);
   assert.equal((html.match(/"@type":"WebSite"/g) ?? []).length, 1);
+  assert.equal((html.match(/"@type":"Person"/g) ?? []).length, 1);
+  assert.match(html, /"name":"Sarthak Sharma"/);
+  assert.match(html, /"url":"https:\/\/sarthakeai\.com\/"/);
   assert.match(html, /"alternateName":\["Sarthak EAI","sarthakeai\.com"\]/);
   assert.match(html, /"image":"https:\/\/sarthakeai\.com\/sarthak-about-1600\.webp"/);
   assert.match(html, /https:\/\/www\.upwork\.com\/freelancers\/~01a047caaf8c8ed5b6/);
   assert.doesNotMatch(html, /"@type":"(?:Review|AggregateRating)"/);
-  assert.match(html, /Sarthak/);
+  assert.match(html, /Sarthak Sharma, video editor and creator/);
+  assert.match(html, /Freelance video editor and creator based in New Delhi, India\./);
   assert.doesNotMatch(html, />Sarthak Sharma</);
   assert.match(html, /class="brand-signature brand-logo-only"/);
   assert.match(html, /Hi, I.m Sarthak/);
@@ -258,7 +279,7 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.doesNotMatch(page, /^"use client"/);
   assert.doesNotMatch(layout, /next\/headers|generateMetadata/);
   assert.match(layout, /metadataBase/);
-  assert.match(layout, /const title = "Sarthak Sharma \| Video Editor & Creator"/);
+  assert.match(layout, /const title = "Sarthak Sharma \| Freelance Video Editor in Delhi"/);
   assert.match(layout, /siteName: "Sarthak Sharma"/);
   assert.match(layout, /icon:\s*\[[\s\S]*?\/favicon\.ico[\s\S]*?favicon-16x16\.png[\s\S]*?favicon-32x32\.png[\s\S]*?favicon-48x48\.png/);
   assert.match(layout, /shortcut: "\/favicon\.ico"/);
@@ -303,8 +324,11 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(timeline, /const clipARight = Number\.parseFloat\(clipAStyle\.left\) \+ Number\.parseFloat\(clipAStyle\.width\)/);
   assert.match(timeline, /const clipBLeft = Number\.parseFloat\(clipBStyle\.left\)/);
   assert.match(timeline, /const seamX = \(clipARight \+ clipBLeft\) \/ 2/);
-  assert.match(timeline, /rulerRect\.left - timelineRect\.left \+ halfTriangle/);
-  assert.match(timeline, /rulerRect\.right - timelineRect\.left - halfTriangle/);
+  assert.match(timeline, /const visibleTimeline = timeline\.closest<HTMLElement>\("\.hero"\) \?\? timeline/);
+  assert.match(timeline, /const visibleLeft = Math\.max\(rulerRect\.left, visibleTimelineRect\.left, 0\)/);
+  assert.match(timeline, /const visibleRight = Math\.min\(rulerRect\.right, visibleTimelineRect\.right, document\.documentElement\.clientWidth\)/);
+  assert.match(timeline, /visibleLeft - timelineRect\.left \+ halfTriangle/);
+  assert.match(timeline, /visibleRight - timelineRect\.left - halfTriangle/);
   assert.match(timeline, /window\.addEventListener\("pointermove"/);
   assert.doesNotMatch(timeline, /localStorage|sessionStorage|document\.cookie/);
   assert.doesNotMatch(timeline, /role="slider"|TIMELINE_NAVIGATE_EVENT|scrollIntoView|IntersectionObserver|window\.scrollTo|snap/i);
@@ -315,12 +339,24 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(css, /\.timeline-tick\.minor\s*\{[^}]+var\(--ink\) 22%/s);
   assert.match(css, /\.timeline-tick\.medium\s*\{[^}]+var\(--ink\) 34%/s);
   assert.match(css, /\.timeline-tick\.major\s*\{[^}]+var\(--ink\) 52%/s);
-  assert.match(css, /\.hero-timeline\s*\{[^}]+--playhead-inset:\s*\.425rem[^}]+--playhead-x:\s*var\(--playhead-inset\)/s);
-  assert.match(css, /\.timeline-playhead\s*\{[^}]+left:\s*0[^}]+width:\s*1\.75rem[^}]+height:\s*clamp\(9\.6rem, 17\.6vw, 14\.4rem\)[^}]+opacity:\s*0[^}]+pointer-events:\s*none[^}]+touch-action:\s*pan-y[^}]+transform:\s*translate3d\(var\(--playhead-x\), 0, 0\)/s);
+  assert.match(css, /\.timeline-clip-a\s*\{[^}]+left:\s*0[^}]+width:\s*50%/s);
+  assert.match(css, /\.timeline-clip-b\s*\{[^}]+left:\s*50%[^}]+width:\s*50%/s);
+  assert.match(css, /\.hero-timeline\s*\{[^}]+--timeline-ruler-top:\s*2\.75rem[^}]+--playhead-width:\s*1\.75rem[^}]+--playhead-height:\s*8\.85rem[^}]+--playhead-triangle-width:\s*1rem[^}]+--playhead-triangle-height:\s*\.85rem[^}]+--playhead-line-start:\s*1\.5rem[^}]+--playhead-red-line-height:\s*2\.9rem/s);
+  assert.match(css, /\.timeline-ruler\s*\{[^}]+inset:\s*var\(--timeline-ruler-top\) 0 auto/s);
+  assert.match(css, /\.timeline-playhead\s*\{[^}]+top:\s*calc\(var\(--timeline-ruler-top\) - var\(--playhead-line-start\)\)[^}]+left:\s*0[^}]+width:\s*var\(--playhead-width\)[^}]+height:\s*var\(--playhead-height\)[^}]+opacity:\s*0[^}]+pointer-events:\s*none[^}]+touch-action:\s*pan-y[^}]+transform:\s*translate3d\(var\(--playhead-x\), 0, 0\)/s);
   assert.match(css, /\.timeline-playhead\.is-initialized\s*\{[^}]+opacity:\s*1[^}]+pointer-events:\s*auto/s);
   assert.doesNotMatch(css, /--playhead-default-position/);
-  assert.match(css, /\.timeline-playhead::before\s*\{[^}]+width:\s*\.85rem[^}]+height:\s*\.72rem/s);
-  assert.match(css, /@media \(max-width: 50rem\)[\s\S]+\.timeline-playhead\s*\{[^}]+bottom:\s*0[^}]+height:\s*auto[^}]+\}[\s\S]+\.timeline-playhead::before\s*\{[^}]+width:\s*1rem[^}]+height:\s*\.85rem/s);
+  assert.match(css, /\.timeline-playhead::before\s*\{[^}]+width:\s*var\(--playhead-triangle-width\)[^}]+height:\s*var\(--playhead-triangle-height\)/s);
+  assert.doesNotMatch(css, /@media \(max-width: 50rem\)[\s\S]+\.timeline-playhead\s*\{[^}]+(?:width|height):/s);
+  assert.match(css, /@media \(max-width: 50rem\)[\s\S]+\.site-header\s*\{[^}]+position:\s*relative[^}]+height:\s*calc\(4\.5rem \+ env\(safe-area-inset-top\)\)/s);
+  assert.match(css, /\.site-header\.is-timeline-aware\s*\{[^}]+position:\s*fixed/s);
+  assert.match(css, /\.site-header\.is-timeline-aware\.is-past-timeline:not\(\.menu-open\)\s*\{[^}]+transform:\s*translate3d\(0, calc\(-100% - 1px\), 0\)/s);
+  assert.match(css, /@media \(max-width: 50rem\)[\s\S]+\.hero\s*\{[^}]+--hero-timeline-top:\s*5\.25rem/s);
+  assert.match(css, /@media \(max-width: 50rem\)[\s\S]+\.timeline-clip-a\s*\{[^}]+width:\s*50%[^}]*\}[\s\S]+\.timeline-clip-b\s*\{[^}]+left:\s*50%[^}]+width:\s*50%/s);
+  assert.match(header, /const timeline = pathname === "\/" \? document\.querySelector<HTMLElement>\("\.hero-timeline"\) : null/);
+  assert.match(header, /timelineBoundary = window\.scrollY \+ timelineRect\.bottom - headerHeight/);
+  assert.match(header, /new ResizeObserver\(onViewportChange\)/);
+  assert.match(header, /window\.addEventListener\("scroll", onScroll, \{ passive: true \}\)/);
   assert.doesNotMatch(css, /timeline-sticky|is-stuck|timeline-marker|timeline-mobile|timeline-playhead-hit|timeline-navigation-active|timeline-scroll-offset|timeline-header-offset/);
   assert.doesNotMatch(page, /className="portrait"/);
   assert.match(header, /^"use client"/);

@@ -31,6 +31,7 @@ export function HeroTimeline() {
     const clipB = clipBRef.current;
     const playhead = playheadRef.current;
     if (!timeline || !ruler || !clipA || !clipB || !playhead) return;
+    const visibleTimeline = timeline.closest<HTMLElement>(".hero") ?? timeline;
 
     let bounds: RulerBounds = { left: 0, right: 0 };
     let normalizedPosition = 0;
@@ -53,11 +54,14 @@ export function HeroTimeline() {
     const readBounds = () => {
       const timelineRect = timeline.getBoundingClientRect();
       const rulerRect = ruler.getBoundingClientRect();
+      const visibleTimelineRect = visibleTimeline.getBoundingClientRect();
+      const visibleLeft = Math.max(rulerRect.left, visibleTimelineRect.left, 0);
+      const visibleRight = Math.min(rulerRect.right, visibleTimelineRect.right, document.documentElement.clientWidth);
       const triangleWidth = Number.parseFloat(getComputedStyle(playhead, "::before").width) || 0;
       const halfTriangle = triangleWidth / 2;
       return {
-        left: rulerRect.left - timelineRect.left + halfTriangle,
-        right: rulerRect.right - timelineRect.left - halfTriangle,
+        left: visibleLeft - timelineRect.left + halfTriangle,
+        right: visibleRight - timelineRect.left - halfTriangle,
       };
     };
 
@@ -176,6 +180,7 @@ export function HeroTimeline() {
 
     const resizeObserver = new ResizeObserver(handleResize);
     resizeObserver.observe(ruler);
+    resizeObserver.observe(visibleTimeline);
     playhead.addEventListener("pointerdown", handlePointerDown);
     window.addEventListener("pointermove", handlePointerMove, { passive: true });
     window.addEventListener("pointerup", finishDrag);

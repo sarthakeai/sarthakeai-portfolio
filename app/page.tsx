@@ -57,7 +57,7 @@ export default async function Home() {
       name: "Sarthak Sharma",
       alternateName: "Sarthak EAI",
       url: "https://sarthakeai.com/",
-      description: "Video editor and creator based in India.",
+      description: "Freelance video editor and creator based in New Delhi, India.",
       image: "https://sarthakeai.com/sarthak-about-1600.webp",
       jobTitle: "Video Editor & Creator",
       address: { "@type": "PostalAddress", addressLocality: "New Delhi", addressCountry: "IN" },
@@ -77,7 +77,7 @@ export default async function Home() {
           <div className="hero-copy">
             <div className="hero-left-anchor">
               <figure className="hero-portrait hero-reveal">
-                <img src="/sarthak-sharma.webp" alt="Sarthak" width="320" height="320" fetchPriority="high" />
+                <img src="/sarthak-sharma.webp" alt="Sarthak Sharma, video editor and creator" width="320" height="320" fetchPriority="high" />
               </figure>
               <h1 className="hero-reveal hero-delay-1">Hi, I’m Sarthak.</h1>
               <p className="hero-intro hero-reveal hero-delay-2">I’m a video editor and creator based in India. I edit YouTube videos, shorts, podcasts and social content for brands and creators around the world.</p>

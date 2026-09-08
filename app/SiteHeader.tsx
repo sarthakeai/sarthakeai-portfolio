@@ -49,6 +49,7 @@ export function SiteHeader() {
   const [selectedHref, setSelectedHref] = useState<string | null>(null);
   const [pendingMobileNavigation, setPendingMobileNavigation] = useState<{ hash: string; reducedMotion: boolean } | null>(null);
   const [scrolled, setScrolled] = useState(false);
+  const [pastTimeline, setPastTimeline] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const headerRef = useRef<HTMLElement>(null);
   const navRef = useRef<HTMLElement>(null);
@@ -87,18 +88,71 @@ export function SiteHeader() {
   }, []);
 
   useEffect(() => {
+    const mobileMedia = window.matchMedia("(max-width: 50rem)");
+    const timeline = pathname === "/" ? document.querySelector<HTMLElement>(".hero-timeline") : null;
+    const hero = timeline?.closest<HTMLElement>(".hero") ?? null;
     let frame = 0;
+    let timelineBoundary = Number.POSITIVE_INFINITY;
+    let timelinePassed = false;
+
+    const updateScrollState = () => {
+      const scrollTop = window.scrollY;
+      setScrolled(scrollTop > 20);
+
+      if (!mobileMedia.matches || !timeline) {
+        timelinePassed = false;
+        setPastTimeline(false);
+        return;
+      }
+
+      // The timeline is no longer visible once its lower edge has passed
+      // behind the fixed mobile header. A small hysteresis prevents touch
+      // scrolling from toggling the header repeatedly on the same pixel.
+      const hysteresis = 4;
+      const nextTimelinePassed = timelinePassed
+        ? scrollTop > timelineBoundary - hysteresis
+        : scrollTop > timelineBoundary + hysteresis;
+      timelinePassed = nextTimelinePassed;
+      setPastTimeline(nextTimelinePassed);
+    };
+
+    const measureTimelineBoundary = () => {
+      if (!mobileMedia.matches || !timeline || !headerRef.current) {
+        timelineBoundary = Number.POSITIVE_INFINITY;
+      } else {
+        const timelineRect = timeline.getBoundingClientRect();
+        const headerHeight = headerRef.current.getBoundingClientRect().height;
+        timelineBoundary = window.scrollY + timelineRect.bottom - headerHeight;
+      }
+      updateScrollState();
+    };
+
     const onScroll = () => {
-      cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(() => setScrolled(window.scrollY > 20));
+      window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(updateScrollState);
     };
-    onScroll();
+    const onViewportChange = () => {
+      window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(measureTimelineBoundary);
+    };
+
+    const resizeObserver = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(onViewportChange);
+    if (timeline) resizeObserver?.observe(timeline);
+    if (hero) resizeObserver?.observe(hero);
+
+    measureTimelineBoundary();
     window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onViewportChange);
+    mobileMedia.addEventListener("change", onViewportChange);
+
     return () => {
-      cancelAnimationFrame(frame);
+      window.cancelAnimationFrame(frame);
+      resizeObserver?.disconnect();
       window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onViewportChange);
+      mobileMedia.removeEventListener("change", onViewportChange);
     };
-  }, []);
+  }, [pathname]);
 
   useEffect(() => {
     if (pathname !== "/") return;
@@ -290,7 +344,7 @@ export function SiteHeader() {
   };
 
   return (
-    <header ref={headerRef} className={`site-header${scrolled ? " is-scrolled" : ""}${menuOpen ? " menu-open" : ""}`}>
+    <header ref={headerRef} className={`site-header${pathname === "/" ? " is-timeline-aware" : ""}${pastTimeline ? " is-past-timeline" : ""}${scrolled ? " is-scrolled" : ""}${menuOpen ? " menu-open" : ""}`}>
       <div className="site-header-inner">
       <a className="brand" href="/" aria-label="Sarthak, home" onClick={navigateHome}>
         <span className="brand-signature brand-logo-only" aria-hidden="true" />
