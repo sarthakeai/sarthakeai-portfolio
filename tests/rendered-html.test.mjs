@@ -74,15 +74,15 @@ test("server-renders the complete Sarthak portfolio", async () => {
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
   const html = await response.text();
-  assert.match(html, /<title>Sarthak Sharma — Video Editor for Brands &amp; Creators<\/title>/);
+  assert.match(html, /<title>Sarthak Sharma - Video Editor for Brands &amp; Creators<\/title>/);
   assert.match(html, /<meta name="description" content="Video editor and creator working with brands and creators worldwide across YouTube, short-form, podcasts and motion graphics\. Based in New Delhi, India\."\/>/);
   assert.match(html, /<link rel="canonical" href="https:\/\/sarthakeai\.com\/?"\/>/);
-  assert.match(html, /<meta property="og:title" content="Sarthak Sharma — Video Editor for Brands &amp; Creators"\/>/);
+  assert.match(html, /<meta property="og:title" content="Sarthak Sharma - Video Editor for Brands &amp; Creators"\/>/);
   assert.match(html, /<meta property="og:description" content="Video editor and creator working with brands and creators worldwide across YouTube, short-form, podcasts and motion graphics\. Based in New Delhi, India\."\/>/);
   assert.match(html, /<meta property="og:url" content="https:\/\/sarthakeai\.com\/?"\/>/);
   assert.match(html, /<meta property="og:site_name" content="Sarthak Sharma"\/>/);
   assert.match(html, /<meta property="og:image" content="https:\/\/sarthakeai\.com\/og-white\.png"\/>/);
-  assert.match(html, /<meta name="twitter:title" content="Sarthak Sharma — Video Editor for Brands &amp; Creators"\/>/);
+  assert.match(html, /<meta name="twitter:title" content="Sarthak Sharma - Video Editor for Brands &amp; Creators"\/>/);
   assert.match(html, /<meta name="twitter:description" content="Video editor and creator working with brands and creators worldwide across YouTube, short-form, podcasts and motion graphics\. Based in New Delhi, India\."\/>/);
   assert.match(html, /<meta name="twitter:image" content="https:\/\/sarthakeai\.com\/og-white\.png"\/>/);
   assert.match(html, /<link rel="icon" href="\/favicon\.ico" type="image\/x-icon" sizes="any"\/>/);
@@ -283,7 +283,7 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.doesNotMatch(page, /^"use client"/);
   assert.doesNotMatch(layout, /next\/headers|generateMetadata/);
   assert.match(layout, /metadataBase/);
-  assert.match(layout, /const title = "Sarthak Sharma — Video Editor for Brands & Creators"/);
+  assert.match(layout, /const title = "Sarthak Sharma - Video Editor for Brands & Creators"/);
   assert.match(layout, /siteName: "Sarthak Sharma"/);
   assert.match(layout, /icon:\s*\[[\s\S]*?\/favicon\.ico[\s\S]*?favicon-16x16\.png[\s\S]*?favicon-32x32\.png[\s\S]*?favicon-48x48\.png/);
   assert.match(layout, /shortcut: "\/favicon\.ico"/);
@@ -929,7 +929,7 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(documentScrollLock, /body\.style\.position = "fixed"/);
   assert.match(documentScrollLock, /window\.scrollTo\(0, scrollY\)/);
   assert.match(css, /\.case-study-meta\s*\{[^}]+repeat\(3, minmax\(0, 1fr\)\)/s);
-  assert.match(css, /\.case-study-meta > div:nth-child\(-n\+2\)\s*\{[^}]*border-bottom:\s*0/);
+  assert.match(css, /@media \(max-width: 50rem\)[\s\S]+\.case-study-meta > div\s*\{[^}]*border-bottom:\s*0/);
   assert.match(css, /\.case-study-meta > div:nth-child\(3\)\s*\{[^}]*grid-column:\s*1 \/ -1[^}]*border-top:\s*1px solid var\(--line\)/);
   assert.match(css, /@media \(max-width: 50rem\)[\s\S]+\.case-study-story\s*\{[^}]+grid-template-columns:\s*minmax\(0, 1fr\)/s);
   assert.match(css, /\.project-meta-line\s*\{[^}]+grid-template-columns:\s*auto minmax\(0, 1fr\) auto/s);
