@@ -929,6 +929,8 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(documentScrollLock, /body\.style\.position = "fixed"/);
   assert.match(documentScrollLock, /window\.scrollTo\(0, scrollY\)/);
   assert.match(css, /\.case-study-meta\s*\{[^}]+repeat\(3, minmax\(0, 1fr\)\)/s);
+  assert.match(css, /\.case-study-page > \.standalone-page-header\s*\{[^}]*border-bottom:\s*0/);
+  assert.match(css, /\.case-study-meta\s*\{[^}]*border-block:\s*1px solid var\(--line\)/);
   assert.match(css, /@media \(max-width: 50rem\)[\s\S]+\.case-study-meta > div\s*\{[^}]*border-bottom:\s*0/);
   assert.match(css, /\.case-study-meta > div:nth-child\(3\)\s*\{[^}]*grid-column:\s*1 \/ -1[^}]*border-top:\s*1px solid var\(--line\)/);
   assert.match(css, /@media \(max-width: 50rem\)[\s\S]+\.case-study-story\s*\{[^}]+grid-template-columns:\s*minmax\(0, 1fr\)/s);
