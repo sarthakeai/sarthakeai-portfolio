@@ -37,6 +37,7 @@ export default function WorkPage() {
                 </a>
                 <div className="project-info">
                   <div className="project-copy">
+                    <p className="work-index-meta">{study.client} <span aria-hidden="true">·</span> {study.category}</p>
                     <h2><a href={`/work/${study.slug}`}>{study.title}</a></h2>
                     <p>{study.description}</p>
                   </div>

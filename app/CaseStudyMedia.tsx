@@ -61,7 +61,7 @@ function CaseStudyMediaItem({ media, projectTitle, showCenterPlay }: { media: Pr
 
 export function CaseStudyMedia({ media, projectTitle, portrait = false, showCenterPlay = false }: { media: ProjectMedia[]; projectTitle: string; portrait?: boolean; showCenterPlay?: boolean }) {
   return (
-    <div className={`case-study-media${portrait ? " is-portrait" : ""}`} aria-label={`Selected media for ${projectTitle}`}>
+    <div className={`case-study-media${portrait ? " is-portrait" : ""}`} role="region" aria-label={`Selected media for ${projectTitle}`}>
       {media.map((item) => (
         <figure key={item.id}>
           <div className="case-study-media-frame"><CaseStudyMediaItem media={item} projectTitle={projectTitle} showCenterPlay={showCenterPlay} /></div>

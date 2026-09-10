@@ -74,15 +74,17 @@ test("server-renders the complete Sarthak portfolio", async () => {
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
   const html = await response.text();
-  assert.match(html, /<title>Sarthak Sharma \| Freelance Video Editor in Delhi<\/title>/);
-  assert.match(html, /<meta name="description" content="Official portfolio of Sarthak Sharma, a freelance video editor in New Delhi creating YouTube, podcast, short-form and social content for brands and creators\."\/>/);
+  assert.match(html, /<title>Sarthak Sharma — Video Editor for Brands &amp; Creators<\/title>/);
+  assert.match(html, /<meta name="description" content="Video editor and creator working with brands and creators worldwide across YouTube, short-form, podcasts and motion graphics\. Based in New Delhi, India\."\/>/);
   assert.match(html, /<link rel="canonical" href="https:\/\/sarthakeai\.com\/?"\/>/);
-  assert.match(html, /<meta property="og:title" content="Sarthak Sharma \| Freelance Video Editor in Delhi"\/>/);
-  assert.match(html, /<meta property="og:description" content="Official portfolio of Sarthak Sharma, a freelance video editor in New Delhi creating YouTube, podcast, short-form and social content for brands and creators\."\/>/);
+  assert.match(html, /<meta property="og:title" content="Sarthak Sharma — Video Editor for Brands &amp; Creators"\/>/);
+  assert.match(html, /<meta property="og:description" content="Video editor and creator working with brands and creators worldwide across YouTube, short-form, podcasts and motion graphics\. Based in New Delhi, India\."\/>/);
   assert.match(html, /<meta property="og:url" content="https:\/\/sarthakeai\.com\/?"\/>/);
   assert.match(html, /<meta property="og:site_name" content="Sarthak Sharma"\/>/);
-  assert.match(html, /<meta name="twitter:title" content="Sarthak Sharma \| Freelance Video Editor in Delhi"\/>/);
-  assert.match(html, /<meta name="twitter:description" content="Official portfolio of Sarthak Sharma, a freelance video editor in New Delhi creating YouTube, podcast, short-form and social content for brands and creators\."\/>/);
+  assert.match(html, /<meta property="og:image" content="https:\/\/sarthakeai\.com\/og-white\.png"\/>/);
+  assert.match(html, /<meta name="twitter:title" content="Sarthak Sharma — Video Editor for Brands &amp; Creators"\/>/);
+  assert.match(html, /<meta name="twitter:description" content="Video editor and creator working with brands and creators worldwide across YouTube, short-form, podcasts and motion graphics\. Based in New Delhi, India\."\/>/);
+  assert.match(html, /<meta name="twitter:image" content="https:\/\/sarthakeai\.com\/og-white\.png"\/>/);
   assert.match(html, /<link rel="icon" href="\/favicon\.ico" type="image\/x-icon" sizes="any"\/>/);
   assert.match(html, /<link rel="icon" href="\/favicon-16x16\.png" type="image\/png" sizes="16x16"\/>/);
   assert.match(html, /<link rel="icon" href="\/favicon-32x32\.png" type="image\/png" sizes="32x32"\/>/);
@@ -98,7 +100,7 @@ test("server-renders the complete Sarthak portfolio", async () => {
   assert.match(html, /https:\/\/www\.upwork\.com\/freelancers\/~01a047caaf8c8ed5b6/);
   assert.doesNotMatch(html, /"@type":"(?:Review|AggregateRating)"/);
   assert.match(html, /Sarthak Sharma, video editor and creator/);
-  assert.match(html, /Freelance video editor and creator based in New Delhi, India\./);
+  assert.match(html, /Video editor and creator based in New Delhi, India, working with brands and creators worldwide\./);
   assert.doesNotMatch(html, />Sarthak Sharma</);
   assert.match(html, /class="brand-signature brand-logo-only"/);
   assert.match(html, /Hi, I.m Sarthak/);
@@ -241,7 +243,7 @@ test("keeps both testimonials real, stacked, exact, and accessible", async () =>
 });
 
 test("keeps interaction scoped and accessibility preferences explicit", async () => {
-  const [page, aboutContent, aboutStory, pageFrame, siteFooter, layout, header, booking, availabilityRoute, contactForm, contactSubmit, portfolio, shortFormViewer, shortFormRoute, workPage, workShortFormCard, caseStudyMedia, nativePortfolioVideo, mediaPlayback, data, youtubeShowcase, youtubeData, youtubeRoute, theme, timeline, css, worker, viteConfig, swanLogo, favicon, nextConfig, motionRoute, caseStudyData] = await Promise.all([
+  const [page, aboutContent, aboutStory, pageFrame, siteFooter, layout, header, booking, availabilityRoute, contactForm, contactSubmit, portfolio, shortFormViewer, shortFormRoute, workPage, workShortFormCard, caseStudyMedia, nativePortfolioVideo, mediaPlayback, data, youtubeShowcase, youtubeData, youtubeRoute, theme, timeline, css, worker, viteConfig, swanLogo, favicon, nextConfig, motionRoute, caseStudyData, projectCaseStudy, documentScrollLock] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/about-content.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/AboutStoryExperience.tsx", import.meta.url), "utf8"),
@@ -275,11 +277,13 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
     readFile(new URL("../next.config.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/work/motion-brand-animation/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/case-study-data.ts", import.meta.url), "utf8"),
+    readFile(new URL("../app/ProjectCaseStudy.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/document-scroll-lock.ts", import.meta.url), "utf8"),
   ]);
   assert.doesNotMatch(page, /^"use client"/);
   assert.doesNotMatch(layout, /next\/headers|generateMetadata/);
   assert.match(layout, /metadataBase/);
-  assert.match(layout, /const title = "Sarthak Sharma \| Freelance Video Editor in Delhi"/);
+  assert.match(layout, /const title = "Sarthak Sharma — Video Editor for Brands & Creators"/);
   assert.match(layout, /siteName: "Sarthak Sharma"/);
   assert.match(layout, /icon:\s*\[[\s\S]*?\/favicon\.ico[\s\S]*?favicon-16x16\.png[\s\S]*?favicon-32x32\.png[\s\S]*?favicon-48x48\.png/);
   assert.match(layout, /shortcut: "\/favicon\.ico"/);
@@ -435,6 +439,7 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(css, /\.hero-left-anchor\s*\{[^}]+width:\s*100%[^}]+grid-template-columns:\s*minmax\(0, 1fr\)/s);
   assert.match(css, /\.hero-left-anchor > :is\(\.hero-portrait, h1, \.hero-intro\)\s*\{[^}]+grid-column:\s*1[^}]+margin-inline-start:\s*0/s);
   assert.match(css, /@media \(max-width: 28rem\)[\s\S]+\.hero \.hero-left-anchor > p\.hero-intro\s*\{[^}]+width:\s*min\(calc\(100% \+ \.5rem\), 39rem\)[^}]+font-size:\s*\.9375rem[^}]+line-height:\s*1\.64[^}]+text-align:\s*left[^}]+text-wrap-style:\s*auto/s);
+  assert.match(css, /@media \(max-width: 28rem\)[\s\S]+\.standalone-page\.work-index-page\s*\{[^}]+padding-top:\s*clamp\(5\.75rem, 24vw, 6\.5rem\)/s);
   assert.match(page, /<p className="hero-intro hero-reveal hero-delay-2">I’m a video editor and creator based in India\. I edit YouTube videos, shorts, podcasts and social content for brands and creators around the world\.<\/p>/);
   assert.match(css, /@media \(max-width: 50rem\)[\s\S]+\.hero-portrait\s*\{[^}]+border-radius:\s*12px/s);
   assert.match(css, /\.hero-portrait img\s*\{[^}]+object-fit:\s*cover/s);
@@ -676,10 +681,10 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(youtubeShowcase, /const \[playersMounted, setPlayersMounted\] = useState\(false\)/);
   assert.match(youtubeShowcase, /playersMounted \? \(/);
   assert.match(youtubeShowcase, /className="youtube-native-player"/);
-  assert.match(youtubeShowcase, /loading="eager"/);
+  assert.match(youtubeShowcase, /loading="lazy"/);
   assert.match(youtubeShowcase, /IntersectionObserver/);
-  assert.match(youtubeShowcase, /rootMargin: "1000px 0px"/);
-  assert.match(youtubeShowcase, /rootMargin: "1200px 0px"/);
+  assert.match(youtubeShowcase, /rootMargin: "400px 0px"/);
+  assert.match(youtubeShowcase, /rootMargin: "800px 0px"/);
   assert.match(youtubeShowcase, /prewarmYouTubeResources/);
   assert.match(youtubeShowcase, /https:\/\/i\.ytimg\.com/);
   assert.match(youtubeShowcase, /https:\/\/www\.youtube-nocookie\.com/);
@@ -784,7 +789,7 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(contactForm, /name="name"[^>]+required/);
   assert.match(contactForm, /type="email" name="email"[^>]+required/);
   assert.match(contactForm, /textarea name="message"[^>]+required/);
-  assert.match(contactForm, /event\.isComposing \|\| event\.key !== "Enter" \|\| \(!event\.ctrlKey && !event\.metaKey\)/);
+  assert.match(contactForm, /event\.nativeEvent\.isComposing \|\| event\.key !== "Enter" \|\| \(!event\.ctrlKey && !event\.metaKey\)/);
   assert.match(contactForm, /event\.currentTarget\.form\?\.requestSubmit\(\)/);
   assert.match(contactForm, /aria-label="Your Name" placeholder="Your Name"/);
   assert.match(contactForm, /aria-label="Your Email" placeholder="Your Email"/);
@@ -911,6 +916,20 @@ test("keeps interaction scoped and accessibility preferences explicit", async ()
   assert.match(css, /@media \(max-width: 42rem\)[\s\S]+\.short-form-viewer-desktop-copy\s*\{\s*display:\s*none[\s\S]+?\.short-form-viewer-mobile-copy\s*\{\s*display:\s*block/);
   assert.match(css, /\.project\.portrait \.project-visual\.has-media\s*\{\s*aspect-ratio:\s*27\/16/);
   assert.match(css, /\.project-preview-triptych\s*\{[^}]+repeat\(3, minmax\(0, 1fr\)\)[^}]+padding:\s*0/s);
+  assert.match(projectCaseStudy, /className="case-study-meta"/);
+  assert.match(projectCaseStudy, />The project</);
+  assert.match(projectCaseStudy, />The edit \/ approach</);
+  assert.match(projectCaseStudy, /className="case-study-next"/);
+  assert.match(caseStudyMedia, /role="region" aria-label=\{`Selected media for/);
+  assert.match(shortFormViewer, /className="short-form-viewer-meta"/);
+  assert.match(shortFormViewer, /shortFormStudy\.platforms\.join/);
+  assert.match(portfolio, /className="filter-label-compact"/);
+  assert.match(portfolio, /lockDocumentScroll\(\)/);
+  assert.match(shortFormViewer, /lockDocumentScroll\(\)/);
+  assert.match(documentScrollLock, /body\.style\.position = "fixed"/);
+  assert.match(documentScrollLock, /window\.scrollTo\(0, scrollY\)/);
+  assert.match(css, /\.case-study-meta\s*\{[^}]+repeat\(3, minmax\(0, 1fr\)\)/s);
+  assert.match(css, /@media \(max-width: 50rem\)[\s\S]+\.case-study-story\s*\{[^}]+grid-template-columns:\s*minmax\(0, 1fr\)/s);
   assert.match(css, /\.project-meta-line\s*\{[^}]+grid-template-columns:\s*auto minmax\(0, 1fr\) auto/s);
   assert.doesNotMatch(css, /project-art-media/);
   assert.doesNotMatch(css, /background:\s*rgba\(12,12,11,\.74\)/);

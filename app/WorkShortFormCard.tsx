@@ -29,6 +29,7 @@ export function WorkShortFormCard({ study }: { study: CaseStudy }) {
         </a>
         <div className="project-info">
           <div className="project-copy">
+            <p className="work-index-meta">{study.client} <span aria-hidden="true">·</span> {study.category}</p>
             <h2><a href={`/work/${study.slug}`} onClick={(event) => { event.preventDefault(); triggerRef.current = event.currentTarget; setViewerOpen(true); }}>{displayTitle}</a></h2>
             <p>{displayDescription}</p>
           </div>

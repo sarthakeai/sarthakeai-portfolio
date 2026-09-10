@@ -31,7 +31,7 @@ export function ContactForm() {
   };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.isComposing || event.key !== "Enter" || (!event.ctrlKey && !event.metaKey)) return;
+    if (event.nativeEvent.isComposing || event.key !== "Enter" || (!event.ctrlKey && !event.metaKey)) return;
     event.preventDefault();
     if (submittingRef.current) return;
     event.currentTarget.form?.requestSubmit();

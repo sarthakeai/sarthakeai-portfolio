@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { caseStudies } from "./case-study-data";
 import { CaseStudyMedia } from "./CaseStudyMedia";
 import { stopAllMedia, stopMediaWithin } from "./media-playback";
+import { lockDocumentScroll } from "./document-scroll-lock";
 
 const shortFormStudy = caseStudies.find((study) => study.slug === "short-form-video");
 
@@ -22,13 +23,8 @@ export function ShortFormProjectViewer({
   useEffect(() => {
     if (!open) return;
 
-    const root = document.documentElement;
-    const body = document.body;
-    const previousRootOverflow = root.style.overflow;
-    const previousBodyOverflow = body.style.overflow;
     const dialog = dialogRef.current;
-    root.style.overflow = "hidden";
-    body.style.overflow = "hidden";
+    const unlockDocumentScroll = lockDocumentScroll();
     if (dialog) {
       dialog.scrollTop = 0;
       dialog.scrollLeft = 0;
@@ -76,8 +72,7 @@ export function ShortFormProjectViewer({
     return () => {
       stopMediaWithin(dialog);
       stopAllMedia();
-      root.style.overflow = previousRootOverflow;
-      body.style.overflow = previousBodyOverflow;
+      unlockDocumentScroll();
       cancelAnimationFrame(initialFrame);
       cancelAnimationFrame(layoutFrame);
       document.removeEventListener("keydown", onKeyDown);
@@ -95,6 +90,11 @@ export function ShortFormProjectViewer({
             <div className="short-form-viewer-desktop-copy">
               <h2>{shortFormStudy.title}</h2>
               <p className="short-form-viewer-description" id="short-form-viewer-description">{shortFormStudy.description}</p>
+              <dl className="short-form-viewer-meta" aria-label="Short-form project details">
+                <div><dt>Clients</dt><dd>{shortFormStudy.client}</dd></div>
+                <div><dt>Project type</dt><dd>{shortFormStudy.category}</dd></div>
+                {shortFormStudy.platforms ? <div><dt>Platforms</dt><dd>{shortFormStudy.platforms.join(" · ")}</dd></div> : null}
+              </dl>
             </div>
             <div className="short-form-viewer-mobile-copy">
               <p className="project-eyebrow">Swan &amp; Roxom</p>
@@ -110,8 +110,10 @@ export function ShortFormProjectViewer({
             </div>
             <ul className="case-study-roles" aria-label={`Roles for ${shortFormStudy.title}`}>{shortFormStudy.roles.map((role) => <li key={role}>{role}</li>)}</ul>
           </div>
+          <p className="short-form-viewer-supporting-copy">{shortFormStudy.supportingCopy}</p>
         </div>
         <CaseStudyMedia media={shortFormStudy.media} projectTitle={shortFormStudy.title} portrait showCenterPlay />
+        <a className="case-study-next short-form-viewer-next" href="/work/21st-capital-introduction"><span className="project-label">Next project</span><strong>21st Capital introduction</strong><i aria-hidden="true">↗</i></a>
       </div>
     </div>
   );

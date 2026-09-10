@@ -6,6 +6,9 @@ export type CaseStudy = {
   seoTitle: string;
   seoDescription: string;
   eyebrow: string;
+  client: string;
+  category: string;
+  platforms?: string[];
   description: string;
   supportingCopy: string;
   roles: string[];
@@ -32,6 +35,9 @@ export const caseStudies: CaseStudy[] = [
     seoTitle: "Short-Form Video Editing for Swan Bitcoin & Roxom | Sarthak Sharma",
     seoDescription: "Short-form video editing by Sarthak Sharma for Swan Bitcoin and Roxom, featuring interview-driven edits, captions, visual cutaways, motion graphics and sound design.",
     eyebrow: "Swan Bitcoin + Roxom · Short-form social video",
+    client: "Swan Bitcoin / Roxom",
+    category: "Short-form social editing",
+    platforms: ["X", "YouTube Shorts", "Instagram"],
     description: shortFormProjectCopy.description,
     supportingCopy: "The source material comes from interviews and talks, shaped into focused social edits through tighter pacing, clear captions, visual cutaways, supporting motion graphics and sound design.",
     roles: ["Editing", "Captions", "Motion Graphics", "Sound Design"],
@@ -44,6 +50,8 @@ export const caseStudies: CaseStudy[] = [
     seoTitle: "21st Capital Brand Video Editing | Sarthak Sharma",
     seoDescription: "A company introduction video edited by Sarthak Sharma for 21st Capital using presenter-led editing, diagrams, motion graphics and sound design.",
     eyebrow: "21st Capital · Company introduction",
+    client: "21st Capital",
+    category: "Brand introduction",
     description: introduction.description,
     supportingCopy: "The one-minute edit combines a presenter-led explanation with diagrams, considered layouts, supporting motion and sound design to introduce the company clearly.",
     roles: introduction.roles,
@@ -56,6 +64,8 @@ export const caseStudies: CaseStudy[] = [
     seoTitle: "Xiaomi 13 Pro Review Video Editing | Sarthak Sharma",
     seoDescription: "A hands-on Xiaomi 13 Pro review created and edited by Sarthak Sharma for his technology YouTube channel.",
     eyebrow: "Sarthak EAI · Long-form review",
+    client: "Sarthak EAI",
+    category: "YouTube long-form",
     description: xiaomi.description,
     supportingCopy: "Created for my own technology channel, the project brings together the responsibilities of both video editor and creator: shaping the story, presenting the hands-on experience and finishing the video with motion graphics and sound design.",
     roles: xiaomi.roles,
@@ -69,6 +79,8 @@ export const caseStudies: CaseStudy[] = [
     seoTitle: "Motion & Brand Animation | Sarthak Sharma",
     seoDescription: "Selected motion and brand animation work by Sarthak Sharma for Bitcoin Treasuries, HashrateUp × Swan and Swan.",
     eyebrow: "Motion & brand animation",
+    client: "Bitcoin Treasuries / HashrateUp × Swan / Swan",
+    category: "Motion & brand animation",
     description: motion.description,
     supportingCopy: "The selected work brings together logo animation, brand motion, editing and sound design across three distinct visual identities.",
     roles: motion.roles,
@@ -81,6 +93,8 @@ export const caseStudies: CaseStudy[] = [
     seoTitle: "Podcast & Interview Video Editing | Sarthak Sharma",
     seoDescription: "Interview video editing by Sarthak Sharma for 21st Capital, including editing, captions, motion graphics and layout design.",
     eyebrow: "21st Capital · Interview episode",
+    client: "21st Capital",
+    category: "Podcast & interview",
     description: interview.description,
     supportingCopy: "The edit keeps the conversation direct and easy to follow, supported by captions, layout design and motion graphics where they help the presentation.",
     roles: interview.roles,

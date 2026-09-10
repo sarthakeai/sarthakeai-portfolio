@@ -57,7 +57,7 @@ export default async function Home() {
       name: "Sarthak Sharma",
       alternateName: "Sarthak EAI",
       url: "https://sarthakeai.com/",
-      description: "Freelance video editor and creator based in New Delhi, India.",
+      description: "Video editor and creator based in New Delhi, India, working with brands and creators worldwide.",
       image: "https://sarthakeai.com/sarthak-about-1600.webp",
       jobTitle: "Video Editor & Creator",
       address: { "@type": "PostalAddress", addressLocality: "New Delhi", addressCountry: "IN" },

@@ -36,6 +36,8 @@ test("keeps the EAI favicon assets crisp and multi-resolution", async () => {
 
 test("wires the final favicon package through the web manifest", async () => {
   const manifest = JSON.parse(await readFile(new URL("../public/site.webmanifest", import.meta.url), "utf8"));
+  assert.equal(manifest.name, "Sarthak Sharma — Video Editor for Brands & Creators");
+  assert.equal(manifest.description, "Video editor and creator working with brands and creators worldwide across YouTube, short-form, podcasts and motion graphics. Based in New Delhi, India.");
   assert.equal(manifest.background_color, "#ffffff");
   assert.equal(manifest.theme_color, "#ffffff");
   assert.deepEqual(

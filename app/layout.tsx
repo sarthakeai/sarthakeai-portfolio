@@ -72,8 +72,8 @@ const startupScrollScript = `(() => {
   } catch (_) {}
 })();`;
 
-const title = "Sarthak Sharma | Freelance Video Editor in Delhi";
-const description = "Official portfolio of Sarthak Sharma, a freelance video editor in New Delhi creating YouTube, podcast, short-form and social content for brands and creators.";
+const title = "Sarthak Sharma — Video Editor for Brands & Creators";
+const description = "Video editor and creator working with brands and creators worldwide across YouTube, short-form, podcasts and motion graphics. Based in New Delhi, India.";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://sarthakeai.com"),

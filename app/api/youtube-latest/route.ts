@@ -22,6 +22,12 @@ type YouTubePlaylistItemsResponse = {
   items?: Array<{ contentDetails?: { videoId?: string } }>;
 };
 
+type YouTubeThumbnail = {
+  url?: string;
+  width?: number;
+  height?: number;
+};
+
 type YouTubeVideoResponse = {
   items?: Array<{
     id?: string;
@@ -29,7 +35,7 @@ type YouTubeVideoResponse = {
       liveBroadcastContent?: "none" | "live" | "upcoming";
       publishedAt?: string;
       title?: string;
-      thumbnails?: Record<string, { url?: string; width?: number; height?: number }>;
+      thumbnails?: Record<string, YouTubeThumbnail>;
     };
     contentDetails?: { duration?: string };
     statistics?: { viewCount?: string };
@@ -58,9 +64,7 @@ function parseIsoDuration(value: string | undefined) {
   return (((days * 24) + hours) * 60 + minutes) * 60 + seconds;
 }
 
-function chooseThumbnail(thumbnails: YouTubeVideoResponse["items"] extends Array<infer Item>
-  ? Item extends { snippet?: { thumbnails?: infer T } } ? T : never
-  : never) {
+function chooseThumbnail(thumbnails: Record<string, YouTubeThumbnail> | undefined) {
   if (!thumbnails || typeof thumbnails !== "object") return "";
   const candidates = Object.values(thumbnails).filter((thumbnail) => Boolean(thumbnail?.url));
   candidates.sort((a, b) => ((b.width ?? 0) * (b.height ?? 0)) - ((a.width ?? 0) * (a.height ?? 0)));

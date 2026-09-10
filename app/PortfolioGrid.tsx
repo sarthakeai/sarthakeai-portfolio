@@ -5,6 +5,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { activateMedia, MEDIA_PLAYBACK_EVENT, stopAllMedia, stopMediaWithin, type MediaPlaybackEvent } from "./media-playback";
+import { lockDocumentScroll } from "./document-scroll-lock";
 import { categories, projects, selectedShortFormMedia, shortFormProjectCopy, type Project, type ProjectMedia } from "./portfolio-data";
 import { NativePortfolioVideo } from "./NativePortfolioVideo";
 import { ShortFormProjectViewer } from "./ShortFormProjectViewer";
@@ -144,6 +145,15 @@ const categoryHeadings: Record<string, string> = {
   "Brand introductions": "Brand introductions.",
   "Motion & brand animation": "Motion & brand animation.",
   "Podcasts & interviews": "Podcasts & interviews.",
+};
+
+const categoryLabels: Record<string, { full: string; compact: string }> = {
+  "All": { full: "All", compact: "All" },
+  "Short-form video": { full: "Short-form video", compact: "Short-form" },
+  "YouTube long-form": { full: "YouTube long-form", compact: "YouTube" },
+  "Brand introductions": { full: "Brand introductions", compact: "Brand" },
+  "Motion & brand animation": { full: "Motion & brand animation", compact: "Motion" },
+  "Podcasts & interviews": { full: "Podcasts & interviews", compact: "Podcasts" },
 };
 
 function ShortPreviewCard({
@@ -354,12 +364,7 @@ export function PortfolioGrid() {
   useEffect(() => {
     if (!selectedProject) return;
     const dialog = dialogRef.current;
-    const root = document.documentElement;
-    const body = document.body;
-    const previousRootOverflow = root.style.overflow;
-    const previousBodyOverflow = body.style.overflow;
-    root.style.overflow = "hidden";
-    body.style.overflow = "hidden";
+    const unlockDocumentScroll = lockDocumentScroll();
     const focusableElements = () => Array.from(dialog?.querySelectorAll<HTMLElement>("a[href], button:not([disabled]), video[controls], iframe, [tabindex]:not([tabindex='-1'])") ?? []);
     requestAnimationFrame(() => closeButtonRef.current?.focus());
     const onKeyDown = (event: KeyboardEvent) => {
@@ -384,10 +389,9 @@ export function PortfolioGrid() {
     return () => {
       stopMediaWithin(dialog);
       stopAllMedia();
-      root.style.overflow = previousRootOverflow;
-      body.style.overflow = previousBodyOverflow;
+      unlockDocumentScroll();
       document.removeEventListener("keydown", onKeyDown);
-      returnFocusRef.current?.focus();
+      returnFocusRef.current?.focus({ preventScroll: true });
     };
   }, [selectedProject]);
 
@@ -395,8 +399,9 @@ export function PortfolioGrid() {
     <>
       <div ref={filtersRef} className="filters" role="group" aria-label="Filter selected work">
         {categories.map((category) => (
-          <button ref={(button) => { filterButtonRefs.current[category] = button; }} key={category} type="button" aria-pressed={active === category} aria-controls="project-grid" className={active === category ? "active" : ""} onClick={() => selectCategory(category)}>
-            {category}
+          <button ref={(button) => { filterButtonRefs.current[category] = button; }} key={category} type="button" aria-label={category} aria-pressed={active === category} aria-controls="project-grid" className={active === category ? "active" : ""} onClick={() => selectCategory(category)}>
+            <span className="filter-label-full">{categoryLabels[category].full}</span>
+            <span className="filter-label-compact" aria-hidden="true">{categoryLabels[category].compact}</span>
           </button>
         ))}
       </div>

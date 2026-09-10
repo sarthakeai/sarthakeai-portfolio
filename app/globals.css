@@ -296,10 +296,19 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
 .page-breadcrumb { display: flex; align-items: center; gap: .6rem; margin-bottom: clamp(2rem, 4vw, 3.5rem); color: var(--muted); font: 520 .6875rem/1.5 var(--font-geist-mono), monospace; letter-spacing: .06em; text-transform: uppercase; }
 .page-breadcrumb a { color: var(--ink); }
 .page-breadcrumb a:hover { color: var(--accent); }
+.case-study-meta { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 0; border-bottom: 1px solid var(--line); }
+.case-study-meta > div { min-width: 0; padding: clamp(1.25rem, 2.4vw, 2rem) clamp(1rem, 2.3vw, 2rem); border-inline-start: 1px solid var(--line); }
+.case-study-meta > div:first-child { padding-inline-start: 0; border-inline-start: 0; }
+.case-study-meta dt, .short-form-viewer-meta dt { color: var(--muted); font: 540 .625rem/1.4 var(--font-geist-mono), monospace; letter-spacing: .09em; text-transform: uppercase; }
+.case-study-meta dd, .short-form-viewer-meta dd { margin: .55rem 0 0; color: var(--muted-strong); font-size: .8125rem; line-height: 1.55; overflow-wrap: break-word; }
+.case-study-page > .case-study-media { padding-top: clamp(3rem, 6vw, 5rem); }
 .case-study-details { display: grid; grid-template-columns: minmax(13rem, .7fr) minmax(0, 1.3fr); gap: clamp(2rem, 6vw, 7rem); padding-block: clamp(2.5rem, 5vw, 4.5rem); }
 .short-form-project-viewer .video-modal-head { margin-bottom: 0; }
 .short-form-mobile-close { display: none; }
 .short-form-viewer-mobile-copy { display: none; }
+.short-form-viewer-meta { display: flex; flex-wrap: wrap; gap: 1rem clamp(1.5rem, 3vw, 2.5rem); margin: 1.15rem 0 0; }
+.short-form-viewer-meta > div { min-width: min(100%, 9rem); }
+.short-form-viewer-meta dd { margin-top: .3rem; }
 .short-form-project-viewer .case-study-details { padding-top: var(--project-modal-role-gap); padding-bottom: clamp(1.75rem, 2vw, 2.5rem); }
 .case-study-details > p { max-width: 42rem; margin: 0; color: var(--muted-strong); font-size: .9375rem; line-height: 1.72; }
 .case-study-roles { display: flex; flex-wrap: wrap; gap: .55rem 1rem; list-style: none; margin: .7rem 0 0; padding: 0; }
@@ -340,7 +349,17 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
 }
 .portfolio-native-video-shell:fullscreen { width: 100vw; height: 100vh; border-radius: 0; background: #000; }
 .portfolio-native-video-shell:fullscreen .portfolio-native-video { object-fit: contain; }
-.case-study-back { margin-top: clamp(3rem, 6vw, 5rem); }
+.case-study-story { display: grid; grid-template-columns: minmax(0, 1fr) minmax(12rem, .7fr) minmax(0, 1.25fr); gap: clamp(1.75rem, 4vw, 4.5rem); margin-top: clamp(3.5rem, 7vw, 6rem); padding-top: clamp(2rem, 4vw, 3rem); border-top: 1px solid var(--line); }
+.case-study-story section { min-width: 0; }
+.case-study-story section > p:last-child { max-width: 38rem; margin: .8rem 0 0; color: var(--muted-strong); font-size: .875rem; line-height: 1.7; text-wrap: pretty; }
+.case-study-navigation { display: flex; justify-content: space-between; align-items: end; gap: 2rem; margin-top: clamp(3.5rem, 7vw, 6rem); padding-top: clamp(1.5rem, 3vw, 2.25rem); border-top: 1px solid var(--line); }
+.case-study-back { margin: 0; }
+.case-study-next { max-width: min(100%, 28rem); display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .45rem 1.25rem; text-align: end; }
+.case-study-next .project-label { grid-column: 1 / -1; }
+.case-study-next strong { font-size: clamp(1.1rem, 2.1vw, 1.75rem); font-weight: 570; line-height: 1.08; letter-spacing: -.03em; text-wrap: balance; }
+.case-study-next i { align-self: center; color: var(--accent); font-style: normal; transition: transform var(--motion-fast) var(--ease-premium); }
+.case-study-next:hover i { transform: translate3d(.2rem, -.2rem, 0); }
+.short-form-viewer-next { margin: clamp(2.5rem, 5vw, 4rem) 0 0 auto; padding-top: 1.5rem; border-top: 1px solid var(--line); }
 .standalone-about-grid { display: grid; grid-template-columns: minmax(18rem, .8fr) minmax(0, 1.2fr); gap: clamp(2.5rem, 7vw, 8rem); align-items: start; padding-top: clamp(3rem, 6vw, 5rem); }
 .standalone-about-grid figure { width: min(100%, 36rem); margin: 0; overflow: hidden; border-radius: 14px; background: var(--surface); }
 .standalone-about-grid img { width: 100%; height: auto; }
@@ -357,6 +376,7 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
 .work-index-media > span { position: absolute; right: 1rem; bottom: 1rem; min-height: 2.5rem; display: inline-flex; align-items: center; gap: .6rem; padding: 0 .8rem; background: var(--bg); color: var(--ink); font-size: .625rem; letter-spacing: .04em; text-transform: uppercase; }
 .work-index-media b { color: var(--accent); font: inherit; }
 .work-index-card .project-info h2 { margin: .7rem 0 0; font-size: clamp(1.15rem, 2vw, 1.75rem); line-height: 1.08; letter-spacing: -.03em; font-weight: 570; }
+.work-index-card .project-info .work-index-meta { margin: .9rem 0 0; color: var(--muted); font: 520 .625rem/1.5 var(--font-geist-mono), monospace; letter-spacing: .06em; text-transform: uppercase; }
 .work-index-card .project-info .project-copy > p { max-width: 31rem; margin: .65rem 0 0; color: var(--muted-strong); font-size: .8125rem; line-height: 1.62; }
 @media (hover: hover) and (pointer: fine) {
   .work-index-media:hover > img,
@@ -365,6 +385,7 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
 }
 
 .filters { width: 100%; max-width: 100%; display: flex; flex-wrap: wrap; gap: .55rem; margin-bottom: 2rem; }
+.filter-label-compact { display: none; }
 .filters button { min-height: 2.75rem; flex: 0 0 auto; border: 1px solid var(--line); background: transparent; color: var(--muted-strong); border-radius: 99rem; padding: 0 1rem; font-size: clamp(.875rem, 1.05vw, .9375rem); line-height: 1; cursor: pointer; transition: color 180ms ease-out, background-color 180ms ease-out, border-color 180ms ease-out, transform var(--press-speed) ease-out; }
 .filters button.active, .filters button:hover { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 .filters button:active { transform: scale(.97); }
@@ -531,7 +552,7 @@ html[data-theme="dark"] .client-logo-set img[src$="/collaborators/swan-bitcoin.s
 .editorial-overlay[data-state="open"] > .editorial-panel { opacity: 1; transform: translate3d(0, 0, 0); transition-duration: var(--motion-medium); transition-timing-function: var(--ease-premium); }
 .editorial-overlay[data-state="closing"] { visibility: visible; opacity: 0; pointer-events: none; transition-duration: 150ms, 0s; transition-timing-function: ease-out, linear; transition-delay: 0s, 150ms; }
 .editorial-overlay[data-state="closing"] > .editorial-panel { opacity: 0; transform: translate3d(0, .75rem, 0); transition-duration: 150ms; transition-timing-function: ease-out; }
-.editorial-close { min-width: 5.25rem; min-height: 2.75rem; display: inline-flex; align-items: center; justify-content: flex-end; gap: .45rem; border: 0; padding: 0; background: transparent; font: .71875rem/1.35 var(--font-geist-mono), monospace; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; transition-property: color, scale; transition-duration: 150ms; transition-timing-function: ease-out; }
+.editorial-close { min-width: 5.25rem; min-height: 2.75rem; display: inline-flex; align-items: center; justify-content: center; gap: .45rem; border: 0; padding: 0; background: transparent; font: .71875rem/1.35 var(--font-geist-mono), monospace; letter-spacing: .08em; text-align: center; text-transform: uppercase; cursor: pointer; transition-property: color, scale; transition-duration: 150ms; transition-timing-function: ease-out; }
 .editorial-close > span, .editorial-close > i { display: inline-flex; align-items: center; line-height: 1; }
 .editorial-close i { color: var(--accent); font-style: normal; }
 .overlay-focus-sentinel { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
@@ -843,6 +864,8 @@ html[data-theme="dark"] .about-story-portrait img { outline-color: oklch(1 0 0 /
   .filters { overflow-x: auto; overflow-y: hidden; flex-wrap: nowrap; padding: .2rem max(.9rem, var(--page-gutter)) .65rem 0; scroll-padding-inline: max(.9rem, var(--page-gutter)); scrollbar-width: none; scroll-snap-type: x proximity; overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch; }
   .filters::-webkit-scrollbar { display: none; }
   .filters button { white-space: nowrap; scroll-snap-align: start; }
+  .filter-label-full { display: none; }
+  .filter-label-compact { display: inline; }
   .project-grid { grid-template-columns: 1fr; gap: 3.75rem; }
   .project, .project.featured, .project.layout-large, .project.layout-small, .project.layout-centered { grid-column: 1; padding: 0; }
   .project.featured { grid-template-columns: 1fr; gap: 0; }
@@ -980,6 +1003,7 @@ html[data-theme="dark"] .about-story-portrait img { outline-color: oklch(1 0 0 /
   .short-form-project-viewer .video-modal-head h2 { max-width: calc(100% - 3.75rem); margin-top: .5rem; font-size: clamp(1.35rem, 6.4vw, 1.75rem); line-height: 1.02; white-space: nowrap; }
   .short-form-project-viewer .video-modal-head > button { min-width: 3.5rem; min-height: 2.75rem; display: inline-flex; align-items: center; justify-content: center; }
   .short-form-project-viewer :is(.short-form-viewer-description, .short-form-viewer-supporting-copy) { display: none; }
+  .short-form-viewer-next { display: none; }
   .short-form-project-viewer .case-study-details { display: block; margin-inline: 1rem; padding: .625rem 0 .75rem; }
   .short-form-project-viewer .case-study-role-header .project-label { margin: 0; }
   .short-form-project-viewer .case-study-roles { flex-wrap: nowrap; gap: .9rem; min-width: 0; margin-top: .55rem; }
@@ -1009,6 +1033,7 @@ html[data-theme="dark"] .about-story-portrait img { outline-color: oklch(1 0 0 /
 
 @media (max-width: 28rem) {
   :root { --page-gutter: 1.1rem; }
+  .standalone-page.work-index-page { padding-top: clamp(5.75rem, 24vw, 6.5rem); }
   .hero .hero-left-anchor > p.hero-intro { width: min(calc(100% + .5rem), 39rem); font-size: .9375rem; line-height: 1.64; text-align: left; text-wrap-style: auto; }
   .hero-actions { align-items: flex-start; flex-wrap: wrap; gap: .8rem; }
   .button { width: fit-content; }
@@ -1048,6 +1073,11 @@ html[data-theme="dark"] .about-story-portrait img { outline-color: oklch(1 0 0 /
   .standalone-page { padding-top: 7.5rem; }
   .standalone-page-header h1 { max-width: 100%; font-size: clamp(2.65rem, 12vw, 4.5rem); line-height: .96; }
   .case-study-details, .standalone-about-grid { grid-template-columns: minmax(0, 1fr); gap: 2rem; }
+  .case-study-meta { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .case-study-meta > div { border-bottom: 1px solid var(--line); }
+  .case-study-meta > div:nth-child(3) { grid-column: 1 / -1; padding-inline-start: 0; border-inline-start: 0; }
+  .case-study-story { grid-template-columns: minmax(0, 1fr); gap: 2rem; }
+  .case-study-navigation { align-items: start; }
   .standalone-about-grid figure { width: min(100%, 32rem); }
   .work-index-grid { grid-template-columns: minmax(0, 1fr); gap: 4rem; }
   .case-study-media.is-portrait { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(.65rem, 3vw, .9rem); }

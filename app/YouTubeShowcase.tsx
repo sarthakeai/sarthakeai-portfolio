@@ -175,7 +175,7 @@ function NativeYouTubePlayer({ video, onPlayerReady, onPlayerStateChange, onPlay
           data-media-player="youtube"
           src={getEmbedUrl(video.id)}
           title={video.title}
-          loading="eager"
+          loading="lazy"
           referrerPolicy="strict-origin-when-cross-origin"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
           allowFullScreen
@@ -239,7 +239,7 @@ export function YouTubeShowcase({ initialData }: { initialData: YouTubeShowcaseD
       if (!entries.some((entry) => entry.isIntersecting)) return;
       prewarmYouTubeResources();
       observer.disconnect();
-    }, { rootMargin: "1200px 0px" });
+    }, { rootMargin: "800px 0px" });
 
     observer.observe(stage);
     return () => observer.disconnect();
@@ -257,7 +257,7 @@ export function YouTubeShowcase({ initialData }: { initialData: YouTubeShowcaseD
       if (!entries.some((entry) => entry.isIntersecting)) return;
       setPlayersMounted(true);
       observer.disconnect();
-    }, { rootMargin: "1000px 0px" });
+    }, { rootMargin: "400px 0px" });
 
     observer.observe(stage);
     return () => observer.disconnect();
